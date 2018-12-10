@@ -37,6 +37,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_createAccountLandingFragment_to_boaterRegisterFragment"
+            app:destination="@id/boaterRegisterFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/signInEmail"
@@ -66,4 +73,9 @@
         android:label="fragment_marina_manager_register"
         tools:layout="@layout/fragment_marina_manager_register"
         />
+    <fragment
+        android:id="@+id/boaterRegisterFragment"
+        android:name="com.navismart.navismart.view.BoaterRegisterFragment"
+        android:label="fragment_boater_register"
+        tools:layout="@layout/fragment_boater_register" />
 </navigation>
