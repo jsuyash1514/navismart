@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/startFragment">
+
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.navismart.navismart.view.StartFragment"
+        android:label="start_fragment"
+        tools:layout="@layout/start_fragment">
+        <action
+            android:id="@+id/create_acct_action"
+            app:destination="@+id/createAccountLandingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/sign_in_action"
+            app:destination="@id/signInEmail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/createAccountLandingFragment"
+        android:name="com.navismart.navismart.view.CreateAccountLandingFragment"
+        android:label="fragment_create_account_landing"
+        tools:layout="@layout/fragment_create_account_landing" />
+    <fragment
+        android:id="@+id/signInEmail"
+        android:name="com.navismart.navismart.view.SignInEmail"
+        android:label="fragment_sign_in_email"
+        tools:layout="@layout/fragment_sign_in_email" >
+        <action
+            android:id="@+id/sign_in_password_action"
+            app:destination="@id/signInPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <argument
+            android:name="emailID"
+            android:defaultValue="abc@example.com"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInPasswordFragment"
+        android:name="com.navismart.navismart.view.SignInPasswordFragment"
+        android:label="fragment_sign_in_password"
+        tools:layout="@layout/fragment_sign_in_password" />
+</navigation>
