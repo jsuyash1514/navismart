@@ -22,8 +22,17 @@ import androidx.navigation.Navigation;
 
 public class SignInEmail extends Fragment {
 
+    ImageView backArrowButton;
+
     public SignInEmail() {
         // Required empty public constructor
+    }
+
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     @Override
@@ -36,11 +45,12 @@ public class SignInEmail extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_in_email, container, false);
 
-        ImageView backArrowButton = view.findViewById(R.id.back_arrow);
+        final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+
+        backArrowButton = view.findViewById(R.id.back_arrow);
         backArrowButton.setOnClickListener(new View.OnClickListener() {//navigate up
             @Override
             public void onClick(View v) {
-                final NavController navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
                 navController.navigateUp();
             }
         });
@@ -59,10 +69,9 @@ public class SignInEmail extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(isEmailValid(s.toString())){
+                if (isEmailValid(s.toString())) {
                     nextButton.setEnabled(true);
-                }
-                else {
+                } else {
                     nextButton.setEnabled(false);
                 }
             }
@@ -78,20 +87,12 @@ public class SignInEmail extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavController navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
                 bundle.putString("email_id", emailEditText.getText().toString());
-                navController.navigate(R.id.sign_in_password_action,bundle);
+                navController.navigate(R.id.sign_in_password_action, bundle);
             }
         });
 
         return view;
-    }
-
-    public static boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
     }
 
 }
