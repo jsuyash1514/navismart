@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 
 public class CreateAccountLandingFragment extends Fragment {
 
+    private ImageView backArrow;
 
     public CreateAccountLandingFragment() {
         // Required empty public constructor
@@ -33,11 +34,11 @@ public class CreateAccountLandingFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_create_account_landing, container, false);
 
-        ImageView backArrow = view.findViewById(R.id.back_arrow);
         final Button nextButton = view.findViewById(R.id.next_button);
         final RadioGroup userRadioGroup = view.findViewById(R.id.radio_grp);
-
         final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+
+        backArrow = view.findViewById(R.id.back_arrow);
 
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +63,7 @@ public class CreateAccountLandingFragment extends Fragment {
                         break;
                     }
                     case R.id.boater_radio_button: {
+                        navController.navigate(R.id.action_createAccountLandingFragment_to_boaterRegisterFragment);
                         break;
                     }
                     case R.id.third_party_radio_button: {

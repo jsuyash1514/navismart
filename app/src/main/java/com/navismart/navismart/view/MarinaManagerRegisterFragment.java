@@ -27,10 +27,10 @@ import androidx.navigation.Navigation;
 
 public class MarinaManagerRegisterFragment extends Fragment {
 
-    EditText nameEditText;
-    EditText emailEditText;
-    CheckBox passwordCheckBox;
-    NumberPicker capacityPicker;
+    private EditText nameEditText;
+    private EditText emailEditText;
+    private CheckBox passwordCheckBox;
+    private NumberPicker capacityPicker;
     private boolean nameFilled = false;
     private boolean emailValid = false;
     private boolean passwordValid = false;
