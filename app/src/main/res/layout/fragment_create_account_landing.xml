@@ -59,6 +59,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="50dp"
         android:text="@string/next"
+        android:enabled="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 </RelativeLayout>
