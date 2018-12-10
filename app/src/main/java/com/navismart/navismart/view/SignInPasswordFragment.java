@@ -27,6 +27,10 @@ import androidx.navigation.Navigation;
 
 public class SignInPasswordFragment extends Fragment {
 
+    TextView toEmailTextView;
+    CheckBox passwordCheckBox;
+    ImageView backArrowButton;
+
     public SignInPasswordFragment() {
         // Required empty public constructor
     }
@@ -42,21 +46,20 @@ public class SignInPasswordFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_sign_in_password, container, false);
 
-        final Button registerButton = view.findViewById(R.id.register_button);
+        final Button signInButton = view.findViewById(R.id.sign_in_button);
 
         final EditText passwordEditText = view.findViewById(R.id.password_edit_text);
 
-        TextView toEmailTextView = view.findViewById(R.id.to_email);
-        toEmailTextView.setText("to "+ getArguments().getString("email_id"));
+        toEmailTextView = view.findViewById(R.id.to_email);
+        toEmailTextView.setText("to " + getArguments().getString("email_id"));
 
-        CheckBox passwordCheckBox = view.findViewById(R.id.show_password_checkbox);
+        passwordCheckBox = view.findViewById(R.id.show_password_checkbox);
         passwordCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     passwordEditText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                }
-                else {
+                } else {
                     passwordEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 }
             }
@@ -70,11 +73,10 @@ public class SignInPasswordFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(isValidPassword(s.toString())){
-                    registerButton.setEnabled(true);
-                }
-                else{
-                    registerButton.setEnabled(false);
+                if (isValidPassword(s.toString())) {
+                    signInButton.setEnabled(true);
+                } else {
+                    signInButton.setEnabled(false);
                 }
             }
 
@@ -84,11 +86,11 @@ public class SignInPasswordFragment extends Fragment {
             }
         });
 
-        ImageView backArrowButton = view.findViewById(R.id.back_arrow);
+        backArrowButton = view.findViewById(R.id.back_arrow);
         backArrowButton.setOnClickListener(new View.OnClickListener() {//navigate up
             @Override
             public void onClick(View v) {
-                final NavController navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
+                final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
                 navController.navigateUp();
             }
         });
@@ -97,7 +99,7 @@ public class SignInPasswordFragment extends Fragment {
     }
 
 
-    public static boolean isValidPassword(final String password) {
+    public boolean isValidPassword(final String password) {
 
         Pattern pattern;
         Matcher matcher;
