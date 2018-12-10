@@ -47,7 +47,7 @@ public class SignInPasswordFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sign_in_password, container, false);
 
         final Button signInButton = view.findViewById(R.id.sign_in_button);
-
+        final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         final EditText passwordEditText = view.findViewById(R.id.password_edit_text);
 
         toEmailTextView = view.findViewById(R.id.to_email);
@@ -90,7 +90,6 @@ public class SignInPasswordFragment extends Fragment {
         backArrowButton.setOnClickListener(new View.OnClickListener() {//navigate up
             @Override
             public void onClick(View v) {
-                final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
                 navController.navigateUp();
             }
         });
