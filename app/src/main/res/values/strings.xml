@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">Navismart</string>
+    <string name="lets_get_started">Let\'s Get Started</string>
+    <string name="sign_in_with_email">Sign in with email</string>
+    <string name="create_acct">Create your account</string>
+    <string name="or">or</string>
+    <string name="agreeing_with">By creating or logging into an account you are agreeing with our</string>
+    <string name="TnC"><u>Terms and Conditions</u></string>
+    <string name="terms_conditions">Terms and Conditions</string>
+    <string name="and">and</string>
+    <string name="PrivacyStatement"><u>Privacy Statement</u></string>
+    <string name="marina_manager">Marina Manager</string>
+    <string name="boater">Boater</string>
+    <string name="third_party_service_providers">Third Party Service Providers</string>
+    <string name="who_are_you">Who are you?</string>
+    <string name="next">Next</string>
+    <string name="sign_in">Sign In</string>
+    <string name="to">to</string>
+    <string name="email_id">Email ID</string>
+    <string name="password">Password</string>
+    <string name="show_password">Show Password</string>
+    <string name="register">Register</string>
+    <string name="upload">Upload</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="location">Location</string>
+    <string name="reception_capacity">Reception\nCapacity</string>
+    <string name="you">You</string>
+    <string name="your_boat">Your Boat</string>
+    <string name="id">ID</string>
+    <string name="length">Length(m)</string>
+    <string name="beam">Beam(m)</string>
+    <string name="type">Type</string>
+    <string name="upload_registration">Upload Registration</string>
 </resources>
