@@ -21,17 +21,17 @@ import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
 import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 
 
-public class StartFragment extends Fragment {
+public class LoginFragment extends Fragment {
     boolean emailValid = false, pwValid = false, enabler = false;
 
-    public static StartFragment newInstance() {
-        return new StartFragment();
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.start_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         Button createAcctButton = view.findViewById(R.id.startFragment_createAccountButton);
 

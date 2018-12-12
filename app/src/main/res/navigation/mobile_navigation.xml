@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.navismart.navismart.view.StartFragment"
+        android:name="com.navismart.navismart.view.LoginFragment"
         android:label="start_fragment"
-        tools:layout="@layout/start_fragment">
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/create_acct_action"
             app:destination="@+id/createAccountLandingFragment"
