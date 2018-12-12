@@ -25,11 +25,11 @@ public class StartFragment extends Fragment {
         View view = inflater.inflate(R.layout.start_fragment, container, false);
 
         View.OnClickListener actionCreateListener = Navigation.createNavigateOnClickListener(R.id.create_acct_action);//navigate to create acct page using action
-        Button createAcctButton = view.findViewById(R.id.create_acct_button);
+        Button createAcctButton = view.findViewById(R.id.startFragment_createAccountButton);
         createAcctButton.setOnClickListener(actionCreateListener);
 
         View.OnClickListener actionSignInListener = Navigation.createNavigateOnClickListener(R.id.sign_in_action);//navigate to sign in email page using action
-        Button signInButton = view.findViewById(R.id.sign_in_email_button);
+        Button signInButton = view.findViewById(R.id.startFragment_signInButton);
         signInButton.setOnClickListener(actionSignInListener);
 
         return view;
