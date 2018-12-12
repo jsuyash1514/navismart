@@ -9,10 +9,28 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:contentInsetEnd="0dp"
+        android:contentInsetLeft="0dp"
+        android:contentInsetRight="0dp"
+        android:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetStart="0dp"
         android:background="@color/colorPrimary"
-        android:visibility="gone"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:title="@string/app_name"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textAlignment="center"/>
+    </android.support.v7.widget.Toolbar>
     <fragment
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -1,4 +1,5 @@
 <resources>
+    <string name="title">NAVISMART</string>
     <string name="app_name">Navismart</string>
     <string name="lets_get_started">Let\'s Get Started</string>
     <string name="sign_in_with_email">Sign in with email</string>
