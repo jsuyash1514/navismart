@@ -19,7 +19,7 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/sign_in_action"
-            app:destination="@id/signInEmail"
+            app:destination="@+id/landingFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -46,28 +46,6 @@
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
-        android:id="@+id/signInEmail"
-        android:name="com.navismart.navismart.view.SignInEmail"
-        android:label="fragment_sign_in_email"
-        tools:layout="@layout/fragment_sign_in_email" >
-        <action
-            android:id="@+id/sign_in_password_action"
-            app:destination="@id/signInPasswordFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-        <argument
-            android:name="emailID"
-            android:defaultValue="abc@example.com"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/signInPasswordFragment"
-        android:name="com.navismart.navismart.view.SignInPasswordFragment"
-        android:label="fragment_sign_in_password"
-        tools:layout="@layout/fragment_sign_in_password" />
-    <fragment
         android:id="@+id/marinaManagerRegisterFragment"
         android:name="com.navismart.navismart.view.MarinaManagerRegisterFragment"
         android:label="fragment_marina_manager_register"
@@ -78,4 +56,9 @@
         android:name="com.navismart.navismart.view.BoaterRegisterFragment"
         android:label="fragment_boater_register"
         tools:layout="@layout/fragment_boater_register" />
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="com.navismart.navismart.view.LandingFragment"
+        android:label="fragment_landing"
+        tools:layout="@layout/fragment_landing" />
 </navigation>
