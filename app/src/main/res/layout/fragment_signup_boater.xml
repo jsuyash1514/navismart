@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MarinaManagerRegisterFragment">
+    tools:context=".view.SignUpBoaterFragment">
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -42,12 +43,33 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="@string/you"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/colorPrimary" />
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/name_edit_text"
+                    android:id="@+id/person_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
@@ -90,94 +112,119 @@
                     android:theme="@style/BaseLineTheme" />
             </android.support.design.widget.TextInputLayout>
 
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="5dp"
-                android:background="@android:color/darker_gray" />
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="@string/your_boat"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/colorPrimary" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/description_edit_text"
+                    android:id="@+id/boat_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:baselineAligned="false"
-                    android:hint="@string/description"
+                    android:hint="@string/name"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
                     android:theme="@style/BaseLineTheme" />
             </android.support.design.widget.TextInputLayout>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/locatio_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:baselineAligned="false"
-                    android:enabled="false"
-                    android:hint="@string/location"
-                    android:theme="@style/BaseLineTheme" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:src="@drawable/ic_add_location_black_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <NumberPicker
-                    android:id="@+id/reception_capacity_number_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:text="@string/reception_capacity"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="5dp"
-                android:background="@android:color/darker_gray" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/tnc_edit_text"
+                    android:id="@+id/boat_id_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:baselineAligned="false"
-                    android:hint="@string/terms_conditions"
+                    android:hint="@string/id"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
                     android:theme="@style/BaseLineTheme" />
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/boat_length_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:baselineAligned="false"
+                    android:hint="@string/length"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:theme="@style/BaseLineTheme" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/boat_beam_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:baselineAligned="false"
+                    android:hint="@string/beam"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:theme="@style/BaseLineTheme" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/boat_type_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:baselineAligned="false"
+                    android:hint="@string/type"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:theme="@style/BaseLineTheme" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/upload_registration_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="@string/upload_registration"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white" />
 
             <View
                 android:layout_width="match_parent"
@@ -195,6 +242,7 @@
                 android:text="@string/register"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/white" />
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

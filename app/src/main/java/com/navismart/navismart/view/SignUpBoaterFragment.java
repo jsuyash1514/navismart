@@ -21,7 +21,7 @@ import androidx.navigation.Navigation;
 import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
 import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 
-public class BoaterRegisterFragment extends Fragment {
+public class SignUpBoaterFragment extends Fragment {
 
     private ImageView back_arrow;
     private EditText nameEditText;
@@ -35,7 +35,7 @@ public class BoaterRegisterFragment extends Fragment {
     private boolean emailValid = false;
     private boolean passwordValid = false;
 
-    public BoaterRegisterFragment() {
+    public SignUpBoaterFragment() {
         // Required empty public constructor
     }
 
@@ -55,7 +55,7 @@ public class BoaterRegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_boater_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_signup_boater, container, false);
 
         final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         final EditText passwordEditText = view.findViewById(R.id.password_edit_text);

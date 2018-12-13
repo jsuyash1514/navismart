@@ -21,7 +21,7 @@ import androidx.navigation.Navigation;
 import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
 import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 
-public class MarinaManagerRegisterFragment extends Fragment {
+public class SignUpMarinaManagerFragment extends Fragment {
 
     private EditText nameEditText;
     private EditText emailEditText;
@@ -30,7 +30,7 @@ public class MarinaManagerRegisterFragment extends Fragment {
     private boolean emailValid = false;
     private boolean passwordValid = false;
 
-    public MarinaManagerRegisterFragment() {
+    public SignUpMarinaManagerFragment() {
         // Required empty public constructor
     }
 
@@ -49,7 +49,7 @@ public class MarinaManagerRegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_marina_manager_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_signup_marina_manager, container, false);
 
         final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         final EditText passwordEditText = view.findViewById(R.id.password_edit_text);

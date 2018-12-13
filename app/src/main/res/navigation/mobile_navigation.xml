@@ -27,9 +27,9 @@
     </fragment>
     <fragment
         android:id="@+id/createAccountLandingFragment"
-        android:name="com.navismart.navismart.view.CreateAccountLandingFragment"
+        android:name="com.navismart.navismart.view.SignUpFragment"
         android:label="fragment_create_account_landing"
-        tools:layout="@layout/fragment_create_account_landing" ></fragment>
+        tools:layout="@layout/fragment_signup" ></fragment>
     <fragment
         android:id="@+id/landingFragment"
         android:name="com.navismart.navismart.view.LandingFragment"
