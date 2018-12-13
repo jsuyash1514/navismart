@@ -2,22 +2,24 @@ package com.navismart.navismart.view;
 
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
 
 import com.navismart.navismart.R;
+import com.navismart.navismart.adapters.ProfileViewPagerAdapter;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 public class CreateAccountLandingFragment extends Fragment {
 
-    private ImageView backArrow;
+    private ProfileViewPagerAdapter profileViewPagerAdapter;
+    private ViewPager profileViewPager;
+    private TabLayout profileTabLayout;
 
     public CreateAccountLandingFragment() {
         // Required empty public constructor
@@ -34,44 +36,14 @@ public class CreateAccountLandingFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_create_account_landing, container, false);
 
-        final Button nextButton = view.findViewById(R.id.next_button);
-        final RadioGroup userRadioGroup = view.findViewById(R.id.radio_grp);
+        profileViewPager = view.findViewById(R.id.profile_view_pager);
+        profileViewPagerAdapter = new ProfileViewPagerAdapter(getChildFragmentManager());
+        profileViewPager.setAdapter(profileViewPagerAdapter);
+        profileTabLayout = view.findViewById(R.id.profile_tabs);
+        profileTabLayout.setupWithViewPager(profileViewPager);
+
         final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
-        backArrow = view.findViewById(R.id.back_arrow);
-
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigateUp();
-            }
-        });
-
-        userRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                nextButton.setEnabled(true);
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (userRadioGroup.getCheckedRadioButtonId()) {
-                    case R.id.marina_manager_radio_button: {
-                        navController.navigate(R.id.action_createAccountLandingFragment_to_marinaManagerRegisterFragment);
-                        break;
-                    }
-                    case R.id.boater_radio_button: {
-                        navController.navigate(R.id.action_createAccountLandingFragment_to_boaterRegisterFragment);
-                        break;
-                    }
-                    case R.id.third_party_radio_button: {
-                        break;
-                    }
-                }
-            }
-        });
 
         return view;
     }
