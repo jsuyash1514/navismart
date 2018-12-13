@@ -20,6 +20,7 @@ public class CreateAccountLandingFragment extends Fragment {
     private ProfileViewPagerAdapter profileViewPagerAdapter;
     private ViewPager profileViewPager;
     private TabLayout profileTabLayout;
+    static NavController navControllerAcctLanding;
 
     public CreateAccountLandingFragment() {
         // Required empty public constructor
@@ -42,7 +43,7 @@ public class CreateAccountLandingFragment extends Fragment {
         profileTabLayout = view.findViewById(R.id.profile_tabs);
         profileTabLayout.setupWithViewPager(profileViewPager);
 
-        final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+        navControllerAcctLanding = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
 
         return view;

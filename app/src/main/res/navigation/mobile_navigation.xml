@@ -34,5 +34,30 @@
         android:id="@+id/landingFragment"
         android:name="com.navismart.navismart.view.LandingFragment"
         android:label="fragment_landing"
-        tools:layout="@layout/fragment_landing" />
+        tools:layout="@layout/fragment_landing" >
+        <action
+            android:id="@+id/action_landingFragment_to_boaterProfileFragment"
+            app:destination="@id/boaterProfileFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_boaterSearchFragment"
+            app:destination="@id/boaterSearchFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_boaterSearchResultsFragment"
+            app:destination="@id/boaterSearchResultsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/boaterProfileFragment"
+        android:name="com.navismart.navismart.view.BoaterProfileFragment"
+        android:label="fragment_boater_profile"
+        tools:layout="@layout/fragment_boater_profile" />
+    <fragment
+        android:id="@+id/boaterSearchFragment"
+        android:name="com.navismart.navismart.view.BoaterSearchFragment"
+        android:label="fragment_boater_search"
+        tools:layout="@layout/fragment_boater_search" />
+    <fragment
+        android:id="@+id/boaterSearchResultsFragment"
+        android:name="com.navismart.navismart.view.BoaterSearchResultsFragment"
+        android:label="fragment_boater_search_results"
+        tools:layout="@layout/fragment_boater_search_results" />
 </navigation>
