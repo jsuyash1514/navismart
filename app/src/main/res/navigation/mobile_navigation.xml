@@ -29,10 +29,19 @@
         android:id="@+id/createAccountLandingFragment"
         android:name="com.navismart.navismart.view.SignUpFragment"
         android:label="fragment_create_account_landing"
-        tools:layout="@layout/fragment_signup" ></fragment>
+        tools:layout="@layout/fragment_signup" >
+    </fragment>
     <fragment
         android:id="@+id/landingFragment"
         android:name="com.navismart.navismart.view.LandingFragment"
         android:label="fragment_landing"
-        tools:layout="@layout/fragment_landing" />
+        tools:layout="@layout/fragment_landing" >
+    <action
+        android:id="@+id/log_out_action"
+        app:destination="@+id/startFragment"
+        app:enterAnim="@anim/slide_in_left"
+        app:exitAnim="@anim/slide_out_right"
+        app:popEnterAnim="@anim/slide_in_right"
+        app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
 </navigation>
