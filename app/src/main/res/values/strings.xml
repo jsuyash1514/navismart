@@ -27,7 +27,8 @@
     <string name="location">Location</string>
     <string name="reception_capacity">Reception\nCapacity</string>
     <string name="you">You</string>
-    <string name="your_boat">Your Boat</string>
+    <string name="your_boat">Boat Description</string>
+    <string name="marina_description">Marina Description</string>
     <string name="id">ID</string>
     <string name="length">Length(m)</string>
     <string name="beam">Beam(m)</string>
