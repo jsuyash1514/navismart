@@ -17,11 +17,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.navismart.navismart.R;
-
-import java.util.concurrent.Executor;
 
 import androidx.navigation.Navigation;
 
@@ -34,9 +33,6 @@ public class LoginFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -44,10 +40,9 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
+//        checkUserLoggedIn();
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            //Navigate to landing fragment.
-        }
+        progressDialog = new ProgressDialog(getContext());
 
         Button createAcctButton = view.findViewById(R.id.startFragment_createAccountButton);
 
@@ -108,18 +103,21 @@ public class LoginFragment extends Fragment {
             }
         });
 
+        signInButton.setOnClickListener(view12 -> userLogin(email,pw));
 
-        View.OnClickListener actionSignInListener = Navigation.createNavigateOnClickListener(R.id.sign_in_action);//navigate to sign in email page using action
-        signInButton.setOnClickListener(actionSignInListener);
-
-        View.OnClickListener actionCreateListener = Navigation.createNavigateOnClickListener(R.id.create_acct_action);//navigate to create acct page using action
-        createAcctButton.setOnClickListener(actionCreateListener);
+        createAcctButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.create_acct_action));
 
         return view;
 
 
     }
 
+    private void checkUserLoggedIn(){
+        if(firebaseAuth.getCurrentUser() != null){
+            Toast.makeText(getContext(), "Already logged in", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(getView()).navigate(R.id.sign_in_action, null);
+        }
+    }
 
     private void userLogin(EditText email, EditText pw) {
 
@@ -140,13 +138,18 @@ public class LoginFragment extends Fragment {
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(e_mail, password)
-                .addOnCompleteListener((Executor) this, task -> {
-                    progressDialog.dismiss();
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
 
-                    if (task.isSuccessful()) {
-                        //navigate to landing fragment.
-                    } else {
-                        Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                            Navigation.findNavController(getView()).navigate(R.id.sign_in_action, null);
+                        } else {
+                            Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
 
