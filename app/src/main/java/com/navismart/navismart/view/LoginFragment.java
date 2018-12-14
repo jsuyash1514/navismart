@@ -22,6 +22,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.navismart.navismart.R;
 
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
@@ -115,7 +116,10 @@ public class LoginFragment extends Fragment {
     private void checkUserLoggedIn(){
         if(firebaseAuth.getCurrentUser() != null){
             Toast.makeText(getContext(), "Already logged in", Toast.LENGTH_SHORT).show();
-            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.sign_in_action, null);
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.startFragment, true)
+                    .build();
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.sign_in_action, null, navOptions);
         }
     }
 
@@ -145,7 +149,10 @@ public class LoginFragment extends Fragment {
 
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(getView()).navigate(R.id.sign_in_action, null);
+                            NavOptions navOptions = new NavOptions.Builder()
+                                    .setPopUpTo(R.id.startFragment, true)
+                                    .build();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.sign_in_action, null, navOptions);
                         } else {
                             Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
                         }
