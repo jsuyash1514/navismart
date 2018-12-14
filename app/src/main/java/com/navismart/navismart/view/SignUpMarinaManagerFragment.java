@@ -27,11 +27,17 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.navismart.navismart.R;
 import com.navismart.navismart.viewmodels.SignUpViewModel;
 
@@ -51,11 +57,13 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private SignUpViewModel signUpViewModel;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    private ProgressDialog progressDialog;
+    private StorageReference storageReference;
+    private ProgressDialog progressDialog,uploadProgress;
     private NavController navController;
-    private EditText passwordEditText,nameEditText,emailEditText,descriptionEditText,t_cEditText;
+    private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText;
     private NumberPicker capacityPicker;
     private Button registerButton, uploadProfilePic;
+    private Uri profilePicUri = null;
     private boolean nameFilled = false;
     private boolean emailValid = false;
     private boolean passwordValid = false;
@@ -79,7 +87,9 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
+        uploadProgress = new ProgressDialog(getContext());
         checkUserLoggedIn();
 
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
@@ -106,10 +116,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
             }
         });
 
-        final Observer<Bitmap> profilePicObserver = new Observer<Bitmap>() {
+        final Observer<Uri> profilePicObserver = new Observer<Uri>() {
             @Override
-            public void onChanged(@Nullable Bitmap bitmap) {
-                profilePic.setImageBitmap(bitmap);
+            public void onChanged(@Nullable Uri uri) {
+                profilePic.setImageURI(uri);
+                profilePicUri = uri;
             }
 
         };
@@ -208,8 +219,28 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
     }
 
-    public void checkUserLoggedIn(){
-        if(firebaseAuth.getCurrentUser() != null){
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
+                if (bitmap != null) {
+                    signUpViewModel.getMarinaManagerProfilePic().setValue(selectedImage);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void checkUserLoggedIn() {
+        if (firebaseAuth.getCurrentUser() != null) {
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.startFragment, true)
                     .build();
@@ -217,7 +248,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         }
     }
 
-    public void registerUser(){
+    public void registerUser() {
         final String name = nameEditText.getText().toString().trim();
         final String email = emailEditText.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
@@ -227,56 +258,85 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
         progressDialog.setMessage("Registering Please wait...");
         progressDialog.show();
-        firebaseAuth.createUserWithEmailAndPassword(email,password)
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             DatabaseReference currentUser = databaseReference.child("users").child("marina-manager").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
                             currentUser.child("name").setValue(name);
                             currentUser.child("email").setValue(email);
-                            if(!TextUtils.isEmpty(descr)){
+                            if (!TextUtils.isEmpty(descr)) {
                                 currentUser.child("description").setValue(descr);
                             }
                             currentUser.child("capacity").setValue(capacity);
-                            if(!TextUtils.isEmpty(termsAndCond)){
+                            if (!TextUtils.isEmpty(termsAndCond)) {
                                 currentUser.child("terms-and-condition").setValue(termsAndCond);
                             }
+                            if(profilePicUri != null) {
+                                StorageReference profilePicRef = storageReference.child("users").child("marina-manager").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
-                            NavOptions navOptions = new NavOptions.Builder()
-                                    .setPopUpTo(R.id.startFragment, true)
-                                    .build();
-                            navController.navigate(R.id.register_successful_action,null,navOptions);
-                        }
-                        else{
-                            Toast.makeText(getContext(), "Could not register, Please try again...",Toast.LENGTH_SHORT).show();
+                                uploadProgress.setMax(100);
+                                uploadProgress.setMessage("Uploading image...");
+                                uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                uploadProgress.show();
+                                uploadProgress.setCancelable(false);
+
+                                UploadTask uploadTask = profilePicRef.putFile(profilePicUri);
+                                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                    @Override
+                                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                                        uploadProgress.incrementProgressBy((int) progress);
+
+                                    }
+                                });
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+
+                                        Toast.makeText(getContext(),"Error in uploading profile pic!",Toast.LENGTH_SHORT).show();
+                                        uploadProgress.dismiss();
+
+                                    }
+                                });
+                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                        Toast.makeText(getContext(),"Registration successful!",Toast.LENGTH_SHORT).show();
+                                        uploadProgress.dismiss();
+
+                                        NavOptions navOptions = new NavOptions.Builder()
+                                                .setPopUpTo(R.id.startFragment, true)
+                                                .build();
+                                        navController.navigate(R.id.register_successful_action, null, navOptions);
+                                    }
+                                });
+                            }
+                            else{
+                                Toast.makeText(getContext(),"Registration successful!",Toast.LENGTH_SHORT).show();
+
+                                NavOptions navOptions = new NavOptions.Builder()
+                                        .setPopUpTo(R.id.startFragment, true)
+                                        .build();
+                                navController.navigate(R.id.register_successful_action, null, navOptions);
+                            }
+
+                        } else {
+                            Toast.makeText(getContext(), "Could not register, Please try again...", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                 });
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==100 && resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
-            Bitmap bitmap;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
-                if(bitmap != null){
-                    signUpViewModel.getMarinaManagerProfilePic().setValue(bitmap);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

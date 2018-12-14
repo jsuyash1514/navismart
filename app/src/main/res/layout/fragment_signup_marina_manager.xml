@@ -182,8 +182,8 @@
                     android:id="@+id/reception_capacity_number_picker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp" />
+                    android:layout_margin="8dp"
+                    android:layout_weight="1" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -191,10 +191,10 @@
                     android:layout_gravity="center"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
-                    android:textColor="@color/common_google_signin_btn_text_light_default"
                     android:text="@string/reception_capacity"
                     android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/common_google_signin_btn_text_light_default" />
 
             </LinearLayout>
 
@@ -217,13 +217,6 @@
                     android:hint="@string/terms_conditions"
                     android:theme="@style/BaseLineTheme" />
             </android.support.design.widget.TextInputLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="5dp"
-                android:background="@android:color/darker_gray" />
 
             <Button
                 android:id="@+id/register_button"
