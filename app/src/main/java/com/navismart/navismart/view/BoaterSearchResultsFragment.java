@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +39,8 @@ public class BoaterSearchResultsFragment extends Fragment {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
     RangeSeekBar<Float> priceRangeSeekBar;
-    private List<MarinaModel> marinaList;
+    private Button showResults;
+    private List<MarinaModel> marinaList, filteredMarinaList;
     private RecyclerView marinaListRecyclerView;
     private MarinaListAdapter marinaListAdapter;
     private TextView closestSortTextView, cheapestSortTextView;
@@ -63,7 +65,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         prepareMarinaList();
 
-        marinaListAdapter = new MarinaListAdapter(marinaList);
+        marinaListAdapter = new MarinaListAdapter(filteredMarinaList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
 
         marinaListRecyclerView = view.findViewById(R.id.marina_search_result_recycler_view);
@@ -99,15 +101,26 @@ public class BoaterSearchResultsFragment extends Fragment {
         maxRange = getMaxPrice();
 
         rangeDisplay = filterDialog.findViewById(R.id.range_display);
-        rangeDisplay.setText("From "+minRange+" to "+maxRange);
+        rangeDisplay.setText("From " + minRange + " to " + maxRange);
         priceRangeSeekBar = filterDialog.findViewById(R.id.price_range_seekbar);
-        priceRangeSeekBar.setRangeValues(minRange,maxRange);
+        priceRangeSeekBar.setRangeValues(minRange, maxRange);
         priceRangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Float>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
                 minRange = minValue;
                 maxRange = maxValue;
-                rangeDisplay.setText("From "+minValue+" to "+maxValue);
+                rangeDisplay.setText("From " + minValue + " to " + maxValue);
+            }
+        });
+
+        showResults = filterDialog.findViewById(R.id.show_result_button);
+        showResults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filteredMarinaList = filterMarinaList();
+                marinaListAdapter = new MarinaListAdapter(filteredMarinaList);
+                marinaListRecyclerView.setAdapter(marinaListAdapter);
+                filterDialog.dismiss();
             }
         });
 
@@ -120,6 +133,25 @@ public class BoaterSearchResultsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private ArrayList<MarinaModel> filterMarinaList() {
+
+        ArrayList<MarinaModel> temp = new ArrayList<>();
+
+        for (MarinaModel m : marinaList) {
+            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange)) {
+                temp.add(m);
+            }
+        }
+        return temp;
+    }
+
+    private boolean between(Float a, Float minRange, Float maxRange) {
+
+        if (a >= minRange && a <= maxRange) return true;
+        else return false;
+
     }
 
     private void sortByPrice() {
@@ -135,7 +167,7 @@ public class BoaterSearchResultsFragment extends Fragment {
             }
         };
 
-        Collections.sort(marinaList, marinaModelComparator);
+        Collections.sort(filteredMarinaList, marinaModelComparator);
 
         cheapestSortTextView.setTypeface(null, Typeface.BOLD);
         closestSortTextView.setTypeface(null, Typeface.NORMAL);
@@ -154,7 +186,7 @@ public class BoaterSearchResultsFragment extends Fragment {
             }
         };
 
-        Collections.sort(marinaList, marinaModelComparator);
+        Collections.sort(filteredMarinaList, marinaModelComparator);
 
         cheapestSortTextView.setTypeface(null, Typeface.NORMAL);
         closestSortTextView.setTypeface(null, Typeface.BOLD);
@@ -197,7 +229,7 @@ public class BoaterSearchResultsFragment extends Fragment {
         marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3.0f, false));
         marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4.0f, true));
         marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5.0f, true));
-
+        filteredMarinaList = marinaList;
     }
 
     private void prepareListData() {
