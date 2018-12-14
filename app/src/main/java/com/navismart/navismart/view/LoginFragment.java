@@ -115,7 +115,6 @@ public class LoginFragment extends Fragment {
 
     private void checkUserLoggedIn(){
         if(firebaseAuth.getCurrentUser() != null){
-            Toast.makeText(getContext(), "Already logged in", Toast.LENGTH_SHORT).show();
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.startFragment, true)
                     .build();

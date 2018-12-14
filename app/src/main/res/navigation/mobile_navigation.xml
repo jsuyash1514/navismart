@@ -30,6 +30,13 @@
         android:name="com.navismart.navismart.view.SignUpFragment"
         android:label="fragment_create_account_landing"
         tools:layout="@layout/fragment_signup" >
+        <action
+            android:id="@+id/register_successful_action"
+            app:destination="@+id/landingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
