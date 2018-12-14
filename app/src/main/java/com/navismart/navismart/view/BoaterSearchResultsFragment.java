@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.navismart.navismart.R;
@@ -40,6 +42,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     HashMap<String, List<String>> listDataChild;
     RangeSeekBar<Float> priceRangeSeekBar;
     private Button showResults;
+    private Switch freeCancellationSwitch;
     private List<MarinaModel> marinaList, filteredMarinaList;
     private RecyclerView marinaListRecyclerView;
     private MarinaListAdapter marinaListAdapter;
@@ -48,6 +51,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private Dialog filterDialog;
     private TextView rangeDisplay;
     private float minRange, maxRange;
+    private boolean freeCancellationNeeded = false;
 
     public BoaterSearchResultsFragment() {
         // Required empty public constructor
@@ -100,6 +104,14 @@ public class BoaterSearchResultsFragment extends Fragment {
         minRange = getMinPrice();
         maxRange = getMaxPrice();
 
+        freeCancellationSwitch = filterDialog.findViewById(R.id.free_cancellation_switch);
+        freeCancellationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                freeCancellationNeeded = isChecked;
+            }
+        });
+
         rangeDisplay = filterDialog.findViewById(R.id.range_display);
         rangeDisplay.setText("From " + minRange + " to " + maxRange);
         priceRangeSeekBar = filterDialog.findViewById(R.id.price_range_seekbar);
@@ -140,11 +152,30 @@ public class BoaterSearchResultsFragment extends Fragment {
         ArrayList<MarinaModel> temp = new ArrayList<>();
 
         for (MarinaModel m : marinaList) {
-            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange)) {
+
+            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m)) {
                 temp.add(m);
             }
+
         }
+
         return temp;
+
+    }
+
+    private boolean freeCancellation(MarinaModel m){
+
+        if(!freeCancellationNeeded || (freeCancellationNeeded && m.isFreeCancellation())){
+
+            return true;
+
+        }
+        else {
+
+            return false;
+
+        }
+
     }
 
     private boolean between(Float a, Float minRange, Float maxRange) {
