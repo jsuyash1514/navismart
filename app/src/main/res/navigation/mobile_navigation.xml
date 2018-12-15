@@ -72,5 +72,18 @@
         android:id="@+id/marinaPageFragment"
         android:name="com.navismart.navismart.view.MarinaPageFragment"
         android:label="fragment_marina_page"
-        tools:layout="@layout/fragment_marina_page" />
+        tools:layout="@layout/fragment_marina_page" >
+        <action
+            android:id="@+id/action_marinaPageFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.navismart.navismart.view.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
 </navigation>

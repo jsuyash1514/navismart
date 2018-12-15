@@ -14,12 +14,16 @@ import android.widget.TextView;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.MarinaModel;
 
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 public class MarinaPageFragment extends Fragment {
 
     private TextView nameTextView, fromDateTextView, distCityTextView, locationTextView, toDateTextView, descriptionTextView, facilitiesTextView, tNcTextView;
     private RatingBar ratingBar;
     private Button bookButton;
     private ImageView marinaImageView;
+    private NavController navController;
 
     public MarinaPageFragment() {
         // Required empty public constructor
@@ -47,8 +51,12 @@ public class MarinaPageFragment extends Fragment {
         tNcTextView = view.findViewById(R.id.tnc_display_textView);
         ratingBar = view.findViewById(R.id.marina_rating_bar);
         marinaImageView = view.findViewById(R.id.marina_imageView);
+        bookButton = view.findViewById(R.id.book_button);
+        navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("marina_model",bundle);
 
         nameTextView.setText(marinaModel.getName());
         ratingBar.setRating(marinaModel.getRating());
@@ -58,6 +66,13 @@ public class MarinaPageFragment extends Fragment {
         facilitiesTextView.setText(marinaModel.getFacilities());
         tNcTextView.setText(marinaModel.getTnc());
         marinaImageView.setImageBitmap(marinaModel.getImage());
+
+        bookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_marinaPageFragment_to_checkoutFragment,bundle);
+            }
+        });
 
         return view;
     }
