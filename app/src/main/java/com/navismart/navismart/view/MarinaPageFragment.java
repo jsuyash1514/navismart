@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ public class MarinaPageFragment extends Fragment {
     private TextView nameTextView, fromDateTextView, distCityTextView, locationTextView, toDateTextView, descriptionTextView, facilitiesTextView, tNcTextView;
     private RatingBar ratingBar;
     private Button bookButton;
+    private ImageView marinaImageView;
 
     public MarinaPageFragment() {
         // Required empty public constructor
@@ -44,6 +46,7 @@ public class MarinaPageFragment extends Fragment {
         facilitiesTextView = view.findViewById(R.id.facilities_display_textView);
         tNcTextView = view.findViewById(R.id.tnc_display_textView);
         ratingBar = view.findViewById(R.id.marina_rating_bar);
+        marinaImageView = view.findViewById(R.id.marina_imageView);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
 
@@ -54,6 +57,7 @@ public class MarinaPageFragment extends Fragment {
         descriptionTextView.setText(marinaModel.getDescription());
         facilitiesTextView.setText(marinaModel.getFacilities());
         tNcTextView.setText(marinaModel.getTnc());
+        marinaImageView.setImageBitmap(marinaModel.getImage());
 
         return view;
     }

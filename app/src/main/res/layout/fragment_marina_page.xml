@@ -18,10 +18,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/marina_imageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@android:color/darker_gray" />
+                android:src="@drawable/gray_solid" />
 
             <LinearLayout
                 android:layout_width="match_parent"
