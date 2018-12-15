@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MarinaModel implements Parcelable {
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -26,17 +29,21 @@ public class MarinaModel implements Parcelable {
     private boolean freeCancellation = false;
     private String description = "default";
     private String tnc = "default";
-    private String facilities = "default";
+    private ArrayList<String> facilities;
+    private int f[];
+
 
     public MarinaModel() {
 
         image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image);
         canvas.drawColor(Color.GRAY);
+        initializeFacilities();
+        f = new int[10];
 
     }
 
-    public MarinaModel(String name, Bitmap image, String price, String location, float distFromCity, int rating, boolean freeCancellation, String description, String tnc, String facilities) {
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromCity, int rating, boolean freeCancellation, String description, String tnc, int f[]) {
         this.name = name;
         this.image = image;
         this.price = price;
@@ -46,7 +53,8 @@ public class MarinaModel implements Parcelable {
         this.freeCancellation = freeCancellation;
         this.description = description;
         this.tnc = tnc;
-        this.facilities = facilities;
+        this.f = f;
+        initializeFacilities();
     }
 
     public MarinaModel(Parcel in) {
@@ -75,12 +83,12 @@ public class MarinaModel implements Parcelable {
         this.tnc = tnc;
     }
 
-    public String getFacilities() {
+    public ArrayList<String> getFacilities() {
         return facilities;
     }
 
-    public void setFacilities(String facilities) {
-        this.facilities = facilities;
+    public void setFacilities(int[] f) {
+        this.f = f;
     }
 
     @Override
@@ -145,5 +153,34 @@ public class MarinaModel implements Parcelable {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    private void initializeFacilities(){
+
+        facilities = new ArrayList<>();
+        facilities.add("Drinking Water");
+        facilities.add("Electricity");
+        facilities.add("Fuel Station");
+        facilities.add("24/7 Access");
+        facilities.add("Travel Lift");
+        facilities.add("Security");
+        facilities.add("Residual Water Collection");
+        facilities.add("Restaurant");
+        facilities.add("Dry Port");
+        facilities.add("Maintenance");
+
+
+    }
+
+    public int[] getFacilitiesAvlbl(){
+        return f;
+    }
+
+    public String getFacilityString(){
+        String s = "";
+        for(int a : f){
+            s = s.concat(facilities.get(a)+", ");
+        }
+        return s.substring(0,s.length()-2);
     }
 }

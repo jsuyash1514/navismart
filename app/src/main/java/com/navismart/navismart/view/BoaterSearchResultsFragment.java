@@ -39,6 +39,8 @@ import java.util.Set;
 
 public class BoaterSearchResultsFragment extends Fragment {
 
+    List<String> starRating;
+    ArrayList<String> facilities;
     private ExpandableListAdapter expandableListAdapter;
     private ExpandableListView expListView;
     private List<String> listDataHeader;
@@ -54,10 +56,10 @@ public class BoaterSearchResultsFragment extends Fragment {
     private Dialog filterDialog, dateChangeDialog;
     private DatePicker fromDatePicker, toDatePicker;
     private TextView rangeDisplay;
-    private float minRange, maxRange;
-    private boolean freeCancellationNeeded = false;
-    private boolean noStarFilter, sortByClosest = false, sortByCheapest = false;
-    private boolean starBool[];
+    private static float minRange, maxRange;
+    private static boolean freeCancellationNeeded = false;
+    private boolean noStarFilter, noFacilityFilter, sortByClosest = false, sortByCheapest = false;
+    private boolean starBool[], facilitiesBool[], filtered = false;
 
     public BoaterSearchResultsFragment() {
         // Required empty public constructor
@@ -73,7 +75,10 @@ public class BoaterSearchResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boater_search_results, container, false);
 
-        starBool = new boolean[6];
+        prepareListData();
+
+        starBool = new boolean[starRating.size()];
+        facilitiesBool = new boolean[facilities.size()];
 
         prepareMarinaList();
 
@@ -82,6 +87,12 @@ public class BoaterSearchResultsFragment extends Fragment {
         }
         if (sortByCheapest) {
             sortByPrice();
+        }
+        if (filtered){
+            filteredMarinaList = filterMarinaList();
+        }else {
+            minRange = getMinPrice();
+            maxRange = getMaxPrice();
         }
 
         marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
@@ -112,14 +123,12 @@ public class BoaterSearchResultsFragment extends Fragment {
         filterDialog = new Dialog(getContext());
         filterDialog.setContentView(R.layout.filter_dialog);
         filterDialog.setTitle("Filters");
-        prepareListData();
+
         expandableListAdapter = new ExpandableListAdapter(getContext(), listDataHeader, listDataChild);
         ((ExpandableListView) filterDialog.findViewById(R.id.filter_expandableList)).setAdapter(expandableListAdapter);
 
-        minRange = getMinPrice();
-        maxRange = getMaxPrice();
-
         freeCancellationSwitch = filterDialog.findViewById(R.id.free_cancellation_switch);
+        freeCancellationSwitch.setChecked(freeCancellationNeeded);
         freeCancellationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -130,7 +139,9 @@ public class BoaterSearchResultsFragment extends Fragment {
         rangeDisplay = filterDialog.findViewById(R.id.range_display);
         rangeDisplay.setText("From " + minRange + " to " + maxRange);
         priceRangeSeekBar = filterDialog.findViewById(R.id.price_range_seekbar);
-        priceRangeSeekBar.setRangeValues(minRange, maxRange);
+        priceRangeSeekBar.setRangeValues(getMinPrice(),getMaxPrice());
+        priceRangeSeekBar.setSelectedMaxValue(maxRange);
+        priceRangeSeekBar.setSelectedMinValue(minRange);
         priceRangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Float>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
@@ -148,6 +159,7 @@ public class BoaterSearchResultsFragment extends Fragment {
                 marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
                 marinaListRecyclerView.setAdapter(marinaListAdapter);
                 filterDialog.dismiss();
+                filtered = true;
             }
         });
 
@@ -189,12 +201,13 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         getFilterBoolean();
         checkNoStarFilter();
+        checkNoFacilityFilter();
 
         ArrayList<MarinaModel> temp = new ArrayList<>();
 
         for (MarinaModel m : marinaList) {
 
-            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[m.getRating()])) {
+            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[m.getRating()]) && facilitiesMatch(m)) {
                 temp.add(m);
             }
 
@@ -202,6 +215,28 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         return temp;
 
+    }
+
+    private boolean facilitiesMatch(MarinaModel m) {
+
+        int array[] = m.getFacilitiesAvlbl();
+        for (int i = 0; i < facilitiesBool.length; i++) {
+
+            if (facilitiesBool[i]) {
+                if (!contains(i, array)) return false;
+            }
+
+        }
+        return true;
+
+    }
+
+    private boolean contains(int x, int y[]) {
+
+        for (int i = 0; i < y.length; i++) {
+            if (y[i] == x) return true;
+        }
+        return false;
     }
 
     private void checkNoStarFilter() {
@@ -216,10 +251,25 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     }
 
+    private void checkNoFacilityFilter() {
+
+        noFacilityFilter = false;
+        for (boolean a : facilitiesBool) {
+            if (a) {
+                noFacilityFilter = false;
+                break;
+            }
+        }
+
+    }
+
     private void getFilterBoolean() {
 
         for (int i = 0; i < 6; i++) {
             starBool[i] = false;
+        }
+        for(int i = 0; i< facilitiesBool.length;i++){
+            facilitiesBool[i] = false;
         }
 
         final Set<Pair<Long, Long>> checkedItems = expandableListAdapter.getCheckedItems();
@@ -252,6 +302,46 @@ public class BoaterSearchResultsFragment extends Fragment {
                             break;
                         case 6:
                             starBool[6] = true;
+                            break;
+
+                    }
+
+                    break;
+                }
+
+                case 1: {
+
+                    switch (pair.second.intValue()) {
+
+                        case 0:
+                            facilitiesBool[0] = true;
+                            break;
+                        case 1:
+                            facilitiesBool[1] = true;
+                            break;
+                        case 2:
+                            facilitiesBool[2] = true;
+                            break;
+                        case 3:
+                            facilitiesBool[3] = true;
+                            break;
+                        case 4:
+                            facilitiesBool[4] = true;
+                            break;
+                        case 5:
+                            facilitiesBool[5] = true;
+                            break;
+                        case 6:
+                            facilitiesBool[6] = true;
+                            break;
+                        case 7:
+                            facilitiesBool[7] = true;
+                            break;
+                        case 8:
+                            facilitiesBool[8] = true;
+                            break;
+                        case 9:
+                            facilitiesBool[9] = true;
                             break;
 
                     }
@@ -360,29 +450,31 @@ public class BoaterSearchResultsFragment extends Fragment {
         Canvas canvas = new Canvas(image);
         canvas.drawColor(Color.GRAY);
 
-        String f = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+
         String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
         String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
 
         marinaList = new ArrayList<>();
-        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, f));
-        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false, d, t, f));
-        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false, d, t, f));
-        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true, d, t, f));
-        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true, d, t, f));
+        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, new int[]{1, 2, 3}));
+        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false, d, t, new int[]{0, 1, 2}));
+        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false, d, t, new int[]{1, 3}));
+        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true, d, t, new int[]{7, 1, 0}));
+        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true, d, t, new int[]{1, 8, 6, 0, 4}));
         filteredMarinaList = marinaList;
     }
 
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
+        starRating = new ArrayList<>();
+        facilities = new ArrayList<>();
 
         // Adding child data
         listDataHeader.add("Star rating");
         listDataHeader.add("Facilities");
 
         // Adding child data
-        List<String> starRating = new ArrayList<String>();
+
         starRating.add("Unrated");
         starRating.add("1 star");
         starRating.add("2 stars");
@@ -390,12 +482,17 @@ public class BoaterSearchResultsFragment extends Fragment {
         starRating.add("4 stars");
         starRating.add("5 stars");
 
-        ArrayList<String> facilities = new ArrayList<>();
-        facilities.add("Facility 1");
-        facilities.add("Facility 2");
-        facilities.add("Facility 3");
-        facilities.add("Facility 4");
-        facilities.add("Facility 5");
+
+        facilities.add("Drinking Water");
+        facilities.add("Electricity");
+        facilities.add("Fuel Station");
+        facilities.add("24/7 Access");
+        facilities.add("Travel Lift");
+        facilities.add("Security");
+        facilities.add("Residual Water Collection");
+        facilities.add("Restaurant");
+        facilities.add("Dry Port");
+        facilities.add("Maintenance");
 
 
         listDataChild.put(listDataHeader.get(0), starRating); // Header, Child data

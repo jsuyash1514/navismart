@@ -24,7 +24,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
 
-    private final Set<Pair<Long,Long>> mCheckedItems = new HashSet<>();
+    private static final Set<Pair<Long,Long>> mCheckedItems = new HashSet<>();
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData) {

@@ -63,7 +63,7 @@ public class MarinaPageFragment extends Fragment {
         locationTextView.setText(marinaModel.getLocation());
         distCityTextView.setText(Float.toString(marinaModel.getDistFromCity()));
         descriptionTextView.setText(marinaModel.getDescription());
-        facilitiesTextView.setText(marinaModel.getFacilities());
+        facilitiesTextView.setText(marinaModel.getFacilityString());
         tNcTextView.setText(marinaModel.getTnc());
         marinaImageView.setImageBitmap(marinaModel.getImage());
 
