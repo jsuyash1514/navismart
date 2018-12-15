@@ -19,12 +19,11 @@ import java.util.Set;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
+    private static final Set<Pair<Long, Long>> mCheckedItems = new HashSet<>();
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
-
-    private static final Set<Pair<Long,Long>> mCheckedItems = new HashSet<>();
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData) {
@@ -57,17 +56,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         CheckBox checkBox = convertView.findViewById(R.id.ratingCheckBox);
         checkBox.setText(childText);
 
-        final Pair<Long,Long> tag = new Pair<>(getGroupId(groupPosition),getChildId(groupPosition,childPosition));
+        final Pair<Long, Long> tag = new Pair<>(getGroupId(groupPosition), getChildId(groupPosition, childPosition));
         checkBox.setTag(tag);
         checkBox.setChecked(mCheckedItems.contains(tag));
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final CheckBox cb = (CheckBox) v;
-                final Pair<Long,Long> tag = (Pair<Long, Long>)v.getTag();
-                if(cb.isChecked()){
+                final Pair<Long, Long> tag = (Pair<Long, Long>) v.getTag();
+                if (cb.isChecked()) {
                     mCheckedItems.add(tag);
-                }else {
+                } else {
                     mCheckedItems.remove(tag);
                 }
             }

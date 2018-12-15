@@ -17,10 +17,10 @@ import androidx.navigation.Navigation;
 
 public class CreateAccountLandingFragment extends Fragment {
 
+    static NavController navControllerAcctLanding;
     private ProfileViewPagerAdapter profileViewPagerAdapter;
     private ViewPager profileViewPager;
     private TabLayout profileTabLayout;
-    static NavController navControllerAcctLanding;
 
     public CreateAccountLandingFragment() {
         // Required empty public constructor

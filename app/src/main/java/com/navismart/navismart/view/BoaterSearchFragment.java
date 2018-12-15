@@ -11,7 +11,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.navismart.navismart.MainActivity;
 import com.navismart.navismart.R;
 
 import java.util.Calendar;
@@ -51,8 +50,8 @@ public class BoaterSearchFragment extends Fragment {
         mMonthTo = mMonthFrom;
         mDateTo = mDateFrom + 1;
 
-        dateFromEditText.setText(mDateFrom+"/"+mMonthFrom+"/"+mYearFrom);
-        dateToEditText.setText(mDateTo+"/"+mMonthTo+"/"+mYearTo);
+        dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
+        dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
 
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
         datePickFromImageView.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +65,10 @@ public class BoaterSearchFragment extends Fragment {
                         mYearFrom = year;
                         mMonthFrom = month;
                         mDateFrom = dayOfMonth;
-                        dateFromEditText.setText(mDateFrom+"/"+mMonthFrom+"/"+mYearFrom);
+                        dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
 
                     }
-                },mYearFrom,mMonthFrom,mDateFrom);
+                }, mYearFrom, mMonthFrom, mDateFrom);
 
                 datePickerDialogFrom.show();
 
@@ -88,10 +87,10 @@ public class BoaterSearchFragment extends Fragment {
                         mYearTo = year;
                         mMonthTo = month;
                         mDateTo = dayOfMonth;
-                        dateToEditText.setText(mDateTo+"/"+mMonthTo+"/"+mYearTo);
+                        dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
 
                     }
-                },mYearTo,mMonthTo,mDateTo);
+                }, mYearTo, mMonthTo, mDateTo);
 
                 datePickerDialogTo.show();
 

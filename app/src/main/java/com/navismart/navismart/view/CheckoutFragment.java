@@ -40,8 +40,8 @@ public class CheckoutFragment extends Fragment {
         priceDisplayTextView = view.findViewById(R.id.checkout_priceDisplay_textView);
         boatSelectSpinner = view.findViewById(R.id.boatSelectSpinner);
 
-        boatNames = new String[]{"Karaboudjan","Serenity","Orion"};
-        dropDownAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_dropdown_item,boatNames);
+        boatNames = new String[]{"Karaboudjan", "Serenity", "Orion"};
+        dropDownAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, boatNames);
         boatSelectSpinner.setAdapter(dropDownAdapter);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");

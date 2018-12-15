@@ -29,12 +29,12 @@
         android:id="@+id/createAccountLandingFragment"
         android:name="com.navismart.navismart.view.CreateAccountLandingFragment"
         android:label="fragment_create_account_landing"
-        tools:layout="@layout/fragment_create_account_landing"/>
+        tools:layout="@layout/fragment_create_account_landing" />
     <fragment
         android:id="@+id/landingFragment"
         android:name="com.navismart.navismart.view.LandingFragment"
         android:label="fragment_landing"
-        tools:layout="@layout/fragment_landing" >
+        tools:layout="@layout/fragment_landing">
         <action
             android:id="@+id/action_landingFragment_to_boaterProfileFragment"
             app:destination="@id/boaterProfileFragment" />
@@ -59,27 +59,27 @@
         android:id="@+id/boaterSearchResultsFragment"
         android:name="com.navismart.navismart.view.BoaterSearchResultsFragment"
         android:label="fragment_boater_search_results"
-        tools:layout="@layout/fragment_boater_search_results" >
+        tools:layout="@layout/fragment_boater_search_results">
         <action
             android:id="@+id/action_boaterSearchResultsFragment_to_marinaPageFragment"
             app:destination="@id/marinaPageFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/marinaPageFragment"
         android:name="com.navismart.navismart.view.MarinaPageFragment"
         android:label="fragment_marina_page"
-        tools:layout="@layout/fragment_marina_page" >
+        tools:layout="@layout/fragment_marina_page">
         <action
             android:id="@+id/action_marinaPageFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"

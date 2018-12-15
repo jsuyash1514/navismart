@@ -39,6 +39,8 @@ import java.util.Set;
 
 public class BoaterSearchResultsFragment extends Fragment {
 
+    private static float minRange, maxRange;
+    private static boolean freeCancellationNeeded = false;
     List<String> starRating;
     ArrayList<String> facilities;
     private ExpandableListAdapter expandableListAdapter;
@@ -56,8 +58,6 @@ public class BoaterSearchResultsFragment extends Fragment {
     private Dialog filterDialog, dateChangeDialog;
     private DatePicker fromDatePicker, toDatePicker;
     private TextView rangeDisplay;
-    private static float minRange, maxRange;
-    private static boolean freeCancellationNeeded = false;
     private boolean noStarFilter, noFacilityFilter, sortByClosest = false, sortByCheapest = false;
     private boolean starBool[], facilitiesBool[], filtered = false;
 
@@ -88,9 +88,9 @@ public class BoaterSearchResultsFragment extends Fragment {
         if (sortByCheapest) {
             sortByPrice();
         }
-        if (filtered){
+        if (filtered) {
             filteredMarinaList = filterMarinaList();
-        }else {
+        } else {
             minRange = getMinPrice();
             maxRange = getMaxPrice();
         }
@@ -139,7 +139,7 @@ public class BoaterSearchResultsFragment extends Fragment {
         rangeDisplay = filterDialog.findViewById(R.id.range_display);
         rangeDisplay.setText("From " + minRange + " to " + maxRange);
         priceRangeSeekBar = filterDialog.findViewById(R.id.price_range_seekbar);
-        priceRangeSeekBar.setRangeValues(getMinPrice(),getMaxPrice());
+        priceRangeSeekBar.setRangeValues(getMinPrice(), getMaxPrice());
         priceRangeSeekBar.setSelectedMaxValue(maxRange);
         priceRangeSeekBar.setSelectedMinValue(minRange);
         priceRangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Float>() {
@@ -268,7 +268,7 @@ public class BoaterSearchResultsFragment extends Fragment {
         for (int i = 0; i < 6; i++) {
             starBool[i] = false;
         }
-        for(int i = 0; i< facilitiesBool.length;i++){
+        for (int i = 0; i < facilitiesBool.length; i++) {
             facilitiesBool[i] = false;
         }
 

@@ -52,11 +52,11 @@ public class MarinaPageFragment extends Fragment {
         ratingBar = view.findViewById(R.id.marina_rating_bar);
         marinaImageView = view.findViewById(R.id.marina_imageView);
         bookButton = view.findViewById(R.id.book_button);
-        navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
         Bundle bundle = new Bundle();
-        bundle.putParcelable("marina_model",bundle);
+        bundle.putParcelable("marina_model", bundle);
 
         nameTextView.setText(marinaModel.getName());
         ratingBar.setRating(marinaModel.getRating());
@@ -70,7 +70,7 @@ public class MarinaPageFragment extends Fragment {
         bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.action_marinaPageFragment_to_checkoutFragment,bundle);
+                navController.navigate(R.id.action_marinaPageFragment_to_checkoutFragment, bundle);
             }
         });
 

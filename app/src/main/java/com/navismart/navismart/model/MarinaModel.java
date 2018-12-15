@@ -7,7 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MarinaModel implements Parcelable {
 
@@ -155,7 +154,7 @@ public class MarinaModel implements Parcelable {
         this.rating = rating;
     }
 
-    private void initializeFacilities(){
+    private void initializeFacilities() {
 
         facilities = new ArrayList<>();
         facilities.add("Drinking Water");
@@ -172,15 +171,15 @@ public class MarinaModel implements Parcelable {
 
     }
 
-    public int[] getFacilitiesAvlbl(){
+    public int[] getFacilitiesAvlbl() {
         return f;
     }
 
-    public String getFacilityString(){
+    public String getFacilityString() {
         String s = "";
-        for(int a : f){
-            s = s.concat(facilities.get(a)+", ");
+        for (int a : f) {
+            s = s.concat(facilities.get(a) + ", ");
         }
-        return s.substring(0,s.length()-2);
+        return s.substring(0, s.length() - 2);
     }
 }
