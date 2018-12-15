@@ -43,14 +43,14 @@ public class BoaterSearchResultsFragment extends Fragment {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
     RangeSeekBar<Float> priceRangeSeekBar;
-    private Button showResults;
+    private Button showResults, setDateButton;
     private Switch freeCancellationSwitch;
     private List<MarinaModel> marinaList, filteredMarinaList;
     private RecyclerView marinaListRecyclerView;
     private MarinaListAdapter marinaListAdapter;
     private TextView closestSortTextView, cheapestSortTextView;
-    private ImageView filterImageView;
-    private Dialog filterDialog;
+    private ImageView filterImageView, changeDateImageView;
+    private Dialog filterDialog, dateChangeDialog;
     private TextView rangeDisplay;
     private float minRange, maxRange;
     private boolean freeCancellationNeeded = false;
@@ -147,6 +147,26 @@ public class BoaterSearchResultsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 filterDialog.show();
+            }
+        });
+
+        dateChangeDialog = new Dialog(getContext());
+        dateChangeDialog.setContentView(R.layout.date_change_dialog);
+        dateChangeDialog.setTitle("Change Date");
+
+        setDateButton = dateChangeDialog.findViewById(R.id.set_date_button);
+        setDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateChangeDialog.dismiss();
+            }
+        });
+
+        changeDateImageView = view.findViewById(R.id.change_date_icon);
+        changeDateImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateChangeDialog.show();
             }
         });
 

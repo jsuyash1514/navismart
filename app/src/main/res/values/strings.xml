@@ -47,4 +47,5 @@
     <string name="show_result">Show Results</string>
     <string name="free_cancellation">Free Cancellation</string>
     <string name="price_range">Price Range</string>
+    <string name="set_date">Set Date</string>
 </resources>
