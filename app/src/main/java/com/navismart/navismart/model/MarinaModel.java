@@ -11,7 +11,7 @@ public class MarinaModel {
     private String price = "0.0";
     private String location = "default";
     private float distFromCity = 0;
-    private float rating = 0;
+    private int rating = 0;
     private boolean freeCancellation = false;
 
     public MarinaModel() {
@@ -22,7 +22,7 @@ public class MarinaModel {
 
     }
 
-    public MarinaModel(String name, Bitmap image, String price, String location, float distFromCity, float rating, boolean freeCancellation) {
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromCity, int rating, boolean freeCancellation) {
         this.name = name;
         this.image = image;
         this.price = price;
@@ -82,11 +82,11 @@ public class MarinaModel {
         this.distFromCity = distFromCity;
     }
 
-    public float getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 }
