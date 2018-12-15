@@ -172,11 +172,11 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     }
 
-    private void checkNoStarFilter(){
+    private void checkNoStarFilter() {
 
         noStarFilter = true;
-        for(boolean a : starBool){
-            if(a){
+        for (boolean a : starBool) {
+            if (a) {
                 noStarFilter = false;
                 break;
             }
@@ -184,21 +184,21 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     }
 
-    private void getFilterBoolean(){
+    private void getFilterBoolean() {
 
         for (int i = 0; i < 6; i++) {
             starBool[i] = false;
         }
 
-        final Set<Pair<Long,Long>> checkedItems = expandableListAdapter.getCheckedItems();
+        final Set<Pair<Long, Long>> checkedItems = expandableListAdapter.getCheckedItems();
 
-        for(Pair<Long,Long> pair : checkedItems){
+        for (Pair<Long, Long> pair : checkedItems) {
 
-            switch (pair.first.intValue()){
+            switch (pair.first.intValue()) {
 
-                case 0:{
+                case 0: {
 
-                    switch (pair.second.intValue()){
+                    switch (pair.second.intValue()) {
 
                         case 0:
                             starBool[0] = true;
