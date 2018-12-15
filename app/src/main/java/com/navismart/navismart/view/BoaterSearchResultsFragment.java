@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -38,11 +39,11 @@ import java.util.Set;
 
 public class BoaterSearchResultsFragment extends Fragment {
 
-    ExpandableListAdapter expandableListAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
-    RangeSeekBar<Float> priceRangeSeekBar;
+    private ExpandableListAdapter expandableListAdapter;
+    private ExpandableListView expListView;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
+    private RangeSeekBar<Float> priceRangeSeekBar;
     private Button showResults, setDateButton;
     private Switch freeCancellationSwitch;
     private List<MarinaModel> marinaList, filteredMarinaList;
@@ -51,6 +52,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private TextView closestSortTextView, cheapestSortTextView;
     private ImageView filterImageView, changeDateImageView;
     private Dialog filterDialog, dateChangeDialog;
+    private DatePicker fromDatePicker, toDatePicker;
     private TextView rangeDisplay;
     private float minRange, maxRange;
     private boolean freeCancellationNeeded = false;
@@ -153,6 +155,9 @@ public class BoaterSearchResultsFragment extends Fragment {
         dateChangeDialog = new Dialog(getContext());
         dateChangeDialog.setContentView(R.layout.date_change_dialog);
         dateChangeDialog.setTitle("Change Date");
+
+        fromDatePicker = dateChangeDialog.findViewById(R.id.from_date_pick);
+        toDatePicker = dateChangeDialog.findViewById(R.id.to_date_pick);
 
         setDateButton = dateChangeDialog.findViewById(R.id.set_date_button);
         setDateButton.setOnClickListener(new View.OnClickListener() {

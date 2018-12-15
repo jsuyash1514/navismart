@@ -23,16 +23,6 @@
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/from_dislay_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/from"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
         </LinearLayout>
 
         <DatePicker
@@ -63,16 +53,6 @@
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/to_dislay_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/To"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
         </LinearLayout>
 
         <DatePicker
