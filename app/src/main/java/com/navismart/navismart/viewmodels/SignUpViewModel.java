@@ -2,11 +2,11 @@ package com.navismart.navismart.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.graphics.Bitmap;
 import android.net.Uri;
 
 public class SignUpViewModel extends ViewModel {
     MutableLiveData<Uri> marinaManagerProfilePic;
+    MutableLiveData<Uri> boaterProfilePic;
 
     public MutableLiveData<Uri> getMarinaManagerProfilePic() {
         if(marinaManagerProfilePic == null){
@@ -14,5 +14,13 @@ public class SignUpViewModel extends ViewModel {
         }
         return marinaManagerProfilePic;
     }
+
+    public MutableLiveData<Uri> getBoaterProfilePic() {
+        if(boaterProfilePic == null){
+            boaterProfilePic = new MutableLiveData<Uri>();
+        }
+        return boaterProfilePic;
+    }
+
 
 }

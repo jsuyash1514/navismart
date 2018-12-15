@@ -58,7 +58,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private ProgressDialog progressDialog,uploadProgress;
+    private ProgressDialog progressDialog, uploadProgress;
     private NavController navController;
     private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText;
     private NumberPicker capacityPicker;
@@ -275,7 +275,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             if (!TextUtils.isEmpty(termsAndCond)) {
                                 currentUser.child("terms-and-condition").setValue(termsAndCond);
                             }
-                            if(profilePicUri != null) {
+                            if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child("marina-manager").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
                                 uploadProgress.setMax(100);
@@ -301,7 +301,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                     @Override
                                     public void onFailure(@NonNull Exception exception) {
 
-                                        Toast.makeText(getContext(),"Error in uploading profile pic!",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Error in uploading profile pic!", Toast.LENGTH_SHORT).show();
                                         uploadProgress.dismiss();
 
                                     }
@@ -311,7 +311,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                        Toast.makeText(getContext(),"Registration successful!",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
                                         uploadProgress.dismiss();
 
                                         NavOptions navOptions = new NavOptions.Builder()
@@ -320,9 +320,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                         navController.navigate(R.id.register_successful_action, null, navOptions);
                                     }
                                 });
-                            }
-                            else{
-                                Toast.makeText(getContext(),"Registration successful!",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
 
                                 NavOptions navOptions = new NavOptions.Builder()
                                         .setPopUpTo(R.id.startFragment, true)
