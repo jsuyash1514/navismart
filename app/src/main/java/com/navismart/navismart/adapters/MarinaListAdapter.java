@@ -1,5 +1,7 @@
 package com.navismart.navismart.adapters;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +16,17 @@ import com.navismart.navismart.model.MarinaModel;
 
 import java.util.List;
 
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.MyViewHolder> {
 
     private List<MarinaModel> marinaList;
+    private Activity activity;
 
-    public MarinaListAdapter(List<MarinaModel> marinaList) {
+    public MarinaListAdapter(Activity activity, List<MarinaModel> marinaList) {
         this.marinaList = marinaList;
+        this.activity = activity;
     }
 
     @Override
@@ -40,6 +47,16 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         holder.marinaNameTextView.setText(marinaModel.getName());
         holder.marinaImageView.setImageBitmap(marinaModel.getImage());
         holder.marinaDistaFromCityTextView.setText(Float.toString(marinaModel.getDistFromCity()) + " km from city center");
+
+        holder.seeMarinaDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("marina_model",marinaModel);
+                NavController navController = Navigation.findNavController(activity, R.id.my_nav_host_fragment);
+                navController.navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment,bundle);
+            }
+        });
 
     }
 

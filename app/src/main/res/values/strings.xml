@@ -48,4 +48,10 @@
     <string name="free_cancellation">Free Cancellation</string>
     <string name="price_range">Price Range</string>
     <string name="set_date">Set Date</string>
+    <string name="check_in_date">Check-in date</string>
+    <string name="check_out_date">Check-out date</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. </string>
+    <string name="book">Book</string>
+    <string name="facilities">Facilities</string>
+    <string name="reviews">Reviews</string>
 </resources>

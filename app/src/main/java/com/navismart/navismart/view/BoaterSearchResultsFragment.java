@@ -56,7 +56,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private TextView rangeDisplay;
     private float minRange, maxRange;
     private boolean freeCancellationNeeded = false;
-    private boolean noStarFilter;
+    private boolean noStarFilter, sortByClosest = false, sortByCheapest = false;
     private boolean starBool[];
 
     public BoaterSearchResultsFragment() {
@@ -77,7 +77,14 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         prepareMarinaList();
 
-        marinaListAdapter = new MarinaListAdapter(filteredMarinaList);
+        if (sortByClosest) {
+            sortByDist();
+        }
+        if (sortByCheapest) {
+            sortByPrice();
+        }
+
+        marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
 
         marinaListRecyclerView = view.findViewById(R.id.marina_search_result_recycler_view);
@@ -138,7 +145,7 @@ public class BoaterSearchResultsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 filteredMarinaList = filterMarinaList();
-                marinaListAdapter = new MarinaListAdapter(filteredMarinaList);
+                marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
                 marinaListRecyclerView.setAdapter(marinaListAdapter);
                 filterDialog.dismiss();
             }
@@ -280,6 +287,9 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     private void sortByPrice() {
 
+        sortByCheapest = true;
+        sortByClosest = false;
+
         Comparator<MarinaModel> marinaModelComparator = new Comparator<MarinaModel>() {
             @Override
             public int compare(MarinaModel o1, MarinaModel o2) {
@@ -298,6 +308,9 @@ public class BoaterSearchResultsFragment extends Fragment {
     }
 
     private void sortByDist() {
+
+        sortByCheapest = false;
+        sortByClosest = true;
 
         Comparator<MarinaModel> marinaModelComparator = new Comparator<MarinaModel>() {
             @Override
@@ -347,12 +360,16 @@ public class BoaterSearchResultsFragment extends Fragment {
         Canvas canvas = new Canvas(image);
         canvas.drawColor(Color.GRAY);
 
+        String f = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+
         marinaList = new ArrayList<>();
-        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true));
-        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false));
-        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false));
-        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true));
-        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true));
+        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, f));
+        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false, d, t, f));
+        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false, d, t, f));
+        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true, d, t, f));
+        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true, d, t, f));
         filteredMarinaList = marinaList;
     }
 
