@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class BoaterSearchResultsFragment extends Fragment {
 
@@ -52,6 +54,8 @@ public class BoaterSearchResultsFragment extends Fragment {
     private TextView rangeDisplay;
     private float minRange, maxRange;
     private boolean freeCancellationNeeded = false;
+    private boolean noStarFilter;
+    private boolean starBool[];
 
     public BoaterSearchResultsFragment() {
         // Required empty public constructor
@@ -66,6 +70,8 @@ public class BoaterSearchResultsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boater_search_results, container, false);
+
+        starBool = new boolean[6];
 
         prepareMarinaList();
 
@@ -149,11 +155,14 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     private ArrayList<MarinaModel> filterMarinaList() {
 
+        getFilterBoolean();
+        checkNoStarFilter();
+
         ArrayList<MarinaModel> temp = new ArrayList<>();
 
         for (MarinaModel m : marinaList) {
 
-            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m)) {
+            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[m.getRating()])) {
                 temp.add(m);
             }
 
@@ -163,14 +172,73 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     }
 
-    private boolean freeCancellation(MarinaModel m){
+    private void checkNoStarFilter(){
 
-        if(!freeCancellationNeeded || (freeCancellationNeeded && m.isFreeCancellation())){
+        noStarFilter = true;
+        for(boolean a : starBool){
+            if(a){
+                noStarFilter = false;
+                break;
+            }
+        }
+
+    }
+
+    private void getFilterBoolean(){
+
+        for (int i = 0; i < 6; i++) {
+            starBool[i] = false;
+        }
+
+        final Set<Pair<Long,Long>> checkedItems = expandableListAdapter.getCheckedItems();
+
+        for(Pair<Long,Long> pair : checkedItems){
+
+            switch (pair.first.intValue()){
+
+                case 0:{
+
+                    switch (pair.second.intValue()){
+
+                        case 0:
+                            starBool[0] = true;
+                            break;
+                        case 1:
+                            starBool[1] = true;
+                            break;
+                        case 2:
+                            starBool[2] = true;
+                            break;
+                        case 3:
+                            starBool[3] = true;
+                            break;
+                        case 4:
+                            starBool[4] = true;
+                            break;
+                        case 5:
+                            starBool[5] = true;
+                            break;
+                        case 6:
+                            starBool[6] = true;
+                            break;
+
+                    }
+
+                    break;
+                }
+
+            }
+
+        }
+    }
+
+    private boolean freeCancellation(MarinaModel m) {
+
+        if (!freeCancellationNeeded || (freeCancellationNeeded && m.isFreeCancellation())) {
 
             return true;
 
-        }
-        else {
+        } else {
 
             return false;
 
@@ -255,11 +323,11 @@ public class BoaterSearchResultsFragment extends Fragment {
         canvas.drawColor(Color.GRAY);
 
         marinaList = new ArrayList<>();
-        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1.0f, true));
-        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2.0f, false));
-        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3.0f, false));
-        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4.0f, true));
-        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5.0f, true));
+        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true));
+        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false));
+        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false));
+        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true));
+        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true));
         filteredMarinaList = marinaList;
     }
 

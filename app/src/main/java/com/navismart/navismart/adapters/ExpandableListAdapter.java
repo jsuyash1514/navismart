@@ -2,6 +2,7 @@ package com.navismart.navismart.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 import com.navismart.navismart.R;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -20,6 +23,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
+
+    private final Set<Pair<Long,Long>> mCheckedItems = new HashSet<>();
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData) {
@@ -50,8 +55,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         CheckBox checkBox = convertView.findViewById(R.id.ratingCheckBox);
-
         checkBox.setText(childText);
+
+        final Pair<Long,Long> tag = new Pair<>(getGroupId(groupPosition),getChildId(groupPosition,childPosition));
+        checkBox.setTag(tag);
+        checkBox.setChecked(mCheckedItems.contains(tag));
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CheckBox cb = (CheckBox) v;
+                final Pair<Long,Long> tag = (Pair<Long, Long>)v.getTag();
+                if(cb.isChecked()){
+                    mCheckedItems.add(tag);
+                }else {
+                    mCheckedItems.remove(tag);
+                }
+            }
+        });
+
         return convertView;
     }
 
@@ -99,5 +120,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    public Set<Pair<Long, Long>> getCheckedItems() {
+        return mCheckedItems;
     }
 }
