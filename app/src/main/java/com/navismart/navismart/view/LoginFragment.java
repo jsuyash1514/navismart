@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.navismart.navismart.R;
 
 import androidx.navigation.NavOptions;
@@ -32,7 +38,9 @@ import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 public class LoginFragment extends Fragment {
     boolean emailValid = false, pwValid = false, enabler = false;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
+    private String category;
 
 
     @Override
@@ -41,9 +49,10 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        checkUserLoggedIn();
-
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
+
+        checkUserLoggedIn();
 
         Button createAcctButton = view.findViewById(R.id.startFragment_createAccountButton);
 
@@ -104,7 +113,7 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        signInButton.setOnClickListener(view12 -> userLogin(email,pw));
+        signInButton.setOnClickListener(view12 -> userLogin(email, pw));
 
         createAcctButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.create_acct_action));
 
@@ -113,12 +122,38 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void checkUserLoggedIn(){
-        if(firebaseAuth.getCurrentUser() != null){
-            NavOptions navOptions = new NavOptions.Builder()
-                    .setPopUpTo(R.id.startFragment, true)
-                    .build();
-            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.sign_in_action, null, navOptions);
+    private void checkUserLoggedIn() {
+        if (firebaseAuth.getCurrentUser() != null) {
+            progressDialog.setMessage("Logging in Please wait...");
+            progressDialog.show();
+            Log.d("Category", "Already logged in");
+            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    category = dataSnapshot.getValue(String.class);
+                    Log.d("Category: ", category);
+                    NavOptions navOptions = new NavOptions.Builder()
+                            .setPopUpTo(R.id.startFragment, true)
+                            .build();
+                    if (category != null && !category.isEmpty()) {
+                        if (category.equals("boater")) {
+                            progressDialog.dismiss();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
+                        } else if (category.equals("marina-manager")) {
+                            progressDialog.dismiss();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                        } else {
+                            Log.d("category", "No match found. ");
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -147,18 +182,39 @@ public class LoginFragment extends Fragment {
                         progressDialog.dismiss();
 
                         if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                            NavOptions navOptions = new NavOptions.Builder()
-                                    .setPopUpTo(R.id.startFragment, true)
-                                    .build();
-                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.sign_in_action, null, navOptions);
+                            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
+                            reference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    category = dataSnapshot.getValue(String.class);
+                                    Log.d("Category new login: ", category);
+                                    Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                    NavOptions navOptions = new NavOptions.Builder()
+                                            .setPopUpTo(R.id.startFragment, true)
+                                            .build();
+                                    if (category != null && !category.isEmpty()) {
+                                        if (category.equals("boater")) {
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
+                                        } else if (category.equals("marina-manager")) {
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                                        } else {
+                                            Log.d("category", "No match found. ");
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                             Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
                         }
 
                     }
-                });
 
+                });
     }
 
 

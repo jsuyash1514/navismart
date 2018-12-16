@@ -270,26 +270,27 @@ public class SignUpBoaterFragment extends Fragment {
                         progressDialog.dismiss();
 
                         if (task.isSuccessful()) {
-                            DatabaseReference currentUser = databaseReference.child("users").child("boater").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
-                            currentUser.child("name").setValue(name);
-                            currentUser.child("email").setValue(email);
+                            DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
+                            currentUser.child("profile").child("name").setValue(name);
+                            currentUser.child("profile").child("email").setValue(email);
+                            currentUser.child("profile").child("category").setValue("boater");
                             if (!TextUtils.isEmpty(boatName)) {
-                                currentUser.child("boat-name").setValue(boatName);
+                                currentUser.child("boat-description").child("boat-name").setValue(boatName);
                             }
                             if (!TextUtils.isEmpty(boatID)) {
-                                currentUser.child("boat-ID").setValue(boatID);
+                                currentUser.child("boat-description").child("boat-ID").setValue(boatID);
                             }
                             if (!TextUtils.isEmpty(boatLength)) {
-                                currentUser.child("boat-length").setValue(boatLength);
+                                currentUser.child("boat-description").child("boat-length").setValue(boatLength);
                             }
                             if (!TextUtils.isEmpty(boatBeam)) {
-                                currentUser.child("boat-beam").setValue(boatBeam);
+                                currentUser.child("boat-description").child("boat-beam").setValue(boatBeam);
                             }
                             if (!TextUtils.isEmpty(boatType)) {
-                                currentUser.child("boat-type").setValue(boatType);
+                                currentUser.child("boat-description").child("boat-type").setValue(boatType);
                             }
                             if (profilePicUri != null) {
-                                StorageReference profilePicRef = storageReference.child("users").child("boater").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+                                StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
                                 uploadProgress.setMax(100);
                                 uploadProgress.setMessage("Uploading image...");

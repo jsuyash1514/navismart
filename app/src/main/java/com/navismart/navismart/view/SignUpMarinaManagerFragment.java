@@ -244,7 +244,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.startFragment, true)
                     .build();
-            navController.navigate(R.id.register_successful_action, null, navOptions);
+            navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
         }
     }
 
@@ -265,18 +265,19 @@ public class SignUpMarinaManagerFragment extends Fragment {
                         progressDialog.dismiss();
 
                         if (task.isSuccessful()) {
-                            DatabaseReference currentUser = databaseReference.child("users").child("marina-manager").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
-                            currentUser.child("name").setValue(name);
-                            currentUser.child("email").setValue(email);
+                            DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
+                            currentUser.child("profile").child("name").setValue(name);
+                            currentUser.child("profile").child("email").setValue(email);
+                            currentUser.child("profile").child("category").setValue("marina-manager");
                             if (!TextUtils.isEmpty(descr)) {
-                                currentUser.child("description").setValue(descr);
+                                currentUser.child("marina-description").child("description").setValue(descr);
                             }
-                            currentUser.child("capacity").setValue(capacity);
+                            currentUser.child("marina-description").child("capacity").setValue(capacity);
                             if (!TextUtils.isEmpty(termsAndCond)) {
-                                currentUser.child("terms-and-condition").setValue(termsAndCond);
+                                currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
                             }
                             if (profilePicUri != null) {
-                                StorageReference profilePicRef = storageReference.child("users").child("marina-manager").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+                                StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
                                 uploadProgress.setMax(100);
                                 uploadProgress.setMessage("Uploading image...");
@@ -317,7 +318,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                         NavOptions navOptions = new NavOptions.Builder()
                                                 .setPopUpTo(R.id.startFragment, true)
                                                 .build();
-                                        navController.navigate(R.id.register_successful_action, null, navOptions);
+                                        navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
                                     }
                                 });
                             } else {
@@ -326,7 +327,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                 NavOptions navOptions = new NavOptions.Builder()
                                         .setPopUpTo(R.id.startFragment, true)
                                         .build();
-                                navController.navigate(R.id.register_successful_action, null, navOptions);
+                                navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
                             }
 
                         } else {

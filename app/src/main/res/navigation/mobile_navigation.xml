@@ -18,12 +18,20 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/sign_in_action"
+            android:id="@+id/marina_manager_sign_in_action"
             app:destination="@+id/landingFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/boater_sign_in_action"
+            app:destination="@+id/boaterSearchResultsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
     </fragment>
     <fragment
         android:id="@+id/createAccountLandingFragment"
@@ -31,7 +39,7 @@
         android:label="fragment_create_account_landing"
         tools:layout="@layout/fragment_signup" >
         <action
-            android:id="@+id/register_successful_action"
+            android:id="@+id/marina_manager_register_successful_action"
             app:destination="@+id/landingFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -39,14 +47,18 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/boater_register_successful_action"
-            app:destination="@id/boaterSearchResultsFragment"/>
+            app:destination="@id/boaterSearchResultsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
 
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
-        android:name="com.navismart.navismart.view.LandingFragment"
+        android:name="com.navismart.navismart.view.MarinaManagerLandingFragment"
         android:label="fragment_landing"
-        tools:layout="@layout/fragment_landing" >
+        tools:layout="@layout/fragment_marina_manager_landing" >
     <action
         android:id="@+id/log_out_action"
         app:destination="@+id/startFragment"

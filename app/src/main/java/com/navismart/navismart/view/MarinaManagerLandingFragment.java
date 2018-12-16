@@ -14,9 +14,10 @@ import com.navismart.navismart.R;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-public class LandingFragment extends Fragment {
+public class MarinaManagerLandingFragment extends Fragment {
     FirebaseAuth auth;
-    public LandingFragment() {
+
+    public MarinaManagerLandingFragment() {
         // Required empty public constructor
     }
 
@@ -28,10 +29,10 @@ public class LandingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_landing, container, false);
+        View view = inflater.inflate(R.layout.fragment_marina_manager_landing, container, false);
 
         auth = FirebaseAuth.getInstance();
-        if(auth.getCurrentUser() == null){
+        if (auth.getCurrentUser() == null) {
             Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.landingFragment, true)
@@ -48,10 +49,10 @@ public class LandingFragment extends Fragment {
                 NavOptions navOptions = new NavOptions.Builder()
                         .setPopUpTo(R.id.landingFragment, true)
                         .build();
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null,navOptions);
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
             }
         });
-        return  view;
+        return view;
     }
 
 }
