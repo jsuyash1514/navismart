@@ -4,24 +4,30 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.navismart.navismart.view.BoaterRegisterFragment;
-import com.navismart.navismart.view.MarinaManagerRegisterFragment;
-import com.navismart.navismart.view.ThirdPartyRegisterFragment;
+import com.navismart.navismart.view.SignUpBoaterFragment;
+import com.navismart.navismart.view.SignUpMarinaManagerFragment;
+import com.navismart.navismart.view.SignupThirdPartyFragment;
 
-public class ProfileViewPagerAdapter extends FragmentPagerAdapter {
-    public ProfileViewPagerAdapter(FragmentManager fm) {
+public class SignUpViewPagerAdapter extends FragmentPagerAdapter {
+    public SignUpViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
-        if (position == 0) {
-            fragment = new MarinaManagerRegisterFragment();
-        } else if (position == 1) {
-            fragment = new BoaterRegisterFragment();
-        } else if (position == 2) {
-            fragment = new ThirdPartyRegisterFragment();
+        if (position == 0)
+        {
+            fragment = new SignUpMarinaManagerFragment();
+        }
+        else if (position == 1)
+        {
+            fragment = new SignUpBoaterFragment();
+        }
+        else if (position == 2)
+        {
+            fragment = new SignupThirdPartyFragment();
+
         }
         return fragment;
     }
