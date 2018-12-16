@@ -247,7 +247,7 @@ public class SignUpBoaterFragment extends Fragment {
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.startFragment, true)
                     .build();
-            navController.navigate(R.id.register_successful_action, null, navOptions);
+            navController.navigate(R.id.boater_register_successful_action, null, navOptions);
         }
     }
 
@@ -328,7 +328,7 @@ public class SignUpBoaterFragment extends Fragment {
                                         NavOptions navOptions = new NavOptions.Builder()
                                                 .setPopUpTo(R.id.startFragment, true)
                                                 .build();
-                                        navController.navigate(R.id.register_successful_action, null, navOptions);
+                                        navController.navigate(R.id.boater_register_successful_action, null, navOptions);
                                     }
                                 });
                             } else {
@@ -337,7 +337,7 @@ public class SignUpBoaterFragment extends Fragment {
                                 NavOptions navOptions = new NavOptions.Builder()
                                         .setPopUpTo(R.id.startFragment, true)
                                         .build();
-                                navController.navigate(R.id.register_successful_action, null, navOptions);
+                                navController.navigate(R.id.boater_register_successful_action, null, navOptions);
                             }
 
                         } else {

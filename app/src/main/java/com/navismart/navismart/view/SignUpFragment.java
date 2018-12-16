@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 public class SignUpFragment extends Fragment {
 
     private SignUpViewPagerAdapter signUpViewPagerAdapter;
+
     private ViewPager profileViewPager;
     private TabLayout profileTabLayout;
 
@@ -42,7 +43,6 @@ public class SignUpFragment extends Fragment {
         profileTabLayout = view.findViewById(R.id.profile_tabs);
         profileTabLayout.setupWithViewPager(profileViewPager);
 
-        final NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
 
         return view;

@@ -12,7 +12,7 @@ public class EmailAndPasswordChecker {
     }
 
     public static boolean isPasswordValid(final String password) {
-        if(password.length()>=6) return true;
+        if (password.length() >= 6) return true;
         else return false;
     }
 

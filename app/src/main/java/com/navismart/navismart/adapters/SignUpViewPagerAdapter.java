@@ -27,6 +27,7 @@ public class SignUpViewPagerAdapter extends FragmentPagerAdapter {
         else if (position == 2)
         {
             fragment = new SignupThirdPartyFragment();
+
         }
         return fragment;
     }
@@ -39,16 +40,11 @@ public class SignUpViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         String title = null;
-        if (position == 0)
-        {
+        if (position == 0) {
             title = "Marina Manager";
-        }
-        else if (position == 1)
-        {
+        } else if (position == 1) {
             title = "Boater";
-        }
-        else if (position == 2)
-        {
+        } else if (position == 2) {
             title = "Third-Party Service Provider";
         }
         return title;
