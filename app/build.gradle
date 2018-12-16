@@ -48,6 +48,12 @@ dependencies {
     //Navigation architecture component
     implementation "android.arch.navigation:navigation-fragment:$nav_version"
     implementation "android.arch.navigation:navigation-ui:$nav_version"
+
+    //Circular ImageView
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    //Range SeekBar
+    implementation 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

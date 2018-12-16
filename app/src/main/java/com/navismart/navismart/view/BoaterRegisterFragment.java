@@ -20,6 +20,7 @@ import androidx.navigation.Navigation;
 
 import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
 import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
+import static com.navismart.navismart.view.CreateAccountLandingFragment.navControllerAcctLanding;
 
 public class BoaterRegisterFragment extends Fragment {
 
@@ -75,6 +76,13 @@ public class BoaterRegisterFragment extends Fragment {
             registerButton.setEnabled(false);
             registerButton.setTextColor(Color.GRAY);
         }
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navControllerAcctLanding.navigate(R.id.boaterSearchResultsFragment);
+            }
+        });
 
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override

@@ -37,7 +37,7 @@ public class LoginFragment extends Fragment {
 
         Button signInButton = view.findViewById(R.id.startFragment_signInButton);
         signInButton.setEnabled(enabler);
-        if(enabler) signInButton.setTextColor(getResources().getColor(R.color.white));
+        if (enabler) signInButton.setTextColor(getResources().getColor(R.color.white));
         else signInButton.setTextColor(Color.GRAY);
 
         EditText email = view.findViewById(R.id.startFragment_emailEditText);
@@ -59,7 +59,7 @@ public class LoginFragment extends Fragment {
                     enabler = false;
                 }
                 signInButton.setEnabled(enabler);
-                if(enabler) signInButton.setTextColor(getResources().getColor(R.color.white));
+                if (enabler) signInButton.setTextColor(getResources().getColor(R.color.white));
                 else signInButton.setTextColor(getResources().getColor(R.color.colorAccent));
             }
 
@@ -83,7 +83,7 @@ public class LoginFragment extends Fragment {
                     enabler = false;
                 }
                 signInButton.setEnabled(enabler);
-                if(enabler) signInButton.setTextColor(getResources().getColor(R.color.white));
+                if (enabler) signInButton.setTextColor(getResources().getColor(R.color.white));
                 else signInButton.setTextColor(getResources().getColor(R.color.colorAccent));
             }
 
