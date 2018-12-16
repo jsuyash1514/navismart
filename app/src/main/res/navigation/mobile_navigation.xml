@@ -37,6 +37,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/boater_register_successful_action"
+            app:destination="@id/boaterSearchResultsFragment"/>
+
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
@@ -50,5 +54,52 @@
         app:exitAnim="@anim/slide_out_right"
         app:popEnterAnim="@anim/slide_in_right"
         app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_landingFragment_to_boaterProfileFragment"
+            app:destination="@id/boaterProfileFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_boaterSearchFragment"
+            app:destination="@id/boaterSearchFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/boaterProfileFragment"
+        android:name="com.navismart.navismart.view.BoaterProfileFragment"
+        android:label="fragment_boater_profile"
+        tools:layout="@layout/fragment_boater_profile" />
+    <fragment
+        android:id="@+id/boaterSearchFragment"
+        android:name="com.navismart.navismart.view.BoaterSearchFragment"
+        android:label="fragment_boater_search"
+        tools:layout="@layout/fragment_boater_search" />
+    <fragment
+        android:id="@+id/boaterSearchResultsFragment"
+        android:name="com.navismart.navismart.view.BoaterSearchResultsFragment"
+        android:label="fragment_boater_search_results"
+        tools:layout="@layout/fragment_boater_search_results">
+        <action
+            android:id="@+id/action_boaterSearchResultsFragment_to_marinaPageFragment"
+            app:destination="@id/marinaPageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/marinaPageFragment"
+        android:name="com.navismart.navismart.view.MarinaPageFragment"
+        android:label="fragment_marina_page"
+        tools:layout="@layout/fragment_marina_page">
+        <action
+            android:id="@+id/action_marinaPageFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.navismart.navismart.view.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
 </navigation>
