@@ -57,4 +57,9 @@
     <string name="facilities">Facilities</string>
     <string name="reviews">Reviews</string>
     <string name="checkout">Checkout</string>
+    <string name="arrival">Arrival</string>
+    <string name="arriving">Arrival:</string>
+    <string name="departure">Departure</string>
+    <string name="departing">Departure:</string>
+    <string name="stayover">Stay-overs</string>
 </resources>
