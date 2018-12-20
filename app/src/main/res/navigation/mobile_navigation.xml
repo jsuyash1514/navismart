@@ -66,12 +66,6 @@
         app:exitAnim="@anim/slide_out_right"
         app:popEnterAnim="@anim/slide_in_right"
         app:popExitAnim="@anim/slide_out_left" />
-        <action
-            android:id="@+id/action_landingFragment_to_boaterProfileFragment"
-            app:destination="@id/boaterProfileFragment" />
-        <action
-            android:id="@+id/action_landingFragment_to_boaterSearchFragment"
-            app:destination="@id/boaterSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/boaterProfileFragment"
