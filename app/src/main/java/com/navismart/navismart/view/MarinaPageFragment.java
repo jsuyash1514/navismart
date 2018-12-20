@@ -56,7 +56,7 @@ public class MarinaPageFragment extends Fragment {
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
         Bundle bundle = new Bundle();
-        bundle.putParcelable("marina_model", bundle);
+        bundle.putParcelable("marina_model", marinaModel);
 
         nameTextView.setText(marinaModel.getName());
         ratingBar.setRating(marinaModel.getRating());
