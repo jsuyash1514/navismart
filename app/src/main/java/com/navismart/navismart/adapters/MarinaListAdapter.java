@@ -53,8 +53,7 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("marina_model", marinaModel);
-                NavController navController = Navigation.findNavController(activity, R.id.my_nav_host_fragment);
-                navController.navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment, bundle);
+                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment, bundle);
             }
         });
 

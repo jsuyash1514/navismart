@@ -57,4 +57,11 @@
     <string name="facilities">Facilities</string>
     <string name="reviews">Reviews</string>
     <string name="checkout">Checkout</string>
+    <string name="past_bookings">Past Bookings</string>
+    <string name="current_bookings">Current Bookings</string>
+    <string name="upcoming_bookings">Upcoming Bookings</string>
+    <string name="date">Date</string>
+    <string name="no_upcoming_booking">No upcoming bookings</string>
+    <string name="no_current_booking">No current bookings</string>
+    <string name="no_past_booking">No past bookings</string>
 </resources>

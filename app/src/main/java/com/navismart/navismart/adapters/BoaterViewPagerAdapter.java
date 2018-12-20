@@ -39,6 +39,14 @@ public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "";
+        String title = null;
+        if (position == 0) {
+            title = "Search";
+        } else if (position == 1) {
+            title = "Bookings";
+        } else if (position == 2) {
+            title = "Profile";
+        }
+        return title;
     }
 }

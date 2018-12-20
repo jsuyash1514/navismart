@@ -41,7 +41,7 @@ public class BoaterLandingFragment extends Fragment {
 
         boaterTabLayout.getTabAt(0).setIcon(R.drawable.ic_search_gray_24dp);
         boaterTabLayout.getTabAt(1).setIcon(R.drawable.ic_port_gray_24dp);
-        boaterTabLayout.getTabAt(2).setIcon(R.drawable.ic_person_gray_24dp);
+        boaterTabLayout.getTabAt(2).setIcon(R.drawable.ic_account_circle_gray_24dp);
 
         return view;
     }
