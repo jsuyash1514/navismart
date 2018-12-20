@@ -62,4 +62,6 @@
     <string name="departure">Departure</string>
     <string name="departing">Departure:</string>
     <string name="stayover">Stay-overs</string>
+    <string name="booked">Booked</string>
+    <string name="available">Available</string>
 </resources>
