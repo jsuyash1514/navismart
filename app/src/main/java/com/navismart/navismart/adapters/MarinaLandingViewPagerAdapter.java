@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.navismart.navismart.view.MarinaLandingActivityFragment;
 import com.navismart.navismart.view.MarinaLandingBookingFragment;
 import com.navismart.navismart.view.MarinaLandingMessagesFragment;
-import com.navismart.navismart.view.MarinaLandingProfileFragment;
+import com.navismart.navismart.view.MarinaLandingMoreFragment;
 
 public class MarinaLandingViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -33,7 +33,7 @@ public class MarinaLandingViewPagerAdapter extends FragmentPagerAdapter {
         }
         else if (position == 3)
         {
-            fragment = new MarinaLandingProfileFragment();
+            fragment = new MarinaLandingMoreFragment();
 
         }
         return fragment;
@@ -54,7 +54,7 @@ public class MarinaLandingViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 2) {
             title = "Messages";
         } else if (position == 3) {
-            title = "Profile";
+            title = "More";
         }
         return title;
     }
