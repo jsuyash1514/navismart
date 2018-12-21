@@ -64,4 +64,9 @@
     <string name="stayover">Stay-overs</string>
     <string name="booked">Booked</string>
     <string name="available">Available</string>
+    <string name="new_booking">New bookings</string>
+    <string name="new_reviews">New reviews</string>
+    <string name="boat_name">Boat Name</string>
+    <string name="boat_ID">Boat ID</string>
+    <string name="booking_number">Booking Number</string>
 </resources>
