@@ -26,7 +26,7 @@
     <string name="location">Location</string>
     <string name="reception_capacity">Reception\nCapacity</string>
     <string name="you">You</string>
-    <string name="your_boat">Boat Description</string>
+    <string name="your_boat">Your Boat</string>
     <string name="marina_description">Marina Description</string>
     <string name="your_boats">Your Boats</string>
     <string name="id">ID</string>
@@ -64,4 +64,12 @@
     <string name="no_upcoming_booking">No upcoming bookings</string>
     <string name="no_current_booking">No current bookings</string>
     <string name="no_past_booking">No past bookings</string>
+    <string name="booking_date">Booking Date : </string>
+    <string name="boater_colon">Boater : </string>
+    <string name="your_boat_colon">Your Boat : </string>
+    <string name="boat_id">Boat ID : </string>
+    <string name="review">Review</string>
+    <string name="review_marina">Review Marina</string>
+    <string name="rating">Rating</string>
+    <string name="submit_review">Submit Review</string>
 </resources>
