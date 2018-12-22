@@ -85,20 +85,16 @@ public class MarinaManagerLandingFragment extends Fragment {
         tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_booking_black_24dp, 0, 0);
         tabLayout.getTabAt(1).setCustomView(tabTwo);
 
+
         TextView tabThree = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
-        tabThree.setText("Availability");
-        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_date_range_black_24dp, 0, 0);
+        tabThree.setText("Messages");
+        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_message_black_24dp, 0, 0);
         tabLayout.getTabAt(2).setCustomView(tabThree);
 
         TextView tabFour = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
-        tabFour.setText("Messages");
-        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_message_black_24dp, 0, 0);
+        tabFour.setText("More");
+        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_more_horiz_black_24dp, 0, 0);
         tabLayout.getTabAt(3).setCustomView(tabFour);
-
-        TextView tabFive = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
-        tabFive.setText("Profile");
-        tabFive.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_account_circle_black_24dp, 0, 0);
-        tabLayout.getTabAt(4).setCustomView(tabFive);
     }
 
 }
