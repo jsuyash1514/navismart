@@ -26,18 +26,18 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/boater_sign_in_action"
-            app:destination="@+id/boaterSearchResultsFragment"
+            app:destination="@id/boaterLandingFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
     <fragment
         android:id="@+id/createAccountLandingFragment"
         android:name="com.navismart.navismart.view.SignUpFragment"
         android:label="fragment_create_account_landing"
-        tools:layout="@layout/fragment_signup" >
+        tools:layout="@layout/fragment_signup">
         <action
             android:id="@+id/marina_manager_register_successful_action"
             app:destination="@+id/landingFragment"
@@ -47,62 +47,28 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/boater_register_successful_action"
-            app:destination="@id/boaterSearchResultsFragment"
+            app:destination="@id/boaterLandingFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
         android:name="com.navismart.navismart.view.MarinaManagerLandingFragment"
         android:label="fragment_landing"
-        tools:layout="@layout/fragment_marina_manager_landing" >
-    <action
-        android:id="@+id/log_out_action"
-        app:destination="@+id/startFragment"
-        app:enterAnim="@anim/slide_in_left"
-        app:exitAnim="@anim/slide_out_right"
-        app:popEnterAnim="@anim/slide_in_right"
-        app:popExitAnim="@anim/slide_out_left" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        tools:layout="@layout/fragment_marina_manager_landing">
+        <action
+            android:id="@+id/log_out_action"
+            app:destination="@+id/startFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_landingFragment_to_boaterSearchFragment"
+            app:destination="@id/boaterSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/boaterProfileFragment"
@@ -145,4 +111,102 @@
         android:name="com.navismart.navismart.view.CheckoutFragment"
         android:label="fragment_checkout"
         tools:layout="@layout/fragment_checkout" />
+    <fragment
+        android:id="@+id/boaterLandingFragment"
+        android:name="com.navismart.navismart.view.BoaterLandingFragment"
+        android:label="fragment_boater_landing"
+        tools:layout="@layout/fragment_boater_landing">
+        <action
+            android:id="@+id/action_boaterLandingFragment_to_boaterSearchResultsFragment"
+            app:destination="@id/boaterSearchResultsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/boaterLogoutAction"
+            app:destination="@id/startFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_boaterLandingFragment_to_currentBookingsFragment"
+            app:destination="@id/currentBookingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_boaterLandingFragment_to_pastBookingsFragment"
+            app:destination="@id/pastBookingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_boaterLandingFragment_to_upcomingBookingsFragment"
+            app:destination="@id/upcomingBookingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/currentBookingsFragment"
+        android:name="com.navismart.navismart.view.CurrentBookingsFragment"
+        android:label="fragment_current_bookings"
+        tools:layout="@layout/fragment_current_bookings">
+        <action
+            android:id="@+id/action_currentBookingsFragment_to_viewBookingFragment"
+            app:destination="@id/viewBookingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/pastBookingsFragment"
+        android:name="com.navismart.navismart.view.PastBookingsFragment"
+        android:label="fragment_past_bookings"
+        tools:layout="@layout/fragment_past_bookings">
+        <action
+            android:id="@+id/action_pastBookingsFragment_to_viewBookingFragment"
+            app:destination="@id/viewBookingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/upcomingBookingsFragment"
+        android:name="com.navismart.navismart.view.UpcomingBookingsFragment"
+        android:label="fragment_upcoming_bookings"
+        tools:layout="@layout/fragment_upcoming_bookings">
+        <action
+            android:id="@+id/action_upcomingBookingsFragment_to_viewBookingFragment"
+            app:destination="@id/viewBookingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewBookingFragment"
+        android:name="com.navismart.navismart.view.ViewBookingFragment"
+        android:label="fragment_view_booking"
+        tools:layout="@layout/fragment_view_booking">
+        <action
+            android:id="@+id/action_viewBookingFragment_to_writeReviewFragment"
+            app:destination="@id/writeReviewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/writeReviewFragment"
+        android:name="com.navismart.navismart.view.WriteReviewFragment"
+        android:label="fragment_write_review"
+        tools:layout="@layout/fragment_write_review" />
 </navigation>
