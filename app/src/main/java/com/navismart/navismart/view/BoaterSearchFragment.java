@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +15,9 @@ import android.widget.ImageView;
 import com.navismart.navismart.R;
 
 import java.util.Calendar;
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 public class BoaterSearchFragment extends Fragment {
 
@@ -23,6 +27,7 @@ public class BoaterSearchFragment extends Fragment {
     private int mYearTo, mMonthTo, mDateTo;
     private EditText dateFromEditText;
     private EditText dateToEditText;
+    private Button searchButton;
 
     public BoaterSearchFragment() {
         // Required empty public constructor
@@ -94,6 +99,15 @@ public class BoaterSearchFragment extends Fragment {
 
                 datePickerDialogTo.show();
 
+            }
+        });
+
+        searchButton = view.findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
+                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment);
             }
         });
 
