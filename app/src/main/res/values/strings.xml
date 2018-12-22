@@ -69,4 +69,5 @@
     <string name="boat_name">Boat Name</string>
     <string name="boat_ID">Boat ID</string>
     <string name="booking_number">Booking Number</string>
+    <string name="profile">Profile</string>
 </resources>
