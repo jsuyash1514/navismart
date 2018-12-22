@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="suyash.example.com.navismart">
+    package="com.navismart.navismart">
 
     <application
         android:allowBackup="true"
