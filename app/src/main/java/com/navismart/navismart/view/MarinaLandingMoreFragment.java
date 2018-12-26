@@ -5,8 +5,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.navismart.navismart.R;
+
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
 public class MarinaLandingMoreFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -17,6 +23,8 @@ public class MarinaLandingMoreFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FirebaseAuth auth;
 
 
     public MarinaLandingMoreFragment() {
@@ -54,7 +62,23 @@ public class MarinaLandingMoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_marina_landing_more, container, false);
+        View view = inflater.inflate(R.layout.fragment_marina_landing_more, container, false);
+
+        auth = FirebaseAuth.getInstance();
+
+        Button logoutButton = view.findViewById(R.id.marina_logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auth.signOut();
+                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.landingFragment, true)
+                        .build();
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
+            }
+        });
+        return view;
     }
 
 
