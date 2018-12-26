@@ -1,9 +1,13 @@
 package com.navismart.navismart.view;
 
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.BoatListAdapter;
 import com.navismart.navismart.model.BoatModel;
+import com.navismart.navismart.viewmodels.BoatListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +81,7 @@ public class BoaterProfileFragment extends Fragment {
         profileImageView = view.findViewById(R.id.boater_profile_image);
 
         boatListRecyclerView = view.findViewById(R.id.boat_recycler_view);
+
         prepareBoatList();
 
         logoutIcon = view.findViewById(R.id.logout_icon);
@@ -150,29 +156,25 @@ public class BoaterProfileFragment extends Fragment {
 
     private void prepareBoatList() {
 
-        list = new ArrayList<>();
-        DatabaseReference currentUser = databaseReference.child("users").child(auth.getCurrentUser().getUid());
-
-        currentUser.child("boats").addListenerForSingleValueEvent(new ValueEventListener() {
+        BoatListViewModel boatListViewModel = ViewModelProviders.of(this).get(BoatListViewModel.class);
+        LiveData<DataSnapshot> liveData = boatListViewModel.getDataSnapshotLiveData();
+        liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    BoatModel boat = postSnapshot.getValue(BoatModel.class);
-                    list.add(boat);
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        BoatModel boat = postSnapshot.getValue(BoatModel.class);
+                        list.add(boat);
+                    }
+                    BoatListAdapter boatListAdapter = new BoatListAdapter(list);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                    boatListRecyclerView.setLayoutManager(mLayoutManager);
+                    boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                    boatListRecyclerView.setAdapter(boatListAdapter);
                 }
-                BoatListAdapter boatListAdapter = new BoatListAdapter(list);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                boatListRecyclerView.setLayoutManager(mLayoutManager);
-                boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                boatListRecyclerView.setAdapter(boatListAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
 
     }
 
