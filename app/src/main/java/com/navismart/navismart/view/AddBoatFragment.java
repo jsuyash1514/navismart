@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.R;
+import com.navismart.navismart.model.BoatModel;
 
 import androidx.navigation.Navigation;
 
@@ -86,7 +86,53 @@ public class AddBoatFragment extends Fragment {
 
         if (!boatID.isEmpty() && !boatName.isEmpty()) {
 
-            currentUser.child("boats").child("ID " + boatID).child("boat-name").setValue(boatName).addOnFailureListener(new OnFailureListener() {
+//            currentUser.child("boats").child("ID " + boatID).child("boat-name").setValue(boatName).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
+//                    progressDialog.dismiss();
+//                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+//                }
+//            });
+//            currentUser.child("boats").child("ID " + boatID).child("boat-ID").setValue(boatID).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
+//                    progressDialog.dismiss();
+//                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+//                }
+//            });
+//            if (!TextUtils.isEmpty(boatLength)) {
+//                currentUser.child("boats").child("ID " + boatID).child("boat-length").setValue(boatLength).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
+//                        progressDialog.dismiss();
+//                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+//                    }
+//                });
+//            }
+//            if (!TextUtils.isEmpty(boatBeam)) {
+//                currentUser.child("boats").child("ID " + boatID).child("boat-beam").setValue(boatBeam).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
+//                        progressDialog.dismiss();
+//                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+//                    }
+//                });
+//            }
+//            if (!TextUtils.isEmpty(boatType)) {
+//                currentUser.child("boats").child("ID " + boatID).child("boat-type").setValue(boatType).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
+//                        progressDialog.dismiss();
+//                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+//                    }
+//                });
+//            }
+            currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType)).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
@@ -94,44 +140,6 @@ public class AddBoatFragment extends Fragment {
                     Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
                 }
             });
-            currentUser.child("boats").child("ID " + boatID).child("boat-ID").setValue(boatID).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                }
-            });
-            if (!TextUtils.isEmpty(boatLength)) {
-                currentUser.child("boats").child("ID " + boatID).child("boat-length").setValue(boatLength).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                    }
-                });
-            }
-            if (!TextUtils.isEmpty(boatBeam)) {
-                currentUser.child("boats").child("ID " + boatID).child("boat-beam").setValue(boatBeam).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                    }
-                });
-            }
-            if (!TextUtils.isEmpty(boatType)) {
-                currentUser.child("boats").child("ID " + boatID).child("boat-type").setValue(boatType).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Unable to add new Boat.", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                    }
-                });
-            }
             progressDialog.dismiss();
             Toast.makeText(getContext(), "Successfully added new Boat!", Toast.LENGTH_LONG).show();
             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();

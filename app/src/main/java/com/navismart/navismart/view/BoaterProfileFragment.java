@@ -1,18 +1,31 @@
 package com.navismart.navismart.view;
 
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.BoatListAdapter;
 import com.navismart.navismart.model.BoatModel;
@@ -25,10 +38,14 @@ import androidx.navigation.Navigation;
 
 public class BoaterProfileFragment extends Fragment {
 
-    List<BoatModel> list;
-    FirebaseAuth auth;
+    private List<BoatModel> list;
+    private FirebaseAuth auth;
+    private DatabaseReference databaseReference;
+    private StorageReference storageReference;
     private RecyclerView boatListRecyclerView;
-    private ImageView logoutIcon, addBoatIcon;
+    private ImageView logoutIcon, addBoatIcon, profileImageView;
+    private TextView nameTextView;
+    private TextView emailTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +67,14 @@ public class BoaterProfileFragment extends Fragment {
             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
         }
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
+
         prepareBoatList();
+
+        nameTextView = view.findViewById(R.id.boater_profile_name);
+        emailTextView = view.findViewById(R.id.boater_profile_email);
+        profileImageView = view.findViewById(R.id.boater_profile_image);
 
         BoatListAdapter boatListAdapter = new BoatListAdapter(list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -81,12 +105,75 @@ public class BoaterProfileFragment extends Fragment {
             }
         });
 
+        loadDataToViews();
+
         return view;
+    }
+
+    private void loadDataToViews() {
+
+        DatabaseReference currentUser = databaseReference.child("users").child(auth.getCurrentUser().getUid());
+
+        currentUser.child("profile").child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                nameTextView.setText(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        currentUser.child("profile").child("email").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                emailTextView.setText(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        StorageReference profilePicRef = storageReference.child("users").child(auth.getCurrentUser().getUid()).child("profile");
+        profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                Log.d("URI", uri.toString());
+                Glide.with(getContext())
+                        .load(uri)
+                        .into(profileImageView);
+
+            }
+        });
+
+
     }
 
     private void prepareBoatList() {
 
         list = new ArrayList<>();
+//        DatabaseReference currentUser = databaseReference.child("users").child(auth.getCurrentUser().getUid());
+//
+//        currentUser.child("boats").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                    BoatModel boat = postSnapshot.getValue(BoatModel.class);
+//                    list.add(boat);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
         list.add(new BoatModel());
         list.add(new BoatModel());
         list.add(new BoatModel());

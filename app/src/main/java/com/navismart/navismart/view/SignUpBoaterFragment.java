@@ -15,7 +15,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +37,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.navismart.navismart.R;
+import com.navismart.navismart.model.BoatModel;
 import com.navismart.navismart.viewmodels.SignUpViewModel;
 
 import java.io.FileNotFoundException;
@@ -274,21 +274,22 @@ public class SignUpBoaterFragment extends Fragment {
                             currentUser.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("boater");
-                            if (!TextUtils.isEmpty(boatName)) {
-                                currentUser.child("boats").child("ID "+boatID).child("boat-name").setValue(boatName);
-                            }
-                            if (!TextUtils.isEmpty(boatID)) {
-                                currentUser.child("boats").child("ID "+boatID).child("boat-ID").setValue(boatID);
-                            }
-                            if (!TextUtils.isEmpty(boatLength)) {
-                                currentUser.child("boats").child("ID "+boatID).child("boat-length").setValue(boatLength);
-                            }
-                            if (!TextUtils.isEmpty(boatBeam)) {
-                                currentUser.child("boats").child("ID "+boatID).child("boat-beam").setValue(boatBeam);
-                            }
-                            if (!TextUtils.isEmpty(boatType)) {
-                                currentUser.child("boats").child("ID "+boatID).child("boat-type").setValue(boatType);
-                            }
+//                            if (!TextUtils.isEmpty(boatName)) {
+//                                currentUser.child("boats").child("ID "+boatID).child("boat-name").setValue(boatName);
+//                            }
+//                            if (!TextUtils.isEmpty(boatID)) {
+//                                currentUser.child("boats").child("ID "+boatID).child("boat-ID").setValue(boatID);
+//                            }
+//                            if (!TextUtils.isEmpty(boatLength)) {
+//                                currentUser.child("boats").child("ID "+boatID).child("boat-length").setValue(boatLength);
+//                            }
+//                            if (!TextUtils.isEmpty(boatBeam)) {
+//                                currentUser.child("boats").child("ID "+boatID).child("boat-beam").setValue(boatBeam);
+//                            }
+//                            if (!TextUtils.isEmpty(boatType)) {
+//                                currentUser.child("boats").child("ID "+boatID).child("boat-type").setValue(boatType);
+//                            }
+                            currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType));
                             if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
