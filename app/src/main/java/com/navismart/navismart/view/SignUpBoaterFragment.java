@@ -275,19 +275,19 @@ public class SignUpBoaterFragment extends Fragment {
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("boater");
                             if (!TextUtils.isEmpty(boatName)) {
-                                currentUser.child("boat-description").child("boat-name").setValue(boatName);
+                                currentUser.child("boats").child("ID "+boatID).child("boat-name").setValue(boatName);
                             }
                             if (!TextUtils.isEmpty(boatID)) {
-                                currentUser.child("boat-description").child("boat-ID").setValue(boatID);
+                                currentUser.child("boats").child("ID "+boatID).child("boat-ID").setValue(boatID);
                             }
                             if (!TextUtils.isEmpty(boatLength)) {
-                                currentUser.child("boat-description").child("boat-length").setValue(boatLength);
+                                currentUser.child("boats").child("ID "+boatID).child("boat-length").setValue(boatLength);
                             }
                             if (!TextUtils.isEmpty(boatBeam)) {
-                                currentUser.child("boat-description").child("boat-beam").setValue(boatBeam);
+                                currentUser.child("boats").child("ID "+boatID).child("boat-beam").setValue(boatBeam);
                             }
                             if (!TextUtils.isEmpty(boatType)) {
-                                currentUser.child("boat-description").child("boat-type").setValue(boatType);
+                                currentUser.child("boats").child("ID "+boatID).child("boat-type").setValue(boatType);
                             }
                             if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
