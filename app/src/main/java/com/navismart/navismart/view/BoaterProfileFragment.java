@@ -26,9 +26,9 @@ import androidx.navigation.Navigation;
 public class BoaterProfileFragment extends Fragment {
 
     List<BoatModel> list;
-    private RecyclerView boatListRecyclerView;
-    private ImageView logoutIcon;
     FirebaseAuth auth;
+    private RecyclerView boatListRecyclerView;
+    private ImageView logoutIcon, addBoatIcon;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,14 @@ public class BoaterProfileFragment extends Fragment {
                         .setPopUpTo(R.id.boaterLandingFragment, true)
                         .build();
                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
+            }
+        });
+
+        addBoatIcon = view.findViewById(R.id.add_boat_icon);
+        addBoatIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_addBoatFragment);
             }
         });
 
