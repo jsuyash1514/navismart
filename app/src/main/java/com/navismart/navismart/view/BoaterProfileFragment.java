@@ -70,19 +70,13 @@ public class BoaterProfileFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        prepareBoatList();
 
         nameTextView = view.findViewById(R.id.boater_profile_name);
         emailTextView = view.findViewById(R.id.boater_profile_email);
         profileImageView = view.findViewById(R.id.boater_profile_image);
 
-        BoatListAdapter boatListAdapter = new BoatListAdapter(list);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-
         boatListRecyclerView = view.findViewById(R.id.boat_recycler_view);
-        boatListRecyclerView.setLayoutManager(mLayoutManager);
-        boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        boatListRecyclerView.setAdapter(boatListAdapter);
+        prepareBoatList();
 
         logoutIcon = view.findViewById(R.id.logout_icon);
         logoutIcon.setOnClickListener(new View.OnClickListener() {
@@ -157,27 +151,28 @@ public class BoaterProfileFragment extends Fragment {
     private void prepareBoatList() {
 
         list = new ArrayList<>();
-//        DatabaseReference currentUser = databaseReference.child("users").child(auth.getCurrentUser().getUid());
-//
-//        currentUser.child("boats").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                    BoatModel boat = postSnapshot.getValue(BoatModel.class);
-//                    list.add(boat);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        DatabaseReference currentUser = databaseReference.child("users").child(auth.getCurrentUser().getUid());
 
-        list.add(new BoatModel());
-        list.add(new BoatModel());
-        list.add(new BoatModel());
-        list.add(new BoatModel());
+        currentUser.child("boats").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    BoatModel boat = postSnapshot.getValue(BoatModel.class);
+                    list.add(boat);
+                }
+                BoatListAdapter boatListAdapter = new BoatListAdapter(list);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                boatListRecyclerView.setLayoutManager(mLayoutManager);
+                boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                boatListRecyclerView.setAdapter(boatListAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 
