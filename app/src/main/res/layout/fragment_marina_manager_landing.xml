@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.MarinaManagerLandingFragment">
 
-    <TextView
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hey marina manager!" />
-
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="LOGOUT"
-        android:textSize="25sp"
-        android:padding="20dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:textColor="@color/white"/>
+        android:theme="@style/WhiteTheme">
 
-</FrameLayout>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/marina_manager_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/marina_manager_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/marina_manager_tabs"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+</LinearLayout>
