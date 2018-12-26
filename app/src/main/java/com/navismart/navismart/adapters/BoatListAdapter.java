@@ -35,7 +35,7 @@ public class BoatListAdapter extends RecyclerView.Adapter<BoatListAdapter.MyView
         holder.nameView.setText(boatModel.getName());
         holder.lengthView.setText(Float.toString(boatModel.getLength()));
         holder.beamView.setText(Float.toString(boatModel.getBeam()));
-        holder.idView.setText(boatModel.getType());
+        holder.idView.setText(boatModel.getId());
 
     }
 
