@@ -155,7 +155,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/locatio_edit_text"
+                    android:id="@+id/location_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -167,6 +167,7 @@
                     android:theme="@style/BaseLineTheme" />
 
                 <ImageView
+                    android:id="@+id/add_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
