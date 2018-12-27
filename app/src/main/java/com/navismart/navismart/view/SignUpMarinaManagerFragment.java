@@ -1,7 +1,6 @@
 package com.navismart.navismart.view;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -26,6 +25,9 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,19 +50,21 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import static android.app.Activity.RESULT_OK;
 import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
 import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 
 public class SignUpMarinaManagerFragment extends Fragment {
 
-    private ImageView profilePic;
+    int PLACE_PICKER_REQUEST = 1;
+    private ImageView profilePic, addLocationIcon;
     private SignUpViewModel signUpViewModel;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private ProgressDialog progressDialog, uploadProgress;
     private NavController navController;
-    private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText;
+    private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText, locationEditText;
     private NumberPicker capacityPicker;
     private Button registerButton, uploadProfilePic;
     private Uri profilePicUri = null;
@@ -68,6 +72,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private boolean emailValid = false;
     private boolean passwordValid = false;
     private boolean enabler = false;
+    private LatLng locationLatLng;
+    private String locationAddress;
 
     public SignUpMarinaManagerFragment() {
         // Required empty public constructor
@@ -94,11 +100,13 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         passwordEditText = view.findViewById(R.id.password_edit_text);
+        locationEditText = view.findViewById(R.id.location_edit_text);
         registerButton = view.findViewById(R.id.register_button);
         uploadProfilePic = view.findViewById(R.id.upload_button);
         profilePic = view.findViewById(R.id.upload_marina_manager_picture);
         nameEditText = view.findViewById(R.id.name_edit_text);
         emailEditText = view.findViewById(R.id.email_edit_text);
+        addLocationIcon = view.findViewById(R.id.add_location);
         capacityPicker = view.findViewById(R.id.reception_capacity_number_picker);
         capacityPicker.setMaxValue(10);
         capacityPicker.setMinValue(1);
@@ -214,6 +222,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
             }
         });
 
+        addLocationIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         return view;
 
 
@@ -223,7 +243,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
             Bitmap bitmap;
             try {
@@ -236,6 +256,12 @@ public class SignUpMarinaManagerFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
+            Place place = PlacePicker.getPlace(data, getContext());
+            locationAddress = place.getAddress().toString();
+            locationEditText.setText(locationAddress);
+            locationLatLng = place.getLatLng();
+
         }
     }
 
@@ -269,13 +295,15 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
-                            if (!TextUtils.isEmpty(descr)) {
+                            if (!TextUtils.isEmpty(descr) && !TextUtils.isEmpty(termsAndCond) && !locationAddress.isEmpty()) {
                                 currentUser.child("marina-description").child("description").setValue(descr);
-                            }
-                            currentUser.child("marina-description").child("capacity").setValue(capacity);
-                            if (!TextUtils.isEmpty(termsAndCond)) {
+                                currentUser.child("marina-description").child("capacity").setValue(capacity);
                                 currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                                currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
+                                currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
+                                currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
                             }
+
                             if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
