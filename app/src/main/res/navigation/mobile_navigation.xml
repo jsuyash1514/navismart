@@ -74,7 +74,7 @@
         android:id="@+id/boaterProfileFragment"
         android:name="com.navismart.navismart.view.BoaterProfileFragment"
         android:label="fragment_boater_profile"
-        tools:layout="@layout/fragment_boater_profile" />
+        tools:layout="@layout/fragment_boater_profile"></fragment>
     <fragment
         android:id="@+id/boaterSearchFragment"
         android:name="com.navismart.navismart.view.BoaterSearchFragment"
@@ -110,7 +110,15 @@
         android:id="@+id/checkoutFragment"
         android:name="com.navismart.navismart.view.CheckoutFragment"
         android:label="fragment_checkout"
-        tools:layout="@layout/fragment_checkout" />
+        tools:layout="@layout/fragment_checkout">
+        <action
+            android:id="@+id/action_checkoutFragment_to_boaterLandingFragment"
+            app:destination="@id/boaterLandingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/boaterLandingFragment"
         android:name="com.navismart.navismart.view.BoaterLandingFragment"
@@ -147,6 +155,13 @@
         <action
             android:id="@+id/action_boaterLandingFragment_to_upcomingBookingsFragment"
             app:destination="@id/upcomingBookingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_boaterLandingFragment_to_addBoatFragment"
+            app:destination="@id/addBoatFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -209,4 +224,9 @@
         android:name="com.navismart.navismart.view.WriteReviewFragment"
         android:label="fragment_write_review"
         tools:layout="@layout/fragment_write_review" />
+    <fragment
+        android:id="@+id/addBoatFragment"
+        android:name="com.navismart.navismart.view.AddBoatFragment"
+        android:label="fragment_add_boat"
+        tools:layout="@layout/fragment_add_boat" />
 </navigation>

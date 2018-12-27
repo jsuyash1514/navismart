@@ -119,6 +119,7 @@
         android:layout_alignParentBottom="true"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/checkout"
+        android:enabled="false"
         android:textColor="@color/white" />
 
 </RelativeLayout>

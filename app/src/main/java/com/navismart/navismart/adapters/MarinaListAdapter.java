@@ -16,7 +16,6 @@ import com.navismart.navismart.model.MarinaModel;
 
 import java.util.List;
 
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.MyViewHolder> {
