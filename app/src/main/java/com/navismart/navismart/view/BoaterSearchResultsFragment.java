@@ -39,6 +39,7 @@ import java.util.Set;
 
 public class BoaterSearchResultsFragment extends Fragment {
 
+    public static String fromDate, toDate;
     private static float minRange, maxRange;
     private static boolean freeCancellationNeeded = false;
     List<String> starRating;
@@ -65,6 +66,14 @@ public class BoaterSearchResultsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +83,9 @@ public class BoaterSearchResultsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boater_search_results, container, false);
+
+        fromDate = getArguments().getString("fromDate");
+        toDate = getArguments().getString("toDate");
 
         prepareListData();
 
@@ -183,6 +195,8 @@ public class BoaterSearchResultsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dateChangeDialog.dismiss();
+                fromDate = fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear();
+                toDate = fromDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear();
             }
         });
 

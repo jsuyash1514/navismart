@@ -17,6 +17,9 @@ import com.navismart.navismart.model.MarinaModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import static com.navismart.navismart.view.BoaterSearchResultsFragment.fromDate;
+import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
+
 public class MarinaPageFragment extends Fragment {
 
     private TextView nameTextView, fromDateTextView, distCityTextView, locationTextView, toDateTextView, descriptionTextView, facilitiesTextView, tNcTextView;
@@ -66,6 +69,8 @@ public class MarinaPageFragment extends Fragment {
         facilitiesTextView.setText(marinaModel.getFacilityString());
         tNcTextView.setText(marinaModel.getTnc());
         marinaImageView.setImageBitmap(marinaModel.getImage());
+        fromDateTextView.setText(fromDate);
+        toDateTextView.setText(toDate);
 
         bookButton.setOnClickListener(new View.OnClickListener() {
             @Override

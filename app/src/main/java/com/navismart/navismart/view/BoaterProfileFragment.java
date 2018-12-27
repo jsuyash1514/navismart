@@ -81,6 +81,7 @@ public class BoaterProfileFragment extends Fragment {
         profileImageView = view.findViewById(R.id.boater_profile_image);
 
         boatListRecyclerView = view.findViewById(R.id.boat_recycler_view);
+        
 
         prepareBoatList();
 

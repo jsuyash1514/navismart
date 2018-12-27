@@ -106,8 +106,13 @@ public class BoaterSearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavController navController = Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment);
-                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("fromDate", dateFromEditText.getText().toString());
+                bundle.putString("toDate", dateToEditText.getText().toString());
+
+                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
             }
         });
 

@@ -30,7 +30,8 @@ public class MarinaModel implements Parcelable {
     private String tnc = "default";
     private ArrayList<String> facilities;
     private int f[];
-
+    private String fromDate = "default";
+    private String toDate = "default";
 
     public MarinaModel() {
 
@@ -56,8 +57,41 @@ public class MarinaModel implements Parcelable {
         initializeFacilities();
     }
 
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromCity, int rating, boolean freeCancellation, String description, String tnc, int f[], String fromDate, String toDate) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+        this.location = location;
+        this.distFromCity = distFromCity;
+        this.rating = rating;
+        this.freeCancellation = freeCancellation;
+        this.description = description;
+        this.tnc = tnc;
+        this.f = f;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        initializeFacilities();
+    }
+
     public MarinaModel(Parcel in) {
 
+    }
+
+    public String getFromDate() {
+
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 
     @Override
