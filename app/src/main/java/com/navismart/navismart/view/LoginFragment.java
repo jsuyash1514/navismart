@@ -60,7 +60,6 @@ public class LoginFragment extends Fragment {
         progressDialog = new ProgressDialog(getContext());
 
         checkUserLoggedIn();
-        dummyFunction();
 
         Button createAcctButton = view.findViewById(R.id.startFragment_createAccountButton);
 
@@ -232,14 +231,14 @@ public class LoginFragment extends Fragment {
 
     }
 
-    public void dummyFunction(){
-        // This function is used to create the location fields in firestore.
-        Map<String, ArrayList<String>> map = new HashMap<>();
-        map.put("Marina List",new ArrayList<>());
-        for (int i=0;i<360;i+=5){
-            for(int j=0;j<360;j+=5){
-                firestore.collection("Location").document(i+","+j).set(map);
-            }
-        }
-    }
+//    public void dummyFunction(){
+//        // This function is used to create the location fields in firestore.
+//        Map<String, ArrayList<String>> map = new HashMap<>();
+//        map.put("Marina List",new ArrayList<>());
+//        for (int i=0;i<360;i+=5){
+//            for(int j=0;j<360;j+=5){
+//                firestore.collection("Location").document(i+","+j).set(map);
+//            }
+//        }
+//    }
 }
