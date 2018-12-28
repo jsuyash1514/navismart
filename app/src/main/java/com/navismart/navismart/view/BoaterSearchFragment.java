@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -24,6 +25,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import static android.app.Activity.RESULT_OK;
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 
 public class BoaterSearchFragment extends Fragment {
 
@@ -38,6 +40,7 @@ public class BoaterSearchFragment extends Fragment {
     private EditText dateToEditText;
     private EditText locationEditText;
     private Button searchButton;
+    private String fromDate, toDate;
 
     public BoaterSearchFragment() {
         // Required empty public constructor
@@ -81,6 +84,9 @@ public class BoaterSearchFragment extends Fragment {
             }
         });
 
+        fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
+        toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
+
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
         datePickFromImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +100,7 @@ public class BoaterSearchFragment extends Fragment {
                         mMonthFrom = month;
                         mDateFrom = dayOfMonth;
                         dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
+                        fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
 
                     }
                 }, mYearFrom, mMonthFrom, mDateFrom);
@@ -116,7 +123,11 @@ public class BoaterSearchFragment extends Fragment {
                         mMonthTo = month;
                         mDateTo = dayOfMonth;
                         dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
-
+                        toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
+                        if (getCountOfDays(fromDate, toDate) < 0) {
+                            dateToEditText.setText(fromDate);
+                            Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }, mYearTo, mMonthTo, mDateTo);
 

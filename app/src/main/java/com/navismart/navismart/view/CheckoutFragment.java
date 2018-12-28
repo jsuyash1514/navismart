@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.navigation.Navigation;
 
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 import static com.navismart.navismart.view.BoaterSearchResultsFragment.fromDate;
 import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
 
@@ -225,21 +226,6 @@ public class CheckoutFragment extends Fragment {
 
     }
 
-    public int getCountOfDays(String createdDateString, String expireDateString) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        try {
-            Date dateFrom = dateFormat.parse(createdDateString);
-            Date dateTo = dateFormat.parse(expireDateString);
 
-            long diff = dateTo.getTime() - dateFrom.getTime();
-
-            return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
 
 }

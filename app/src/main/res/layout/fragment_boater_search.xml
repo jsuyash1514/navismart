@@ -70,6 +70,8 @@
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:baselineAligned="false"
+                    android:enabled="true"
+                    android:focusable="false"
                     android:hint="@string/until_tomorrow"
                     android:inputType="date"
                     android:theme="@style/BaseLineTheme" />
@@ -99,6 +101,8 @@
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:baselineAligned="false"
+                    android:enabled="true"
+                    android:focusable="false"
                     android:hint="@string/until_tomorrow"
                     android:inputType="date"
                     android:theme="@style/BaseLineTheme" />
