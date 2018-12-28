@@ -14,11 +14,15 @@
 
 
         <EditText
-            android:layout_width="wrap_content"
+            android:id="@+id/location_editText_searchResult"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_search_gray_24dp"
+            android:drawableStart="@drawable/ic_search_gray_24dp"
+            android:ellipsize="end"
+            android:enabled="true"
+            android:focusable="false"
             android:hint="@string/location"
             android:maxLines="1" />
 
