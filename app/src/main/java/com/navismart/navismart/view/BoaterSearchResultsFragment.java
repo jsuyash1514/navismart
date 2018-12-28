@@ -2,6 +2,7 @@ package com.navismart.navismart.view;
 
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +20,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.ExpandableListAdapter;
 import com.navismart.navismart.adapters.MarinaListAdapter;
@@ -37,13 +43,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import static android.app.Activity.RESULT_OK;
+import static com.navismart.navismart.MainActivity.toBounds;
+
 public class BoaterSearchResultsFragment extends Fragment {
 
     public static String fromDate, toDate;
     private static float minRange, maxRange;
     private static boolean freeCancellationNeeded = false;
+    int PLACE_PICKER_REQUEST = 1;
     List<String> starRating;
     ArrayList<String> facilities;
+    private EditText locationEditText;
+    private String locationAddress;
+    private LatLng locationLatLng;
     private ExpandableListAdapter expandableListAdapter;
     private ExpandableListView expListView;
     private List<String> listDataHeader;
@@ -56,6 +69,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private MarinaListAdapter marinaListAdapter;
     private TextView closestSortTextView, cheapestSortTextView;
     private ImageView filterImageView, changeDateImageView;
+    private ImageView locationChangeIcon;
     private Dialog filterDialog, dateChangeDialog;
     private DatePicker fromDatePicker, toDatePicker;
     private TextView rangeDisplay;
@@ -86,6 +100,12 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         fromDate = getArguments().getString("fromDate");
         toDate = getArguments().getString("toDate");
+
+        locationEditText = view.findViewById(R.id.location_editText_searchResult);
+        locationChangeIcon = view.findViewById(R.id.change_location_icon);
+
+        locationAddress = getArguments().getString("location_address");
+        locationLatLng = getArguments().getParcelable("locationLatLng");
 
         prepareListData();
 
@@ -205,6 +225,33 @@ public class BoaterSearchResultsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dateChangeDialog.show();
+            }
+        });
+        locationEditText.setText(locationAddress);
+        Log.d("Address", locationAddress);
+        locationEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                builder.setLatLngBounds(toBounds(locationLatLng, 1000));
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        locationChangeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                builder.setLatLngBounds(toBounds(locationLatLng, 1000));
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -512,6 +559,18 @@ public class BoaterSearchResultsFragment extends Fragment {
         listDataChild.put(listDataHeader.get(0), starRating); // Header, Child data
         listDataChild.put(listDataHeader.get(1), facilities);
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
+            Place place = PlacePicker.getPlace(data, getContext());
+            locationAddress = place.getAddress().toString();
+            locationEditText.setText(locationAddress);
+            locationLatLng = place.getLatLng();
+        }
     }
 
 }
