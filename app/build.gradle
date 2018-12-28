@@ -50,6 +50,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
 
+    implementation 'com.google.firebase:firebase-firestore:17.1.5'
+
     //Navigation architecture component
     implementation "android.arch.navigation:navigation-fragment:$nav_version"
     implementation "android.arch.navigation:navigation-ui:$nav_version"

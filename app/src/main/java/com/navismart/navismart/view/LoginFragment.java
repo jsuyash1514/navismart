@@ -26,7 +26,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.navismart.navismart.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -38,6 +43,7 @@ import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 public class LoginFragment extends Fragment {
     boolean emailValid = false, pwValid = false, enabler = false;
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firestore;
     private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
     private String category;
@@ -49,6 +55,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
 
@@ -223,4 +230,15 @@ public class LoginFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
     }
+
+//    public void dummyFunction(){
+//        // This function is used to create the location fields in firestore.
+//        Map<String, ArrayList<String>> map = new HashMap<>();
+//        map.put("Marina List",new ArrayList<>());
+//        for (int i=0;i<360;i+=5){
+//            for(int j=0;j<360;j+=5){
+//                firestore.collection("Location").document(i+","+j).set(map);
+//            }
+//        }
+//    }
 }

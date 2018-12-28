@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -45,6 +49,9 @@ import com.navismart.navismart.viewmodels.SignUpViewModel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -60,6 +67,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private ImageView profilePic, addLocationIcon;
     private SignUpViewModel signUpViewModel;
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firestore;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private ProgressDialog progressDialog, uploadProgress;
@@ -74,6 +82,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private boolean enabler = false;
     private LatLng locationLatLng;
     private String locationAddress;
+    private ArrayList<String> marinaList;
 
     public SignUpMarinaManagerFragment() {
         // Required empty public constructor
@@ -92,13 +101,16 @@ public class SignUpMarinaManagerFragment extends Fragment {
         signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
         uploadProgress = new ProgressDialog(getContext());
         checkUserLoggedIn();
 
+        marinaList = new ArrayList<>();
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+
         passwordEditText = view.findViewById(R.id.password_edit_text);
         locationEditText = view.findViewById(R.id.location_edit_text);
         registerButton = view.findViewById(R.id.register_button);
@@ -302,6 +314,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                 currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
                                 currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
                                 currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
+                                addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
                             }
 
                             if (profilePicUri != null) {
@@ -364,6 +377,54 @@ public class SignUpMarinaManagerFragment extends Fragment {
                     }
 
                 });
+
+    }
+
+    public void addLocationInFirestore(double latitude, double longitude) {
+        int i = (int) (latitude / 10);
+        int temp = ((int) latitude) % 10;
+        if (temp < 5) i = i * 10;
+        else i = (i * 10) + 5;
+
+        int j = (int) (longitude / 10);
+        temp = ((int) longitude) % 10;
+        if (temp < 5) j = j * 10;
+        else j = (j * 10) + 5;
+
+
+        DocumentReference location = firestore.collection("Location").document(i + "," + j);
+        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    marinaList = (ArrayList<String>) doc.get("Marina List");
+                    Log.d("Firestore: ", "Recieved marina list with size: " + marinaList.size());
+                    marinaList.add(firebaseAuth.getCurrentUser().getUid());
+                    Map<String, ArrayList<String>> map = new HashMap<>();
+                    map.put("Marina List", marinaList);
+                    location.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Firestore: ", "Successfully added new marina manager in firestore.");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("Firestore: ", "Failed to add new user location in firestore with error: " + e.toString());
+                                }
+                            });
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Firestore", "Failed to recieve marina list.");
+                    }
+                });
+
 
     }
 
