@@ -381,6 +381,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
     }
 
     public void addLocationInFirestore(double latitude, double longitude) {
+
+        // i is the greatest multiple of 5 less than the value of latitude.
         int i = (int) (latitude / 10);
         int temp = ((int) latitude) % 10;
         if (temp < 5) i = i * 10;
@@ -412,6 +414,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(),"Can't add your location.",Toast.LENGTH_LONG).show();
                                     Log.d("Firestore: ", "Failed to add new user location in firestore with error: " + e.toString());
                                 }
                             });
@@ -422,6 +425,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d("Firestore", "Failed to recieve marina list.");
+                        Toast.makeText(getContext(),"Can't add your location.",Toast.LENGTH_LONG).show();
                     }
                 });
 
