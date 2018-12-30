@@ -43,7 +43,7 @@
     <string name="order_by">ORDER BY:</string>
     <string name="closest">Closest</string>
     <string name="cheapest">Cheapest</string>
-    <string name="dist_city">Distance from city center</string>
+    <string name="dist_search">Distance from search</string>
     <string name="see_details">See Details</string>
     <string name="price">Price</string>
     <string name="show_result">Show Results</string>

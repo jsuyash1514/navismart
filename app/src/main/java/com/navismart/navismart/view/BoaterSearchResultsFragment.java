@@ -47,6 +47,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.maps.android.SphericalUtil;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.ExpandableListAdapter;
 import com.navismart.navismart.adapters.MarinaListAdapter;
@@ -495,10 +496,14 @@ public class BoaterSearchResultsFragment extends Fragment {
             @Override
             public int compare(MarinaModel o1, MarinaModel o2) {
 
-                float d1 = o1.getDistFromCity();
-                float d2 = o2.getDistFromCity();
+//                float d1 = o1.getDistFromCity();
+//                float d2 = o2.getDistFromCity();
+//
+                double d1 = SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(o1.getLat(), o1.getLng()));
+                double d2 = SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(o2.getLat(), o2.getLng()));
 
                 return (int) (d1 - d2);
+
             }
         };
 
@@ -586,6 +591,9 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 model.setDescription(d);
                                 model.setFacilities(new int[]{1, 2, 3});
                                 model.setMarinaUID(uid);
+                                model.setLat((double) dataSnapshot.child("marina-description").child("latitude").getValue());
+                                model.setLng((double) dataSnapshot.child("marina-description").child("longitude").getValue());
+                                model.setDistFromSearch((float) SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(model.getLat(), model.getLng()))/1000.0f);
                                 marinaList.add(model);
                                 filteredMarinaList = marinaList;
                                 if (sortByClosest) {
