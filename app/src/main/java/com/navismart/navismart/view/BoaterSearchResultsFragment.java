@@ -96,6 +96,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private Dialog filterDialog, dateChangeDialog;
     private DatePicker fromDatePicker, toDatePicker;
     private TextView rangeDisplay;
+    private TextView noResultsDisplay;
     private boolean noStarFilter, noFacilityFilter, sortByClosest = false, sortByCheapest = false;
     private boolean starBool[], facilitiesBool[], filtered = false;
     private FirebaseFirestore firestore;
@@ -147,6 +148,8 @@ public class BoaterSearchResultsFragment extends Fragment {
         fromDate = getArguments().getString("fromDate");
         toDate = getArguments().getString("toDate");
 
+        noResultsDisplay = view.findViewById(R.id.no_results_display);
+
         locationEditText = view.findViewById(R.id.location_editText_searchResult);
         locationChangeIcon = view.findViewById(R.id.change_location_icon);
 
@@ -163,6 +166,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         prepareMarinaList();
         marinaListRecyclerView = view.findViewById(R.id.marina_search_result_recycler_view);
+
 
         closestSortTextView = view.findViewById(R.id.closest_sort_textView);
         closestSortTextView.setOnClickListener(new View.OnClickListener() {
@@ -570,6 +574,13 @@ public class BoaterSearchResultsFragment extends Fragment {
                     marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
                     Log.d("Firestore: ", "Recieved marina list at i,j with size: " + marinaUIDList.size());
 
+                    if (marinaUIDList.size() == 0) {
+                        marinaListRecyclerView.setVisibility(View.GONE);
+                        noResultsDisplay.setVisibility(View.VISIBLE);
+                    } else {
+                        marinaListRecyclerView.setVisibility(View.VISIBLE);
+                        noResultsDisplay.setVisibility(View.GONE);
+                    }
                     for (String uid : marinaUIDList) {
 
                         DatabaseReference marinaDesc = databaseReference.child("users").child(uid);
@@ -593,7 +604,7 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 model.setMarinaUID(uid);
                                 model.setLat((double) dataSnapshot.child("marina-description").child("latitude").getValue());
                                 model.setLng((double) dataSnapshot.child("marina-description").child("longitude").getValue());
-                                model.setDistFromSearch((float) SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(model.getLat(), model.getLng()))/1000.0f);
+                                model.setDistFromSearch((float) SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(model.getLat(), model.getLng())) / 1000.0f);
                                 marinaList.add(model);
                                 filteredMarinaList = marinaList;
                                 if (sortByClosest) {

@@ -86,4 +86,5 @@
     <string name="boat_ID">Boat ID</string>
     <string name="booking_number">Booking Number</string>
     <string name="profile">Profile</string>
+    <string name="no_results_found">No Results Found</string>
 </resources>
