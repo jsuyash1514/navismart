@@ -2,12 +2,14 @@ package com.navismart.navismart.view;
 
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +27,26 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.ExpandableListAdapter;
 import com.navismart.navismart.adapters.MarinaListAdapter;
@@ -43,6 +61,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
+
 import static android.app.Activity.RESULT_OK;
 import static com.navismart.navismart.MainActivity.toBounds;
 
@@ -54,8 +75,9 @@ public class BoaterSearchResultsFragment extends Fragment {
     int PLACE_PICKER_REQUEST = 1;
     List<String> starRating;
     ArrayList<String> facilities;
+    String t = "", d = "";
     private EditText locationEditText;
-    private String locationAddress;
+    private String locationAddress, marinaAddress, name;
     private LatLng locationLatLng;
     private ExpandableListAdapter expandableListAdapter;
     private ExpandableListView expListView;
@@ -75,6 +97,12 @@ public class BoaterSearchResultsFragment extends Fragment {
     private TextView rangeDisplay;
     private boolean noStarFilter, noFacilityFilter, sortByClosest = false, sortByCheapest = false;
     private boolean starBool[], facilitiesBool[], filtered = false;
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
+    private DatabaseReference databaseReference;
+    private StorageReference storageReference;
+    private ArrayList<String> marinaUIDList;
+    private ProgressDialog fetchMarinaProgress;
 
     public BoaterSearchResultsFragment() {
         // Required empty public constructor
@@ -98,6 +126,23 @@ public class BoaterSearchResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boater_search_results, container, false);
 
+        firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        firestore.setFirestoreSettings(settings);
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.boaterLandingFragment, true)
+                    .build();
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
+        }
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        fetchMarinaProgress = new ProgressDialog(getContext());
+
         fromDate = getArguments().getString("fromDate");
         toDate = getArguments().getString("toDate");
 
@@ -112,28 +157,11 @@ public class BoaterSearchResultsFragment extends Fragment {
         starBool = new boolean[starRating.size()];
         facilitiesBool = new boolean[facilities.size()];
 
+//        prepareMarinaList();
+//        prepareMarinaList(locationLatLng);
+
         prepareMarinaList();
-
-        if (sortByClosest) {
-            sortByDist();
-        }
-        if (sortByCheapest) {
-            sortByPrice();
-        }
-        if (filtered) {
-            filteredMarinaList = filterMarinaList();
-        } else {
-            minRange = getMinPrice();
-            maxRange = getMaxPrice();
-        }
-
-        marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-
         marinaListRecyclerView = view.findViewById(R.id.marina_search_result_recycler_view);
-        marinaListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        marinaListRecyclerView.setLayoutManager(mLayoutManager);
-        marinaListRecyclerView.setAdapter(marinaListAdapter);
 
         closestSortTextView = view.findViewById(R.id.closest_sort_textView);
         closestSortTextView.setOnClickListener(new View.OnClickListener() {
@@ -495,8 +523,9 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     private float getMinPrice() {
 
-        float min = Float.parseFloat(marinaList.get(0).getPrice());
-
+        float min;
+        if (marinaList.size() > 0) min = Float.parseFloat(marinaList.get(0).getPrice());
+        else min = 0;
         for (MarinaModel m : marinaList) {
             if (Float.parseFloat(m.getPrice()) < min) {
                 min = Float.parseFloat(m.getPrice());
@@ -506,23 +535,356 @@ public class BoaterSearchResultsFragment extends Fragment {
     }
 
     private void prepareMarinaList() {
+        /////////////////////////////////////////PREPARE MARINA LIST//////////////////////////////////////////////////////////
 
-        Bitmap image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(image);
-        canvas.drawColor(Color.GRAY);
-
-
-        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
-        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
-
+        marinaUIDList = new ArrayList<>();
         marinaList = new ArrayList<>();
-        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, new int[]{1, 2, 3}));
-        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false, d, t, new int[]{0, 1, 2}));
-        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false, d, t, new int[]{1, 3}));
-        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true, d, t, new int[]{7, 1, 0}));
-        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true, d, t, new int[]{1, 8, 6, 0, 4}));
-        filteredMarinaList = marinaList;
+
+        double latitude = locationLatLng.latitude;
+        double longitude = locationLatLng.longitude;
+
+        int i = (int) (latitude / 10);
+        int temp = ((int) latitude) % 10;
+        if (temp < 5) i = i * 10;
+        else i = (i * 10) + 5;
+
+        int j = (int) (longitude / 10);
+        temp = ((int) longitude) % 10;
+        if (temp < 5) j = j * 10;
+        else j = (j * 10) + 5;
+
+        Log.d("Firestore: ", "i: " + i + " j: " + j);
+        fetchMarinaProgress.setMessage("Fetching marina list...");
+        fetchMarinaProgress.show();
+        DocumentReference location = firestore.collection("Location").document(i + "," + j);
+        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful() && task.isComplete()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+                    Log.d("Firestore: ", "Recieved marina list at i,j with size: " + marinaUIDList.size());
+
+                    for (String uid : marinaUIDList) {
+
+                        DatabaseReference marinaDesc = databaseReference.child("users").child(uid);
+                        MarinaModel model = new MarinaModel();
+                        Bitmap image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(image);
+                        canvas.drawColor(Color.GRAY);
+                        model.setImage(image);
+                        marinaDesc.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                name = (String) dataSnapshot.child("profile").child("name").getValue();
+                                model.setName(name);
+                                t = (String) dataSnapshot.child("marina-description").child("terms-and-condition").getValue();
+                                model.setTnc(t);
+                                marinaAddress = (String) dataSnapshot.child("marina-description").child("locationAddress").getValue();
+                                model.setLocation(marinaAddress);
+                                d = (String) dataSnapshot.child("marina-description").child("description").getValue();
+                                model.setDescription(d);
+                                model.setFacilities(new int[]{1, 2, 3});
+                                model.setMarinaUID(uid);
+                                marinaList.add(model);
+                                filteredMarinaList = marinaList;
+                                if (sortByClosest) {
+                                    sortByDist();
+                                }
+                                if (sortByCheapest) {
+                                    sortByPrice();
+                                }
+                                if (filtered) {
+                                    filteredMarinaList = filterMarinaList();
+                                } else {
+                                    minRange = getMinPrice();
+                                    maxRange = getMaxPrice();
+                                }
+                                Log.d("Firestore: ", "Size of filtered marina list: " + filteredMarinaList.size());
+                                marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
+                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+
+                                marinaListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                                marinaListRecyclerView.setLayoutManager(mLayoutManager);
+                                marinaListRecyclerView.setAdapter(marinaListAdapter);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
+                }
+                fetchMarinaProgress.dismiss();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Firestore", "Failed to recieve marina list.");
+                        fetchMarinaProgress.dismiss();
+                    }
+                });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
+
+//    private void prepareMarinaList(LatLng latLng) {
+
+//        marinaUIDList = new ArrayList<>();
+//
+//        double latitude = latLng.latitude;
+//        double longitude = latLng.longitude;
+//
+//        int i = (int) (latitude / 10);
+//        int temp = ((int) latitude) % 10;
+//        if (temp < 5) i = i * 10;
+//        else i = (i * 10) + 5;
+//
+//        int j = (int) (longitude / 10);
+//        temp = ((int) longitude) % 10;
+//        if (temp < 5) j = j * 10;
+//        else j = (j * 10) + 5;
+//
+//        Log.d("Firestore: ","i: " + i + " j: "+j);
+//        //////////////////////////////////////////Get Marina UIDs////////////////////////////////////////////////////////
+//        DocumentReference location = firestore.collection("Location").document(i + "," + j);
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i,j with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//        location = firestore.collection("Location").document((i + 5) + "," + j);
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i+5,j with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//        location = firestore.collection("Location").document((i - 5) + "," + j);
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i-5,j with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//        location = firestore.collection("Location").document(i + "," + (j + 5));
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i,j+5 with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//        location = firestore.collection("Location").document(i + "," + (j - 5));
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i,j-5 with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//        location = firestore.collection("Location").document((i + 5) + "," + (j + 5));
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i+5,j+5 with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//        location = firestore.collection("Location").document((i - 5) + "," + (j + 5));
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i-5,j+5 with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//        location = firestore.collection("Location").document((i + 5) + "," + (j - 5));
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i+5,j-5 with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//
+//
+//        location = firestore.collection("Location").document((i - 5) + "," + (j - 5));
+//        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
+//                    Log.d("Firestore: ", "Recieved marina list at i-5,j-5 with size: " + marinaUIDList.size());
+//                }
+//            }
+//        })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("Firestore", "Failed to recieve marina list.");
+//                    }
+//                });
+//        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//        marinaList = new ArrayList<>();
+//        Bitmap image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(image);
+//        canvas.drawColor(Color.GRAY);
+//
+//        for (String uid : marinaUIDList) {
+//
+//            DatabaseReference marinaDesc = databaseReference.child("users").child(uid).child("marina-description");
+//
+//            marinaDesc.child("terms-and-condition").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    t = (String) dataSnapshot.getValue();
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//            marinaDesc.child("locationAddress").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    marinaAddress = (String) dataSnapshot.getValue();
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//            marinaDesc.child("description").addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    d = (String) dataSnapshot.getValue();
+//                    marinaList.add(new MarinaModel("Hello", image, "2.0", marinaAddress, 5.0f, 1, true, d, t, new int[]{1, 2, 3}));
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+////            marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, new int[]{1, 2, 3}));
+//
+//        }
+//        filteredMarinaList = marinaList;
+//
+//
+
+//    }
+
+//    private void prepareMarinaList() {
+//
+//        Bitmap image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(image);
+//        canvas.drawColor(Color.GRAY);
+//
+//
+//        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+//        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+//
+//        marinaList = new ArrayList<>();
+//        marinaList.add(new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, new int[]{1, 2, 3}));
+//        marinaList.add(new MarinaModel("Hello", image, "5.0", "default", 2.0f, 2, false, d, t, new int[]{0, 1, 2}));
+//        marinaList.add(new MarinaModel("Hello", image, "3.0", "default", 1.0f, 3, false, d, t, new int[]{1, 3}));
+//        marinaList.add(new MarinaModel("Hello", image, "1.0", "default", 4.0f, 4, true, d, t, new int[]{7, 1, 0}));
+//        marinaList.add(new MarinaModel("Hello", image, "4.0", "default", 3.0f, 5, true, d, t, new int[]{1, 8, 6, 0, 4}));
+//        filteredMarinaList = marinaList;
+//    }
 
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
@@ -570,6 +932,7 @@ public class BoaterSearchResultsFragment extends Fragment {
             locationAddress = place.getAddress().toString();
             locationEditText.setText(locationAddress);
             locationLatLng = place.getLatLng();
+            prepareMarinaList();
         }
     }
 

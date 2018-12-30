@@ -32,6 +32,7 @@ public class MarinaModel implements Parcelable {
     private int f[];
     private String fromDate = "default";
     private String toDate = "default";
+    private String marinaUID = "default";
 
     public MarinaModel() {
 
@@ -75,6 +76,15 @@ public class MarinaModel implements Parcelable {
 
     public MarinaModel(Parcel in) {
 
+    }
+
+    public String getMarinaUID() {
+
+        return marinaUID;
+    }
+
+    public void setMarinaUID(String marinaUID) {
+        this.marinaUID = marinaUID;
     }
 
     public String getFromDate() {
