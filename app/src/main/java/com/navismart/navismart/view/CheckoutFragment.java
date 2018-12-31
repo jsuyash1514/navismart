@@ -102,11 +102,12 @@ public class CheckoutFragment extends Fragment {
 
                 }
 
-                BookingModel bookingModel = new BookingModel(bM, marinaModel, fromDate, toDate, BookingModel.UPCOMING, boaterName);
+                BookingModel bookingModel = new BookingModel(bM.getName(), marinaModel.getName(), bM.getId(), fromDate, toDate, BookingModel.UPCOMING, boaterName);
 
                 String bookingUID = UUID.randomUUID().toString();
-                ////////////////////////////////////ADD TO USER BOOKING//////////////////////////////////////////////////////////////////////////////////////////////////////////
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("boat_name").setValue(bM.getName())
+                bookingModel.setBookingID(bookingUID);
+                ///////////////////////////////////////////////////////ADD TO USER BOOKING/////////////////////////////////////////////////////////////////////////////////////////////////
+                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
@@ -114,127 +115,11 @@ public class CheckoutFragment extends Fragment {
                                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
                             }
                         });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("boat_id").setValue(bM.getId())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("fromDate").setValue(fromDate)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("toDate").setValue(toDate)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("bokingID").setValue(bookingUID)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("price_per_day").setValue(marinaModel.getPrice())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("final_price").setValue(priceDisplayTextView.getText().toString())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).child("marina_name").setValue(marinaModel.getName())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(getContext(), "Booking Successfully completed!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
+
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                ////////////////////////////////////////////////////ADD TO MARINA MANAGER BOOKING/////////////////////////////////////////////////////////////////////////////////////////////////////
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("boat_name").setValue(bM.getName())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("boat_id").setValue(bM.getId())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("fromDate").setValue(fromDate)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("toDate").setValue(toDate)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("bokingID").setValue(bookingUID)
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("price_per_day").setValue(marinaModel.getPrice())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("final_price").setValue(priceDisplayTextView.getText().toString())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
-                            }
-                        });
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).child("marina_name").setValue(marinaModel.getName())
+                ////////////////////////////////////////////////////ADD TO MARINA MANAGER BOOKING////////////////////////////////////////////////////////////////////////////////////////////
+
+                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -249,7 +134,7 @@ public class CheckoutFragment extends Fragment {
                                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
                             }
                         });
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         });
 

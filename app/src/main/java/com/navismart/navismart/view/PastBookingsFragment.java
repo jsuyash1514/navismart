@@ -95,11 +95,11 @@ public class PastBookingsFragment extends Fragment {
 
         list = new ArrayList<>();
 
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, new int[]{1, 2, 3}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello1", image, "5.0", "default", 2.0f, 2, false, d, t, new int[]{0, 1, 2}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello2", image, "3.0", "default", 1.0f, 3, false, d, t, new int[]{1, 3}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello3", image, "1.0", "default", 4.0f, 4, true, d, t, new int[]{7, 1, 0}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello4", image, "4.0", "default", 3.0f, 5, true, d, t, new int[]{1, 8, 6, 0, 4}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
 
 
     }

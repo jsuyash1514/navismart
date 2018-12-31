@@ -38,7 +38,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         BookingModel bookingModel = bookingList.get(position);
-        holder.marinaNameTextView.setText(bookingModel.getMarinaModel().getName());
+        holder.marinaNameTextView.setText(bookingModel.getMarinaName());
         holder.dateTextView.setText(bookingModel.getFromDate() + " to " + bookingModel.getToDate());
 
         holder.bookingCard.setOnClickListener(new View.OnClickListener() {

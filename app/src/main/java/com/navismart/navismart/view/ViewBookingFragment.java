@@ -51,13 +51,13 @@ public class ViewBookingFragment extends Fragment {
 
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
 
-        marinaName.setText(bookingModel.getMarinaModel().getName());
-        marinaImage.setImageBitmap(bookingModel.getMarinaModel().getImage());
+        marinaName.setText(bookingModel.getMarinaName());
+//        marinaImage.setImageBitmap(bookingModel.getMarinaModel().getImage());
         dateRange.setText(bookingModel.getFromDate() + " to " + bookingModel.getToDate());
-        price.setText(bookingModel.getMarinaModel().getPrice());
+        price.setText(Float.toString(bookingModel.getFinalPrice()));
         boaterName.setText(bookingModel.getBoaterName());
-        boatName.setText(bookingModel.getBoatModel().getName());
-        boatID.setText(bookingModel.getBoatModel().getId());
+        boatName.setText(bookingModel.getBoatName());
+        boatID.setText(bookingModel.getBoatID());
 
         if (bookingModel.getBookingTense() == BookingModel.PAST || bookingModel.getBookingTense() == BookingModel.CURRENT) {
             reviewButton.setVisibility(View.VISIBLE);
