@@ -24,11 +24,11 @@ import com.navismart.navismart.adapters.BookingListAdapter;
 import com.navismart.navismart.model.BookingModel;
 import com.navismart.navismart.viewmodels.BookingListViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 
 public class PastBookingsFragment extends Fragment {
 
@@ -63,7 +63,6 @@ public class PastBookingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 prepareList();
-                bookingListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -131,24 +130,23 @@ public class PastBookingsFragment extends Fragment {
 
     private boolean isPast(String to) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        try {
+        Date date = Calendar.getInstance().getTime();
 
-            Date dateTo = dateFormat.parse(to);
+        String curr = date.getDate() + "/" + date.getMonth() + "/" + (date.getYear() + 1900);
 
-            Date currDate = Calendar.getInstance().getTime();
+        int dT = getCountOfDays(curr, to);
 
-            long diffTo = currDate.getTime() - dateTo.getTime();
-            if (diffTo > 0) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (dT < 0) {
+            return true;
         }
+
         return false;
     }
 
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
+
+    }
 }
+
+

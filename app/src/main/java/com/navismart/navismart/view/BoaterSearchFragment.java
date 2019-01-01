@@ -65,9 +65,10 @@ public class BoaterSearchFragment extends Fragment {
         mYearFrom = c.get(Calendar.YEAR);
         mMonthFrom = c.get(Calendar.MONTH);
         mDateFrom = c.get(Calendar.DATE);
-        mYearTo = mYearFrom;
-        mMonthTo = mMonthFrom;
-        mDateTo = mDateFrom + 1;
+        c.add(Calendar.DATE, 1);
+        mYearTo = c.get(Calendar.YEAR);
+        mMonthTo = c.get(Calendar.MONTH);
+        mDateTo = c.get(Calendar.DATE);
 
         dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
         dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);

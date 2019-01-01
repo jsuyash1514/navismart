@@ -25,11 +25,11 @@ import com.navismart.navismart.adapters.BookingListAdapter;
 import com.navismart.navismart.model.BookingModel;
 import com.navismart.navismart.viewmodels.BookingListViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 
 public class UpcomingBookingsFragment extends Fragment {
 
@@ -68,7 +68,6 @@ public class UpcomingBookingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 prepareList();
-                bookingListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -135,23 +134,16 @@ public class UpcomingBookingsFragment extends Fragment {
 
     private boolean isUpcoming(String from) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        try {
+        Date date = Calendar.getInstance().getTime();
 
-            Date dateFrom = dateFormat.parse(from);
+        String curr = date.getDate() + "/" + date.getMonth() + "/" + (date.getYear() + 1900);
 
-            Date currDate = Calendar.getInstance().getTime();
+        int dF = getCountOfDays(curr, from);
 
-            long diffFrom = currDate.getTime() - dateFrom.getTime();
-            if (diffFrom < 0) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (dF > 0) {
+            return true;
         }
+
         return false;
     }
 

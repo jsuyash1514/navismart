@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,11 @@ import com.navismart.navismart.adapters.BookingListAdapter;
 import com.navismart.navismart.model.BookingModel;
 import com.navismart.navismart.viewmodels.BookingListViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 
 public class CurrentBookingsFragment extends Fragment {
 
@@ -60,7 +61,6 @@ public class CurrentBookingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 prepareList();
-                bookingListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -130,25 +130,20 @@ public class CurrentBookingsFragment extends Fragment {
 
     private boolean isCurrent(String from, String to) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        try {
-            Date dateFrom = dateFormat.parse(from);
-            Date dateTo = dateFormat.parse(to);
+        Date date = Calendar.getInstance().getTime();
 
-            Date currDate = Calendar.getInstance().getTime();
+        String curr = date.getDate() + "/" + date.getMonth() + "/" + (date.getYear()+1900);
 
-            long diffFrom = currDate.getTime() - dateFrom.getTime();
-            long diffTo = currDate.getTime() - dateTo.getTime();
+        int dF = getCountOfDays(curr, from);
+        int dT = getCountOfDays(curr, to);
 
-            if (diffFrom > 0 && diffTo < 0) {
-                return true;
-            } else {
-                return false;
-            }
+        Log.d("DATE DIFF", "dF = " + dF + "dT = " + dT);
+        Log.d("curr date", curr);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (dF <= 0 && dT >= 0) {
+            return true;
         }
+
         return false;
     }
 
