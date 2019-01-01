@@ -106,6 +106,7 @@ public class CheckoutFragment extends Fragment {
 
                 String bookingUID = UUID.randomUUID().toString();
                 bookingModel.setBookingID(bookingUID);
+                bookingModel.setMarinaUID(marinaModel.getMarinaUID());
                 ///////////////////////////////////////////////////////ADD TO USER BOOKING/////////////////////////////////////////////////////////////////////////////////////////////////
                 databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnFailureListener(new OnFailureListener() {
