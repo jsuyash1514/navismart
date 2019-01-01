@@ -142,13 +142,18 @@ public class BoaterSearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Bundle bundle = new Bundle();
-                bundle.putString("fromDate", dateFromEditText.getText().toString());
-                bundle.putString("toDate", dateToEditText.getText().toString());
-                bundle.putString("location_address", locationAddress);
-                bundle.putParcelable("locationLatLng", locationLatLng);
-                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
-                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+                if (locationAddress != null && !locationAddress.trim().isEmpty()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("fromDate", dateFromEditText.getText().toString());
+                    bundle.putString("toDate", dateToEditText.getText().toString());
+                    bundle.putString("location_address", locationAddress);
+                    bundle.putParcelable("locationLatLng", locationLatLng);
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+                    navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+                } else {
+                    Toast.makeText(getContext(), "Enter Search location!", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
