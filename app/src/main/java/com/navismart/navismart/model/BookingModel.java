@@ -20,6 +20,7 @@ public class BookingModel implements Parcelable {
     private String boatName = "default";
     private String boatID = "default";
     private String bookingID = "default";
+    private String marinaUID = "default";
     private String marinaName = "default";
     private String boaterName = "default";
     private String fromDate = "default";
@@ -54,6 +55,15 @@ public class BookingModel implements Parcelable {
 
     public BookingModel() {
 
+    }
+
+    public String getMarinaUID() {
+
+        return marinaUID;
+    }
+
+    public void setMarinaUID(String marinaUID) {
+        this.marinaUID = marinaUID;
     }
 
     public String getBookingID() {
