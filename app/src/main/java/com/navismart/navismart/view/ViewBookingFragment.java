@@ -1,8 +1,10 @@
 package com.navismart.navismart.view;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.BookingModel;
 
@@ -25,6 +31,7 @@ public class ViewBookingFragment extends Fragment {
     private TextView boatID;
     private TextView price;
     private Button reviewButton;
+    private StorageReference profilePicReference;
 
     public ViewBookingFragment() {
         // Required empty public constructor
@@ -51,6 +58,19 @@ public class ViewBookingFragment extends Fragment {
 
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
 
+        profilePicReference = FirebaseStorage.getInstance().getReference().child("users").child(bookingModel.getMarinaUID()).child("profile");
+        profilePicReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                Log.d("URI", uri.toString());
+                Glide.with(getContext())
+                        .load(uri)
+                        .into(marinaImage);
+
+            }
+        });
+
         marinaName.setText(bookingModel.getMarinaName());
 //        marinaImage.setImageBitmap(bookingModel.getMarinaModel().getImage());
         dateRange.setText(bookingModel.getFromDate() + " to " + bookingModel.getToDate());
@@ -68,7 +88,7 @@ public class ViewBookingFragment extends Fragment {
         reviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment).navigate(R.id.action_viewBookingFragment_to_writeReviewFragment);
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewBookingFragment_to_writeReviewFragment);
             }
         });
 

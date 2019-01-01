@@ -44,7 +44,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.maps.android.SphericalUtil;
@@ -129,10 +128,6 @@ public class BoaterSearchResultsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_boater_search_results, container, false);
 
         firestore = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        firestore.setFirestoreSettings(settings);
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
             Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
@@ -585,10 +580,6 @@ public class BoaterSearchResultsFragment extends Fragment {
 
                         DatabaseReference marinaDesc = databaseReference.child("users").child(uid);
                         MarinaModel model = new MarinaModel();
-                        Bitmap image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
-                        Canvas canvas = new Canvas(image);
-                        canvas.drawColor(Color.GRAY);
-                        model.setImage(image);
                         marinaDesc.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -602,6 +593,7 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 model.setDescription(d);
                                 model.setFacilities(new int[]{1, 2, 3});
                                 model.setMarinaUID(uid);
+                                Log.d("LAT", dataSnapshot.child("marina-description").child("latitude").getValue() + "");
                                 model.setLat((double) dataSnapshot.child("marina-description").child("latitude").getValue());
                                 model.setLng((double) dataSnapshot.child("marina-description").child("longitude").getValue());
                                 model.setDistFromSearch((float) SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(model.getLat(), model.getLng())) / 1000.0f);
