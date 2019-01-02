@@ -96,12 +96,12 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private boolean passwordValid = false;
     private boolean enabler = false;
     private LatLng locationLatLng;
-    private String locationAddress="";
+    private String locationAddress = "";
     private ArrayList<String> marinaUIDList;
     private RecyclerView marinaPicRecyclerview;
     private List<MarinaPicModel> marinaPicModelList;
     private MarinaPicAdapter picAdapter;
-    private CheckBox drinkingWater,electricity,fuelStation,access,travelLift,security,residualWaterCollection,restaurant,dryPort,maintenence;
+    private CheckBox drinkingWater, electricity, fuelStation, access, travelLift, security, residualWaterCollection, restaurant, dryPort, maintenence;
     private ArrayList<Integer> f;
 
 
@@ -156,12 +156,12 @@ public class SignUpMarinaManagerFragment extends Fragment {
         residualWaterCollection = view.findViewById(R.id.check_box_6);
         restaurant = view.findViewById(R.id.check_box_7);
         dryPort = view.findViewById(R.id.check_box_8);
-        maintenence= view.findViewById(R.id.check_box_9);
+        maintenence = view.findViewById(R.id.check_box_9);
 
         f = new ArrayList<>();
 
         marinaPicModelList = new ArrayList<>();
-        if(signUpViewModel.getMarinaPicList().getValue().size()==0){
+        if (signUpViewModel.getMarinaPicList().getValue().size() == 0) {
             Drawable drawable = getContext().getDrawable(R.drawable.marina_pic_add);
             Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
@@ -171,13 +171,12 @@ public class SignUpMarinaManagerFragment extends Fragment {
             marinaPicModelList.add(picModel);
 
             signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
-        }
-        else{
+        } else {
             marinaPicModelList = signUpViewModel.getMarinaPicList().getValue();
         }
         picAdapter = new MarinaPicAdapter(getContext(), marinaPicModelList);
 
-        RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         marinaPicRecyclerview.setLayoutManager(recycler);
         marinaPicRecyclerview.setAdapter(picAdapter);
 
@@ -207,12 +206,12 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onChanged(@Nullable List<MarinaPicModel> marinaPicModels) {
                 picAdapter = new MarinaPicAdapter(getContext(), marinaPicModels);
 
-                RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+                RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 marinaPicRecyclerview.setLayoutManager(recycler);
                 marinaPicRecyclerview.setAdapter(picAdapter);
             }
         };
-        signUpViewModel.getMarinaPicList().observe(this,marinaPicListObserver);
+        signUpViewModel.getMarinaPicList().observe(this, marinaPicListObserver);
 
         emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -315,17 +314,20 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
 
         marinaPicRecyclerview.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), marinaPicRecyclerview ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        if(position == 0)   startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 110);
-                        else{
+                new RecyclerItemClickListener(getContext(), marinaPicRecyclerview, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (position == 0)
+                            startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 110);
+                        else {
                             postionToChange = position;
                             startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 111);
                         }
                     }
 
-                    @Override public void onLongItemClick(View view, int position) {
-                        if(position!=0){
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        if (position != 0) {
                             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                             alert.setTitle("Delete entry");
                             alert.setMessage("Are you sure you want to delete?");
@@ -375,7 +377,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             locationEditText.setText(locationAddress);
             locationLatLng = place.getLatLng();
 
-        } else if(requestCode == 110 && resultCode == RESULT_OK){
+        } else if (requestCode == 110 && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
             Bitmap bitmap;
             try {
@@ -390,14 +392,14 @@ public class SignUpMarinaManagerFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if(requestCode == 111 && resultCode == RESULT_OK){
+        } else if (requestCode == 111 && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
             Bitmap bitmap;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
                 if (bitmap != null) {
                     MarinaPicModel picModel = new MarinaPicModel(bitmap);
-                    marinaPicModelList.set(postionToChange,picModel);
+                    marinaPicModelList.set(postionToChange, picModel);
                     signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
                 }
             } catch (FileNotFoundException e) {
@@ -426,16 +428,16 @@ public class SignUpMarinaManagerFragment extends Fragment {
         final String capacity = String.valueOf(capacityPicker.getValue());
         final String termsAndCond = t_cEditText.getText().toString().trim();
 
-        if(drinkingWater.isChecked()) f.add(0);
-        if(electricity.isChecked()) f.add(1);
-        if(fuelStation.isChecked()) f.add(2);
-        if(access.isChecked()) f.add(3);
-        if(travelLift.isChecked()) f.add(4);
-        if(security.isChecked()) f.add(5);
-        if(residualWaterCollection.isChecked()) f.add(6);
-        if(restaurant.isChecked()) f.add(7);
-        if(dryPort.isChecked()) f.add(8);
-        if(maintenence.isChecked()) f.add(9);
+        if (drinkingWater.isChecked()) f.add(0);
+        if (electricity.isChecked()) f.add(1);
+        if (fuelStation.isChecked()) f.add(2);
+        if (access.isChecked()) f.add(3);
+        if (travelLift.isChecked()) f.add(4);
+        if (security.isChecked()) f.add(5);
+        if (residualWaterCollection.isChecked()) f.add(6);
+        if (restaurant.isChecked()) f.add(7);
+        if (dryPort.isChecked()) f.add(8);
+        if (maintenence.isChecked()) f.add(9);
 
 
         progressDialog.setMessage("Registering Please wait...");
@@ -452,9 +454,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
-                            if (!TextUtils.isEmpty(descr))  currentUser.child("marina-description").child("description").setValue(descr);
-                            if(!TextUtils.isEmpty(termsAndCond))    currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
-                            if(!TextUtils.isEmpty(locationAddress)) {
+                            if (!TextUtils.isEmpty(descr))
+                                currentUser.child("marina-description").child("description").setValue(descr);
+                            if (!TextUtils.isEmpty(termsAndCond))
+                                currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                            if (!TextUtils.isEmpty(locationAddress)) {
                                 currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
                                 currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
                                 currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
@@ -464,18 +468,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
 
 
-                            if(marinaPicModelList.size()>1){
-                                for (int i=1; i<marinaPicModelList.size();i++){
+                            if (marinaPicModelList.size() > 1) {
+                                for (int i = 1; i < marinaPicModelList.size(); i++) {
                                     MarinaPicModel model = marinaPicModelList.get(i);
                                     Bitmap bitmap = model.getPic();
                                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                                     byte[] data = baos.toByteArray();
 
-                                    StorageReference marinaPicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("marina"+i);
+                                    StorageReference marinaPicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("marina" + i);
 
                                     uploadProgress.setMax(100);
-                                    uploadProgress.setMessage("Uploading image "+i+"/"+(marinaPicModelList.size()-1)+"...");
+                                    uploadProgress.setMessage("Uploading image " + i + "/" + (marinaPicModelList.size() - 1) + "...");
                                     uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                     uploadProgress.show();
                                     uploadProgress.setCancelable(false);
