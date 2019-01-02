@@ -2,6 +2,7 @@ package com.navismart.navismart.view;
 
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +12,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.navismart.navismart.R;
 
 import java.util.Calendar;
@@ -19,15 +24,23 @@ import java.util.Calendar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import static android.app.Activity.RESULT_OK;
+import static com.navismart.navismart.MainActivity.getCountOfDays;
+
 public class BoaterSearchFragment extends Fragment {
 
+    int PLACE_PICKER_REQUEST = 1;
+    private String locationAddress;
+    private LatLng locationLatLng;
     private ImageView datePickFromImageView;
     private ImageView datePickToImageView;
     private int mYearFrom, mMonthFrom, mDateFrom;
     private int mYearTo, mMonthTo, mDateTo;
     private EditText dateFromEditText;
     private EditText dateToEditText;
+    private EditText locationEditText;
     private Button searchButton;
+    private String fromDate, toDate;
 
     public BoaterSearchFragment() {
         // Required empty public constructor
@@ -46,17 +59,34 @@ public class BoaterSearchFragment extends Fragment {
 
         dateFromEditText = view.findViewById(R.id.date_display_from_editText);
         dateToEditText = view.findViewById(R.id.date_display_to_editText);
+        locationEditText = view.findViewById(R.id.location_search_editText);
 
         final Calendar c = Calendar.getInstance();
         mYearFrom = c.get(Calendar.YEAR);
         mMonthFrom = c.get(Calendar.MONTH);
         mDateFrom = c.get(Calendar.DATE);
-        mYearTo = mYearFrom;
-        mMonthTo = mMonthFrom;
-        mDateTo = mDateFrom + 1;
+        c.add(Calendar.DATE, 1);
+        mYearTo = c.get(Calendar.YEAR);
+        mMonthTo = c.get(Calendar.MONTH);
+        mDateTo = c.get(Calendar.DATE);
 
         dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
         dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
+
+        locationEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
+        toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
 
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
         datePickFromImageView.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +101,7 @@ public class BoaterSearchFragment extends Fragment {
                         mMonthFrom = month;
                         mDateFrom = dayOfMonth;
                         dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
+                        fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
 
                     }
                 }, mYearFrom, mMonthFrom, mDateFrom);
@@ -93,7 +124,11 @@ public class BoaterSearchFragment extends Fragment {
                         mMonthTo = month;
                         mDateTo = dayOfMonth;
                         dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
-
+                        toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
+                        if (getCountOfDays(fromDate, toDate) < 0) {
+                            dateToEditText.setText(fromDate);
+                            Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }, mYearTo, mMonthTo, mDateTo);
 
@@ -107,16 +142,34 @@ public class BoaterSearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Bundle bundle = new Bundle();
-                bundle.putString("fromDate", dateFromEditText.getText().toString());
-                bundle.putString("toDate", dateToEditText.getText().toString());
+                if (locationAddress != null && !locationAddress.trim().isEmpty()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("fromDate", dateFromEditText.getText().toString());
+                    bundle.putString("toDate", dateToEditText.getText().toString());
+                    bundle.putString("location_address", locationAddress);
+                    bundle.putParcelable("locationLatLng", locationLatLng);
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+                    navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+                } else {
+                    Toast.makeText(getContext(), "Enter Search location!", Toast.LENGTH_SHORT).show();
 
-                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
-                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+                }
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
+            Place place = PlacePicker.getPlace(data, getContext());
+            locationAddress = place.getAddress().toString();
+            locationEditText.setText(locationAddress);
+            locationLatLng = place.getLatLng();
+        }
     }
 
 }

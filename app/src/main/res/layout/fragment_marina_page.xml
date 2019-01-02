@@ -92,12 +92,12 @@
                     android:src="@drawable/ic_location_city_gray_24dp" />
 
                 <TextView
-                    android:id="@+id/dist_from_city_display"
+                    android:id="@+id/dist_from_search_display"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
-                    android:text="@string/dist_city"
+                    android:text="@string/dist_search"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
 

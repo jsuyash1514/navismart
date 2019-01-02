@@ -1,22 +1,33 @@
 package com.navismart.navismart.view;
 
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.BookingListAdapter;
 import com.navismart.navismart.model.BookingModel;
+import com.navismart.navismart.viewmodels.BookingListViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 
 public class CurrentBookingsFragment extends Fragment {
 
@@ -45,39 +56,35 @@ public class CurrentBookingsFragment extends Fragment {
         reloadIcon = view.findViewById(R.id.reload_icon);
 
         prepareList();
-        checkVisibility();
 
         reloadIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 prepareList();
-                checkVisibility();
-                bookingListAdapter.notifyDataSetChanged();
             }
         });
 
-        bookingListAdapter = new BookingListAdapter(getActivity(), list);
-        currentRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        currentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        currentRecyclerView.setAdapter(bookingListAdapter);
+//        bookingListAdapter = new BookingListAdapter(getActivity(), list);
+//        currentRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        currentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        currentRecyclerView.setAdapter(bookingListAdapter);
 
         return view;
     }
 
-    private void checkVisibility(){
+    private void checkVisibility() {
 
-        if(list.size() > 0){
+        if (list.size() > 0) {
             currentRecyclerView.setVisibility(View.VISIBLE);
             noBookingTextView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             currentRecyclerView.setVisibility(View.GONE);
             noBookingTextView.setVisibility(View.VISIBLE);
         }
 
     }
 
-    private void prepareList(){
+    private void prepareList() {
 
 //        Bitmap image = Bitmap.createBitmap(150, 100, Bitmap.Config.ARGB_8888);
 //        Canvas canvas = new Canvas(image);
@@ -95,6 +102,49 @@ public class CurrentBookingsFragment extends Fragment {
 //        list.add(new BookingModel(new MarinaModel("Hello3", image, "1.0", "default", 4.0f, 4, true, d, t, new int[]{7, 1, 0}),"12/12/18","14/12/18"));
 //        list.add(new BookingModel(new MarinaModel("Hello4", image, "4.0", "default", 3.0f, 5, true, d, t, new int[]{1, 8, 6, 0, 4}),"12/12/18","14/12/18"));
 
+        BookingListViewModel bookingListViewModel = ViewModelProviders.of(this).get(BookingListViewModel.class);
+        LiveData<DataSnapshot> liveData = bookingListViewModel.getDataSnapshotLiveData();
+        liveData.observe(this, new Observer<DataSnapshot>() {
+            @Override
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        BookingModel booking = postSnapshot.getValue(BookingModel.class);
+                        if (isCurrent(booking.getFromDate(), booking.getToDate())) {
+                            booking.setBookingTense(BookingModel.CURRENT);
+                            list.add(booking);
+                        }
+                    }
+                    BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                    currentRecyclerView.setLayoutManager(mLayoutManager);
+                    currentRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                    currentRecyclerView.setAdapter(bookingListAdapter);
+                    checkVisibility();
+                }
+            }
+        });
+
+    }
+
+    private boolean isCurrent(String from, String to) {
+
+        Date date = Calendar.getInstance().getTime();
+
+        String curr = date.getDate() + "/" + date.getMonth() + "/" + (date.getYear()+1900);
+
+        int dF = getCountOfDays(curr, from);
+        int dT = getCountOfDays(curr, to);
+
+        Log.d("DATE DIFF", "dF = " + dF + "dT = " + dT);
+        Log.d("curr date", curr);
+
+        if (dF <= 0 && dT >= 0) {
+            return true;
+        }
+
+        return false;
     }
 
 }

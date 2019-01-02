@@ -34,6 +34,8 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:baselineAligned="false"
+                android:enabled="true"
+                android:focusable="false"
                 android:hint="@string/location"
                 android:theme="@style/BaseLineTheme" />
         </android.support.design.widget.TextInputLayout>
@@ -68,6 +70,8 @@
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:baselineAligned="false"
+                    android:enabled="true"
+                    android:focusable="false"
                     android:hint="@string/until_tomorrow"
                     android:inputType="date"
                     android:theme="@style/BaseLineTheme" />
@@ -97,6 +101,8 @@
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:baselineAligned="false"
+                    android:enabled="true"
+                    android:focusable="false"
                     android:hint="@string/until_tomorrow"
                     android:inputType="date"
                     android:theme="@style/BaseLineTheme" />

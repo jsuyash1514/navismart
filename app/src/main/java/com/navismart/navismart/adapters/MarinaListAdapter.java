@@ -45,7 +45,7 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         holder.marinaLocationTextView.setText(marinaModel.getLocation());
         holder.marinaNameTextView.setText(marinaModel.getName());
         holder.marinaImageView.setImageBitmap(marinaModel.getImage());
-        holder.marinaDistaFromCityTextView.setText(Float.toString(marinaModel.getDistFromCity()) + " km from city center");
+        holder.marinaDistaFromSearchTextView.setText(Integer.toString((int)Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
 
         holder.seeMarinaDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +65,7 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView marinaImageView;
-        public TextView marinaNameTextView, marinaLocationTextView, marinaDistaFromCityTextView, marinaPriceTextView;
+        public TextView marinaNameTextView, marinaLocationTextView, marinaDistaFromSearchTextView, marinaPriceTextView;
         public RatingBar ratingBar;
         public Button seeMarinaDetailsButton;
 
@@ -73,7 +73,7 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         public MyViewHolder(View view) {
             super(view);
             marinaImageView = view.findViewById(R.id.marina_imageView);
-            marinaDistaFromCityTextView = view.findViewById(R.id.dist_from_city_display);
+            marinaDistaFromSearchTextView = view.findViewById(R.id.dist_from_search_display);
             marinaLocationTextView = view.findViewById(R.id.location_display_card_textView);
             marinaNameTextView = view.findViewById(R.id.marina_name_textView);
             marinaPriceTextView = view.findViewById(R.id.price_textView);

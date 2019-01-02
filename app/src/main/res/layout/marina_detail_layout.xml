@@ -58,7 +58,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/city_dist_bar"
+            android:id="@+id/city_search_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/location_bar"
@@ -73,12 +73,12 @@
                 android:src="@drawable/ic_location_city_gray_12dp" />
 
             <TextView
-                android:id="@+id/dist_from_city_display"
+                android:id="@+id/dist_from_search_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="2dp"
-                android:text="@string/dist_city"
+                android:text="@string/dist_search"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -100,7 +100,7 @@
             android:id="@+id/price_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/city_dist_bar"
+            android:layout_below="@+id/city_search_bar"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="5dp"

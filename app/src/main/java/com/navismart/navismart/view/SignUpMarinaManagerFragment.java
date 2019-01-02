@@ -82,7 +82,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private boolean enabler = false;
     private LatLng locationLatLng;
     private String locationAddress;
-    private ArrayList<String> marinaList;
+    private ArrayList<String> marinaUIDList;
 
     public SignUpMarinaManagerFragment() {
         // Required empty public constructor
@@ -108,7 +108,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         uploadProgress = new ProgressDialog(getContext());
         checkUserLoggedIn();
 
-        marinaList = new ArrayList<>();
+        marinaUIDList = new ArrayList<>();
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
         passwordEditText = view.findViewById(R.id.password_edit_text);
@@ -400,11 +400,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
-                    marinaList = (ArrayList<String>) doc.get("Marina List");
-                    Log.d("Firestore: ", "Recieved marina list with size: " + marinaList.size());
-                    marinaList.add(firebaseAuth.getCurrentUser().getUid());
+                    marinaUIDList = (ArrayList<String>) doc.get("Marina List");
+                    Log.d("Firestore: ", "Recieved marina list with size: " + marinaUIDList.size());
+                    marinaUIDList.add(firebaseAuth.getCurrentUser().getUid());
                     Map<String, ArrayList<String>> map = new HashMap<>();
-                    map.put("Marina List", marinaList);
+                    map.put("Marina List", marinaUIDList);
                     location.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
