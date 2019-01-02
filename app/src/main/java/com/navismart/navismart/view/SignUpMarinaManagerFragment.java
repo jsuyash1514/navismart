@@ -9,8 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -139,7 +137,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         t_cEditText = view.findViewById(R.id.tnc_edit_text);
         marinaPicRecyclerview = view.findViewById(R.id.marina_pics_recycler_view);
         marinaPicModelList = new ArrayList<>();
-        picAdapter = new MarinaPicAdapter(getContext(),marinaPicModelList);
+        picAdapter = new MarinaPicAdapter(getContext(), marinaPicModelList);
 
         registerButton.setEnabled(enabler);
         if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
@@ -262,10 +260,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
             }
         });
 
-
-        MarinaPicModel picModel = new MarinaPicModel(BitmapFactory.decodeResource(getResources(),R.drawable.marina_pic_add));
-        marinaPicModelList.add(picModel);
-        picAdapter.notifyDataSetChanged();
+        try{
+            Drawable drawable = getResources().getDrawable(R.drawable.marina_pic_add);
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            MarinaPicModel picModel = new MarinaPicModel(bitmap);
+            marinaPicModelList.add(picModel);
+            picAdapter.notifyDataSetChanged();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext()/*,LinearLayoutManager.HORIZONTAL,false*/);
         marinaPicRecyclerview.setLayoutManager(recycler);
@@ -439,7 +445,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(),"Can't add your location.",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "Can't add your location.", Toast.LENGTH_LONG).show();
                                     Log.d("Firestore: ", "Failed to add new user location in firestore with error: " + e.toString());
                                 }
                             });
@@ -450,7 +456,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d("Firestore", "Failed to recieve marina list.");
-                        Toast.makeText(getContext(),"Can't add your location.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Can't add your location.", Toast.LENGTH_LONG).show();
                     }
                 });
 
