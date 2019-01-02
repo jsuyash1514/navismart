@@ -22,7 +22,7 @@ import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
 
 public class MarinaPageFragment extends Fragment {
 
-    private TextView nameTextView, fromDateTextView, distCityTextView, locationTextView, toDateTextView, descriptionTextView, facilitiesTextView, tNcTextView;
+    private TextView nameTextView, fromDateTextView, distSearchTextView, locationTextView, toDateTextView, descriptionTextView, facilitiesTextView, tNcTextView;
     private RatingBar ratingBar;
     private Button bookButton;
     private ImageView marinaImageView;
@@ -47,7 +47,7 @@ public class MarinaPageFragment extends Fragment {
         nameTextView = view.findViewById(R.id.marina_name_textView);
         fromDateTextView = view.findViewById(R.id.from_date_display_textView);
         toDateTextView = view.findViewById(R.id.to_date_display_textView);
-        distCityTextView = view.findViewById(R.id.dist_from_city_display);
+        distSearchTextView = view.findViewById(R.id.dist_from_search_display);
         locationTextView = view.findViewById(R.id.location_display_textView);
         descriptionTextView = view.findViewById(R.id.description_display_textView);
         facilitiesTextView = view.findViewById(R.id.facilities_display_textView);
@@ -64,7 +64,7 @@ public class MarinaPageFragment extends Fragment {
         nameTextView.setText(marinaModel.getName());
         ratingBar.setRating(marinaModel.getRating());
         locationTextView.setText(marinaModel.getLocation());
-        distCityTextView.setText(Float.toString(marinaModel.getDistFromCity()));
+        distSearchTextView.setText(Integer.toString((int)Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
         descriptionTextView.setText(marinaModel.getDescription());
         facilitiesTextView.setText(marinaModel.getFacilityString());
         tNcTextView.setText(marinaModel.getTnc());

@@ -1,9 +1,13 @@
 package com.navismart.navismart.view;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,13 +18,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.BookingListAdapter;
-import com.navismart.navismart.model.BoatModel;
 import com.navismart.navismart.model.BookingModel;
-import com.navismart.navismart.model.MarinaModel;
+import com.navismart.navismart.viewmodels.BookingListViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import static com.navismart.navismart.MainActivity.getCountOfDays;
 
 public class PastBookingsFragment extends Fragment {
 
@@ -50,22 +58,18 @@ public class PastBookingsFragment extends Fragment {
 
 
         prepareList();
-        checkVisibility();
-
 
         reloadIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 prepareList();
-                checkVisibility();
-                bookingListAdapter.notifyDataSetChanged();
             }
         });
 
-        bookingListAdapter = new BookingListAdapter(getActivity(), list);
-        pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        pastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        pastRecyclerView.setAdapter(bookingListAdapter);
+//        bookingListAdapter = new BookingListAdapter(getActivity(), list);
+//        pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        pastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        pastRecyclerView.setAdapter(bookingListAdapter);
 
         return view;
     }
@@ -89,19 +93,60 @@ public class PastBookingsFragment extends Fragment {
         canvas.drawColor(Color.GRAY);
 
 
-        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
-        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+//        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+//        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
 
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
 
-        list = new ArrayList<>();
-
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello", image, "2.0", "default", 5.0f, 1, true, d, t, new int[]{1, 2, 3}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello1", image, "5.0", "default", 2.0f, 2, false, d, t, new int[]{0, 1, 2}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello2", image, "3.0", "default", 1.0f, 3, false, d, t, new int[]{1, 3}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello3", image, "1.0", "default", 4.0f, 4, true, d, t, new int[]{7, 1, 0}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-        list.add(new BookingModel(new BoatModel(), new MarinaModel("Hello4", image, "4.0", "default", 3.0f, 5, true, d, t, new int[]{1, 8, 6, 0, 4}), "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-
+        BookingListViewModel bookingListViewModel = ViewModelProviders.of(this).get(BookingListViewModel.class);
+        LiveData<DataSnapshot> liveData = bookingListViewModel.getDataSnapshotLiveData();
+        liveData.observe(this, new Observer<DataSnapshot>() {
+            @Override
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    list = new ArrayList<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        BookingModel booking = postSnapshot.getValue(BookingModel.class);
+                        if (isPast(booking.getToDate())) {
+                            booking.setBookingTense(BookingModel.PAST);
+                            list.add(booking);
+                        }
+                    }
+                    BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                    pastRecyclerView.setLayoutManager(mLayoutManager);
+                    pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                    pastRecyclerView.setAdapter(bookingListAdapter);
+                    checkVisibility();
+                }
+            }
+        });
 
     }
 
+    private boolean isPast(String to) {
+
+        Date date = Calendar.getInstance().getTime();
+
+        String curr = date.getDate() + "/" + date.getMonth() + "/" + (date.getYear() + 1900);
+
+        int dT = getCountOfDays(curr, to);
+
+        if (dT < 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
+
+    }
 }
+
+

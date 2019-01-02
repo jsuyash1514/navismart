@@ -17,27 +17,30 @@ public class BookingModel implements Parcelable {
     public final static int PAST = 0;
     public final static int CURRENT = 1;
     public final static int UPCOMING = 2;
-    private MarinaModel marinaModel;
-    private BoatModel boatModel;
+    private String boatName = "default";
+    private String boatID = "default";
+    private String bookingID = "default";
+    private String marinaUID = "default";
+    private String marinaName = "default";
     private String boaterName = "default";
     private String fromDate = "default";
     private String toDate = "default";
     private int bookingTense = 0;
     private float finalPrice = 0;
-
-    public BookingModel(BoatModel boatModel, MarinaModel marinaModel, String fromDate, String toDate, int bookingTense, String boaterName) {
-        this.boatModel = boatModel;
-        this.marinaModel = marinaModel;
+    public BookingModel(String boatName, String marinaName, String boatID, String fromDate, String toDate, int bookingTense, String boaterName) {
+        this.boatName = boatName;
+        this.marinaName = marinaName;
+        this.boatID = boatID;
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.bookingTense = bookingTense;
         this.boaterName = boaterName;
 
     }
-
-    public BookingModel(BoatModel boatModel, MarinaModel marinaModel, String fromDate, String toDate, int bookingTense, String boaterName, float finalPrice) {
-        this.boatModel = boatModel;
-        this.marinaModel = marinaModel;
+    public BookingModel(String boatName, String marinaName, String boatID, String fromDate, String toDate, int bookingTense, String boaterName, float finalPrice) {
+        this.boatName = boatName;
+        this.marinaName = marinaName;
+        this.boatID = boatID;
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.bookingTense = bookingTense;
@@ -52,6 +55,49 @@ public class BookingModel implements Parcelable {
 
     public BookingModel() {
 
+    }
+
+    public String getMarinaUID() {
+
+        return marinaUID;
+    }
+
+    public void setMarinaUID(String marinaUID) {
+        this.marinaUID = marinaUID;
+    }
+
+    public String getBookingID() {
+
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
+    }
+
+    public String getBoatName() {
+
+        return boatName;
+    }
+
+    public void setBoatName(String boatName) {
+        this.boatName = boatName;
+    }
+
+    public String getBoatID() {
+        return boatID;
+    }
+
+    public void setBoatID(String boatID) {
+        this.boatID = boatID;
+    }
+
+    public String getMarinaName() {
+        return marinaName;
+    }
+
+    public void setMarinaName(String marinaName) {
+        this.marinaName = marinaName;
     }
 
     public float getFinalPrice() {
@@ -72,14 +118,6 @@ public class BookingModel implements Parcelable {
         this.boaterName = boaterName;
     }
 
-    public BoatModel getBoatModel() {
-
-        return boatModel;
-    }
-
-    public void setBoatModel(BoatModel boatModel) {
-        this.boatModel = boatModel;
-    }
 
     public int getBookingTense() {
 
@@ -98,15 +136,6 @@ public class BookingModel implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    public MarinaModel getMarinaModel() {
-
-        return marinaModel;
-    }
-
-    public void setMarinaModel(MarinaModel marinaModel) {
-        this.marinaModel = marinaModel;
     }
 
     public String getFromDate() {

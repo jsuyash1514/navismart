@@ -65,9 +65,10 @@ public class BoaterSearchFragment extends Fragment {
         mYearFrom = c.get(Calendar.YEAR);
         mMonthFrom = c.get(Calendar.MONTH);
         mDateFrom = c.get(Calendar.DATE);
-        mYearTo = mYearFrom;
-        mMonthTo = mMonthFrom;
-        mDateTo = mDateFrom + 1;
+        c.add(Calendar.DATE, 1);
+        mYearTo = c.get(Calendar.YEAR);
+        mMonthTo = c.get(Calendar.MONTH);
+        mDateTo = c.get(Calendar.DATE);
 
         dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
         dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
@@ -141,13 +142,18 @@ public class BoaterSearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Bundle bundle = new Bundle();
-                bundle.putString("fromDate", dateFromEditText.getText().toString());
-                bundle.putString("toDate", dateToEditText.getText().toString());
-                bundle.putString("location_address", locationAddress);
-                bundle.putParcelable("locationLatLng", locationLatLng);
-                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
-                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+                if (locationAddress != null && !locationAddress.trim().isEmpty()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("fromDate", dateFromEditText.getText().toString());
+                    bundle.putString("toDate", dateToEditText.getText().toString());
+                    bundle.putString("location_address", locationAddress);
+                    bundle.putParcelable("locationLatLng", locationLatLng);
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+                    navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+                } else {
+                    Toast.makeText(getContext(), "Enter Search location!", Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
