@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -58,6 +59,7 @@ import com.navismart.navismart.adapters.MarinaPicAdapter;
 import com.navismart.navismart.model.MarinaPicModel;
 import com.navismart.navismart.viewmodels.SignUpViewModel;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,11 +96,14 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private boolean passwordValid = false;
     private boolean enabler = false;
     private LatLng locationLatLng;
-    private String locationAddress;
+    private String locationAddress="";
     private ArrayList<String> marinaUIDList;
     private RecyclerView marinaPicRecyclerview;
     private List<MarinaPicModel> marinaPicModelList;
     private MarinaPicAdapter picAdapter;
+    private CheckBox drinkingWater,electricity,fuelStation,access,travelLift,security,residualWaterCollection,restaurant,dryPort,maintenence;
+    private ArrayList<Integer> f;
+
 
     public SignUpMarinaManagerFragment() {
         // Required empty public constructor
@@ -142,6 +147,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
         descriptionEditText = view.findViewById(R.id.description_edit_text);
         t_cEditText = view.findViewById(R.id.tnc_edit_text);
         marinaPicRecyclerview = view.findViewById(R.id.marina_pics_recycler_view);
+        drinkingWater = view.findViewById(R.id.check_box_0);
+        electricity = view.findViewById(R.id.check_box_1);
+        fuelStation = view.findViewById(R.id.check_box_2);
+        access = view.findViewById(R.id.check_box_3);
+        travelLift = view.findViewById(R.id.check_box_4);
+        security = view.findViewById(R.id.check_box_5);
+        residualWaterCollection = view.findViewById(R.id.check_box_6);
+        restaurant = view.findViewById(R.id.check_box_7);
+        dryPort = view.findViewById(R.id.check_box_8);
+        maintenence= view.findViewById(R.id.check_box_9);
+
+        f = new ArrayList<>();
 
         marinaPicModelList = new ArrayList<>();
         if(signUpViewModel.getMarinaPicList().getValue().size()==0){
@@ -409,6 +426,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
         final String capacity = String.valueOf(capacityPicker.getValue());
         final String termsAndCond = t_cEditText.getText().toString().trim();
 
+        if(drinkingWater.isChecked()) f.add(0);
+        if(electricity.isChecked()) f.add(1);
+        if(fuelStation.isChecked()) f.add(2);
+        if(access.isChecked()) f.add(3);
+        if(travelLift.isChecked()) f.add(4);
+        if(security.isChecked()) f.add(5);
+        if(residualWaterCollection.isChecked()) f.add(6);
+        if(restaurant.isChecked()) f.add(7);
+        if(dryPort.isChecked()) f.add(8);
+        if(maintenence.isChecked()) f.add(9);
+
+
         progressDialog.setMessage("Registering Please wait...");
         progressDialog.show();
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -422,21 +451,71 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
-                            if (!TextUtils.isEmpty(descr) && !TextUtils.isEmpty(termsAndCond) && !locationAddress.isEmpty()) {
-                                currentUser.child("marina-description").child("description").setValue(descr);
-                                currentUser.child("marina-description").child("capacity").setValue(capacity);
-                                currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                            currentUser.child("marina-description").child("capacity").setValue(capacity);
+                            if (!TextUtils.isEmpty(descr))  currentUser.child("marina-description").child("description").setValue(descr);
+                            if(!TextUtils.isEmpty(termsAndCond))    currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                            if(!TextUtils.isEmpty(locationAddress)) {
                                 currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
                                 currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
                                 currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
-                                addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
+                            }
+
+                            currentUser.child("marina-description").child("facilities").setValue(f);
+                            addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
+
+
+                            if(marinaPicModelList.size()>1){
+                                for (int i=1; i<marinaPicModelList.size();i++){
+                                    MarinaPicModel model = marinaPicModelList.get(i);
+                                    Bitmap bitmap = model.getPic();
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                    byte[] data = baos.toByteArray();
+
+                                    StorageReference marinaPicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("marina"+i);
+
+                                    uploadProgress.setMax(100);
+                                    uploadProgress.setMessage("Uploading image "+i+"/"+(marinaPicModelList.size()-1)+"...");
+                                    uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                    uploadProgress.show();
+                                    uploadProgress.setCancelable(false);
+
+                                    UploadTask uploadTask = marinaPicRef.putBytes(data);
+                                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                        @Override
+                                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                                            uploadProgress.incrementProgressBy((int) progress);
+
+                                        }
+                                    });
+                                    uploadTask.addOnFailureListener(new OnFailureListener() {
+
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+
+                                            Toast.makeText(getContext(), "Error in uploading marina pic!", Toast.LENGTH_SHORT).show();
+                                            uploadProgress.dismiss();
+
+                                        }
+                                    });
+                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            uploadProgress.dismiss();
+                                        }
+                                    });
+                                }
                             }
 
                             if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
                                 uploadProgress.setMax(100);
-                                uploadProgress.setMessage("Uploading image...");
+                                uploadProgress.setMessage("Uploading images...");
                                 uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                 uploadProgress.show();
                                 uploadProgress.setCancelable(false);

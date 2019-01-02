@@ -168,6 +168,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -189,6 +190,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -210,6 +212,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -231,6 +234,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -252,6 +256,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -273,6 +278,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -294,6 +300,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -315,6 +322,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -336,6 +344,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -357,6 +366,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:id="@+id/check_box_9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -368,7 +378,7 @@
                     android:textColor="#444444"
                     android:textSize="16sp" />
             </LinearLayout>
-            
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
