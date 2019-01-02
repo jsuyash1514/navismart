@@ -263,7 +263,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         });
 
 
-        MarinaPicModel picModel = new MarinaPicModel(BitmapFactory.decodeResource(getContext().getResources(),R.drawable.marina_pic_add));
+        MarinaPicModel picModel = new MarinaPicModel(BitmapFactory.decodeResource(getResources(),R.drawable.marina_pic_add));
         marinaPicModelList.add(picModel);
         picAdapter.notifyDataSetChanged();
 
