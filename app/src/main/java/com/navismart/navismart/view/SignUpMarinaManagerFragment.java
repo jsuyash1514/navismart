@@ -6,13 +6,20 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -45,12 +52,15 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.navismart.navismart.R;
+import com.navismart.navismart.adapters.MarinaPicAdapter;
+import com.navismart.navismart.model.MarinaPicModel;
 import com.navismart.navismart.viewmodels.SignUpViewModel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import androidx.navigation.NavController;
@@ -83,6 +93,9 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private LatLng locationLatLng;
     private String locationAddress;
     private ArrayList<String> marinaUIDList;
+    private RecyclerView marinaPicRecyclerview;
+    private List<MarinaPicModel> marinaPicModelList;
+    private MarinaPicAdapter picAdapter;
 
     public SignUpMarinaManagerFragment() {
         // Required empty public constructor
@@ -124,6 +137,9 @@ public class SignUpMarinaManagerFragment extends Fragment {
         capacityPicker.setMinValue(1);
         descriptionEditText = view.findViewById(R.id.description_edit_text);
         t_cEditText = view.findViewById(R.id.tnc_edit_text);
+        marinaPicRecyclerview = view.findViewById(R.id.marina_pics_recycler_view);
+        marinaPicModelList = new ArrayList<>();
+        picAdapter = new MarinaPicAdapter(getContext(),marinaPicModelList);
 
         registerButton.setEnabled(enabler);
         if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
@@ -245,6 +261,15 @@ public class SignUpMarinaManagerFragment extends Fragment {
                 }
             }
         });
+
+
+        MarinaPicModel picModel = new MarinaPicModel(BitmapFactory.decodeResource(getContext().getResources(),R.drawable.marina_pic_add));
+        marinaPicModelList.add(picModel);
+        picAdapter.notifyDataSetChanged();
+
+        RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext()/*,LinearLayoutManager.HORIZONTAL,false*/);
+        marinaPicRecyclerview.setLayoutManager(recycler);
+        marinaPicRecyclerview.setAdapter(picAdapter);
 
         return view;
 
