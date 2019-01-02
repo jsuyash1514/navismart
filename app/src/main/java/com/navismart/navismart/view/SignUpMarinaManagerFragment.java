@@ -1,9 +1,11 @@
 package com.navismart.navismart.view;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -74,6 +76,7 @@ import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
 public class SignUpMarinaManagerFragment extends Fragment {
 
     int PLACE_PICKER_REQUEST = 1;
+    int postionToChange = 0;
     private ImageView profilePic, addLocationIcon;
     private SignUpViewModel signUpViewModel;
     private FirebaseAuth firebaseAuth;
@@ -297,18 +300,37 @@ public class SignUpMarinaManagerFragment extends Fragment {
         marinaPicRecyclerview.addOnItemTouchListener(
                 new RecyclerItemClickListener(getContext(), marinaPicRecyclerview ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 110);
+                        if(position == 0)   startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 110);
+                        else{
+                            postionToChange = position;
+                            startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 111);
+                        }
                     }
 
                     @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
+                        if(position!=0){
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                            alert.setTitle("Delete entry");
+                            alert.setMessage("Are you sure you want to delete?");
+                            alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                    marinaPicModelList.remove(position);
+                                    signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
+                                }
+                            });
+                            alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // close dialog
+                                    dialog.cancel();
+                                }
+                            });
+                            alert.show();
+                        }
                     }
                 }));
 
-
-
         return view;
-
 
     }
 
@@ -344,6 +366,21 @@ public class SignUpMarinaManagerFragment extends Fragment {
                 if (bitmap != null) {
                     MarinaPicModel picModel = new MarinaPicModel(bitmap);
                     marinaPicModelList.add(picModel);
+                    signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(requestCode == 111 && resultCode == RESULT_OK){
+            Uri selectedImage = data.getData();
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImage);
+                if (bitmap != null) {
+                    MarinaPicModel picModel = new MarinaPicModel(bitmap);
+                    marinaPicModelList.set(postionToChange,picModel);
                     signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
                 }
             } catch (FileNotFoundException e) {
