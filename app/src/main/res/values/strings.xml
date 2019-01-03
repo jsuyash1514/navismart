@@ -87,4 +87,15 @@
     <string name="booking_number">Booking Number</string>
     <string name="profile">Profile</string>
     <string name="no_results_found">No Results Found</string>
+    <string name="upload_marina_images_long_press_on_image_to_delete">Upload marina images (Long press to delete)</string>
+    <string name="drinking_water">Drinking Water</string>
+    <string name="electricity">Electricity</string>
+    <string name="fuel_station">Fuel Station</string>
+    <string name="_24_7_access">24/7 Access</string>
+    <string name="travel_lift">Travel Lift</string>
+    <string name="security">Security</string>
+    <string name="residual_water_collection">Residual Water Collection</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="dry_port">Dry Port</string>
+    <string name="maintenance">Maintenance</string>
 </resources>
