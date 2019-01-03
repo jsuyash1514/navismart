@@ -4,9 +4,6 @@ package com.navismart.navismart.view;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,6 +54,7 @@ import org.florescu.android.rangeseekbar.RangeSeekBar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +63,8 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import static android.app.Activity.RESULT_OK;
+import static com.navismart.navismart.MainActivity.getCountOfDays;
+import static com.navismart.navismart.MainActivity.getDateFromString;
 import static com.navismart.navismart.MainActivity.toBounds;
 
 public class BoaterSearchResultsFragment extends Fragment {
@@ -238,13 +238,27 @@ public class BoaterSearchResultsFragment extends Fragment {
         fromDatePicker = dateChangeDialog.findViewById(R.id.from_date_pick);
         toDatePicker = dateChangeDialog.findViewById(R.id.to_date_pick);
 
+        fromDatePicker.setMinDate(System.currentTimeMillis() - 1000);
+        toDatePicker.setMinDate(System.currentTimeMillis() - 1000);
+
+        Date from = getDateFromString(fromDate);
+        Date to = getDateFromString(toDate);
+
+        fromDatePicker.updateDate(from.getYear() + 1900, from.getMonth() + 1, from.getDate());
+        toDatePicker.updateDate(to.getYear() + 1900, to.getMonth() + 1, to.getDate());
+
         setDateButton = dateChangeDialog.findViewById(R.id.set_date_button);
         setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dateChangeDialog.dismiss();
-                fromDate = fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear();
-                toDate = fromDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear();
+
+                if (getCountOfDays(fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear(), toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear()) < 0) {
+                    Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+                } else {
+                    fromDate = fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear();
+                    toDate = toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear();
+                    dateChangeDialog.dismiss();
+                }
             }
         });
 

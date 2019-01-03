@@ -1,6 +1,5 @@
 package com.navismart.navismart;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,18 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected GeoDataClient mGeoDataClient;
     protected PlaceDetectionClient mPlaceDetectionClient;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-    }
-
     public static LatLngBounds toBounds(LatLng center, double radiusInMeters) {
         double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
         LatLng southwestCorner =
@@ -45,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static int getCountOfDays(String createdDateString, String expireDateString) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
         try {
-            Date dateFrom = dateFormat.parse(createdDateString);
-            Date dateTo = dateFormat.parse(expireDateString);
+            Date dateFrom = getDateFromString(createdDateString);
+            Date dateTo = getDateFromString(expireDateString);
 
             long diff = dateTo.getTime() - dateFrom.getTime();
 
@@ -61,5 +48,28 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
+    public static Date getDateFromString(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        try {
+            Date date = dateFormat.parse(dateString);
+            return date;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Date();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+    }
 }
 
