@@ -122,7 +122,7 @@ public class CheckoutFragment extends Fragment {
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////////////////ADD TO MARINA MANAGER BOOKING////////////////////////////////////////////////////////////////////////////////////////////
 
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).setValue(bookingModel)
+                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(auth.getCurrentUser().getUid()).setValue(bookingModel)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
