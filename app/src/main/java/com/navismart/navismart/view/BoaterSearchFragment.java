@@ -88,6 +88,7 @@ public class BoaterSearchFragment extends Fragment {
         fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
         toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
 
+
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
         datePickFromImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +106,7 @@ public class BoaterSearchFragment extends Fragment {
 
                     }
                 }, mYearFrom, mMonthFrom, mDateFrom);
+                datePickerDialogFrom.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
                 datePickerDialogFrom.show();
 
@@ -126,11 +128,11 @@ public class BoaterSearchFragment extends Fragment {
                         dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
                         toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
                         if (getCountOfDays(fromDate, toDate) < 0) {
-                            dateToEditText.setText(fromDate);
                             Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, mYearTo, mMonthTo, mDateTo);
+                datePickerDialogTo.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
 
                 datePickerDialogTo.show();
 
@@ -142,7 +144,9 @@ public class BoaterSearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (locationAddress != null && !locationAddress.trim().isEmpty()) {
+                if (getCountOfDays(fromDate, toDate) < 0) {
+                    Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+                } else if (locationAddress != null && !locationAddress.trim().isEmpty()) {
                     Bundle bundle = new Bundle();
                     bundle.putString("fromDate", dateFromEditText.getText().toString());
                     bundle.putString("toDate", dateToEditText.getText().toString());

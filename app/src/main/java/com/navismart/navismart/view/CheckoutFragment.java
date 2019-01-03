@@ -32,6 +32,7 @@ import com.navismart.navismart.model.MarinaModel;
 import com.navismart.navismart.viewmodels.BoatListViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.UUID;
 
 import androidx.navigation.Navigation;
@@ -107,6 +108,7 @@ public class CheckoutFragment extends Fragment {
                 String bookingUID = UUID.randomUUID().toString();
                 bookingModel.setBookingID(bookingUID);
                 bookingModel.setMarinaUID(marinaModel.getMarinaUID());
+                bookingModel.setBookingDate(Calendar.getInstance().getTime());
                 ///////////////////////////////////////////////////////ADD TO USER BOOKING/////////////////////////////////////////////////////////////////////////////////////////////////
                 databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnFailureListener(new OnFailureListener() {
