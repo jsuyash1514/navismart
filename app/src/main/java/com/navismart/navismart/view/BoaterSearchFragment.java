@@ -88,6 +88,7 @@ public class BoaterSearchFragment extends Fragment {
         fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
         toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
 
+
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
         datePickFromImageView.setOnClickListener(new View.OnClickListener() {
             @Override

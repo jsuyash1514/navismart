@@ -91,7 +91,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private MarinaListAdapter marinaListAdapter;
     private TextView closestSortTextView, cheapestSortTextView;
     private ImageView filterImageView, changeDateImageView;
-    private ImageView locationChangeIcon;
+    private ImageView locationChangeIcon, closeDialogIcon;
     private Dialog filterDialog, dateChangeDialog;
     private DatePicker fromDatePicker, toDatePicker;
     private TextView rangeDisplay;
@@ -234,6 +234,14 @@ public class BoaterSearchResultsFragment extends Fragment {
         dateChangeDialog = new Dialog(getContext());
         dateChangeDialog.setContentView(R.layout.date_change_dialog);
         dateChangeDialog.setTitle("Change Date");
+
+        closeDialogIcon = dateChangeDialog.findViewById(R.id.close_dialog);
+        closeDialogIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateChangeDialog.dismiss();
+            }
+        });
 
         fromDatePicker = dateChangeDialog.findViewById(R.id.from_date_pick);
         toDatePicker = dateChangeDialog.findViewById(R.id.to_date_pick);
