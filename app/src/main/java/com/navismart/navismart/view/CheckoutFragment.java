@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,12 @@ import com.navismart.navismart.model.BookingModel;
 import com.navismart.navismart.model.MarinaModel;
 import com.navismart.navismart.viewmodels.BoatListViewModel;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import androidx.navigation.Navigation;
@@ -52,6 +57,7 @@ public class CheckoutFragment extends Fragment {
     private DatabaseReference databaseUserReference, databaseReference;
     private FirebaseAuth auth;
     private String boaterName = "";
+    private Date startDate, endDate;
 
     public CheckoutFragment() {
         // Required empty public constructor
@@ -108,7 +114,10 @@ public class CheckoutFragment extends Fragment {
                 String bookingUID = UUID.randomUUID().toString();
                 bookingModel.setBookingID(bookingUID);
                 bookingModel.setMarinaUID(marinaModel.getMarinaUID());
-                bookingModel.setBookingDate(Calendar.getInstance().getTime());
+                bookingModel.setBoaterUID(auth.getCurrentUser().getUid());
+                Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                long time = cal.getTimeInMillis();
+                bookingModel.setBookingDate(time);
                 ///////////////////////////////////////////////////////ADD TO USER BOOKING/////////////////////////////////////////////////////////////////////////////////////////////////
                 databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnFailureListener(new OnFailureListener() {
@@ -119,10 +128,57 @@ public class CheckoutFragment extends Fragment {
                             }
                         });
 
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////ADD TO BOOKINGS PARENT/////////////////////////////////////////////////////////////////////////////////////////////
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+                try {
+                    startDate = formatter.parse(fromDate);
+                    Log.d("booking date","startDate: " + startDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Log.d("booking date","startDate: " + e);
+                }
+                try {
+                    endDate = formatter.parse(toDate);
+                    Log.d("date","endDate: " + endDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Log.d("date","endDate: " + e);
+                }
+                Calendar start = Calendar.getInstance();
+                start.setTime(startDate);
+                Calendar end = Calendar.getInstance();
+                end.setTime(endDate);
+
+                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear()+1900)).child(String.valueOf(start.getTime().getMonth()+1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("arrival")
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                            }
+                        });
+                start.add(Calendar.DATE, 1);
+                for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear()+1900)).child(String.valueOf(date.getMonth()+1)).child(String.valueOf(date.getDate())).child(bookingUID).setValue("stay")
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                }
+                            });
+                }
+                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear()+1900)).child(String.valueOf(start.getTime().getMonth()+1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("departure")
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                            }
+                        });
                 ////////////////////////////////////////////////////ADD TO MARINA MANAGER BOOKING////////////////////////////////////////////////////////////////////////////////////////////
 
-                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(auth.getCurrentUser().getUid()).setValue(bookingModel)
+                databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -138,6 +194,7 @@ public class CheckoutFragment extends Fragment {
                             }
                         });
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             }
         });
 

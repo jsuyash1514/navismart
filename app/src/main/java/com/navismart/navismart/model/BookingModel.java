@@ -3,8 +3,6 @@ package com.navismart.navismart.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 public class BookingModel implements Parcelable {
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -23,11 +21,12 @@ public class BookingModel implements Parcelable {
     private String boatID = "default";
     private String bookingID = "default";
     private String marinaUID = "default";
+    private String boaterUID = "default";
     private String marinaName = "default";
     private String boaterName = "default";
     private String fromDate = "default";
     private String toDate = "default";
-    private Date bookingDate;
+    private long bookingTimeStamp;
     private int bookingTense = 0;
     private float finalPrice = 0;
     public BookingModel(String boatName, String marinaName, String boatID, String fromDate, String toDate, int bookingTense, String boaterName) {
@@ -60,13 +59,21 @@ public class BookingModel implements Parcelable {
 
     }
 
-    public Date getBookingDate() {
+    public long getBookingDate() {
 
-        return bookingDate;
+        return bookingTimeStamp;
     }
 
-    public void setBookingDate(Date bookingDate) {
-        this.bookingDate = bookingDate;
+    public void setBookingDate(long bookingTimeStamp) {
+        this.bookingTimeStamp = bookingTimeStamp;
+    }
+
+    public String getBoaterUID() {
+        return boaterUID;
+    }
+
+    public void setBoaterUID(String boaterUID) {
+        this.boaterUID = boaterUID;
     }
 
     public String getMarinaUID() {
