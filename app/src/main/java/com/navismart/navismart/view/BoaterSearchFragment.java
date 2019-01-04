@@ -70,8 +70,8 @@ public class BoaterSearchFragment extends Fragment {
         mMonthTo = c.get(Calendar.MONTH);
         mDateTo = c.get(Calendar.DATE);
 
-        dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
-        dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
+        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom);
+        dateToEditText.setText(mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo);
 
         locationEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,8 +85,8 @@ public class BoaterSearchFragment extends Fragment {
             }
         });
 
-        fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
-        toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
+        fromDate = mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom;
+        toDate = mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo;
 
 
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
@@ -101,8 +101,8 @@ public class BoaterSearchFragment extends Fragment {
                         mYearFrom = year;
                         mMonthFrom = month;
                         mDateFrom = dayOfMonth;
-                        dateFromEditText.setText(mDateFrom + "/" + mMonthFrom + "/" + mYearFrom);
-                        fromDate = mDateFrom + "/" + mMonthFrom + "/" + mYearFrom;
+                        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom);
+                        fromDate = mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom;
 
                     }
                 }, mYearFrom, mMonthFrom, mDateFrom);
@@ -125,8 +125,8 @@ public class BoaterSearchFragment extends Fragment {
                         mYearTo = year;
                         mMonthTo = month;
                         mDateTo = dayOfMonth;
-                        dateToEditText.setText(mDateTo + "/" + mMonthTo + "/" + mYearTo);
-                        toDate = mDateTo + "/" + mMonthTo + "/" + mYearTo;
+                        dateToEditText.setText(mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo);
+                        toDate = mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo;
                         if (getCountOfDays(fromDate, toDate) < 0) {
                             Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
                         }
