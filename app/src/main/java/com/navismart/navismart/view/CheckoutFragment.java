@@ -32,22 +32,24 @@ import com.navismart.navismart.model.BookingModel;
 import com.navismart.navismart.model.MarinaModel;
 import com.navismart.navismart.viewmodels.BoatListViewModel;
 
-import java.util.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import static com.navismart.navismart.MainActivity.getCountOfDays;
+import static com.navismart.navismart.MainActivity.getDateFromString;
 import static com.navismart.navismart.view.BoaterSearchResultsFragment.fromDate;
 import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
 
 public class CheckoutFragment extends Fragment {
 
+    NavOptions navOptions;
     private TextView marinaNameTextView, fromDateTextView, toDateTextView, priceDisplayTextView;
     private Spinner boatSelectSpinner;
     private String boatNames[];
@@ -88,6 +90,10 @@ public class CheckoutFragment extends Fragment {
         fromDateTextView.setText(fromDate);
         toDateTextView.setText(toDate);
 
+        navOptions = new NavOptions.Builder()
+                .setPopUpTo(R.id.startFragment, true)
+                .build();
+
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
         marinaNameTextView.setText(marinaModel.getName());
         priceDisplayTextView.setText(Float.toString(Float.parseFloat(marinaModel.getPrice()) * getCountOfDays(fromDate, toDate)));
@@ -124,56 +130,49 @@ public class CheckoutFragment extends Fragment {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
                             }
                         });
 
                 /////////////////////////////////////////////////////////ADD TO BOOKINGS PARENT/////////////////////////////////////////////////////////////////////////////////////////////
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-                try {
-                    startDate = formatter.parse(fromDate);
-                    Log.d("booking date","startDate: " + startDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    Log.d("booking date","startDate: " + e);
-                }
-                try {
-                    endDate = formatter.parse(toDate);
-                    Log.d("date","endDate: " + endDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    Log.d("date","endDate: " + e);
-                }
+
+                startDate = getDateFromString(fromDate);
+                Log.d("booking date", "startDate: " + startDate);
+
+                endDate = getDateFromString(toDate);
+                Log.d("date", "endDate: " + endDate);
+
                 Calendar start = Calendar.getInstance();
                 start.setTime(startDate);
                 Calendar end = Calendar.getInstance();
                 end.setTime(endDate);
 
-                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear()+1900)).child(String.valueOf(start.getTime().getMonth()+1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("arrival")
+                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("arrival")
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
                             }
                         });
                 start.add(Calendar.DATE, 1);
                 for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
-                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear()+1900)).child(String.valueOf(date.getMonth()+1)).child(String.valueOf(date.getDate())).child(bookingUID).setValue("stay")
+                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingUID).setValue("stay")
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
                                 }
                             });
                 }
-                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear()+1900)).child(String.valueOf(start.getTime().getMonth()+1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("departure")
+                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("departure")
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
                             }
                         });
                 ////////////////////////////////////////////////////ADD TO MARINA MANAGER BOOKING////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,14 +182,14 @@ public class CheckoutFragment extends Fragment {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(getContext(), "Booking Successfully completed!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment);
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
                             }
                         });
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
