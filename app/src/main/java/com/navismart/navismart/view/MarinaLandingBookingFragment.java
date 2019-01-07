@@ -1,5 +1,6 @@
 package com.navismart.navismart.view;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
@@ -23,9 +25,16 @@ import android.widget.DatePicker;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firestore.admin.v1beta1.Progress;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MarinaBookingsAdapter;
+import com.navismart.navismart.model.BookingModel;
 import com.navismart.navismart.model.MarinaBookingsModel;
 import com.navismart.navismart.viewmodels.MarinaLandingBookingViewModel;
 
@@ -45,6 +54,11 @@ public class MarinaLandingBookingFragment extends Fragment {
     private TextView bookedCount, availableCount, arrivalCount,departureCount, stayCount;
     private MarinaLandingBookingViewModel viewModel;
     private DatePicker datePicker;
+    private List<String> bookingID;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth auth;
+    private RecyclerView recyclerView;
+    private ProgressDialog progressDialog;
 
 
     public MarinaLandingBookingFragment() {
@@ -85,18 +99,19 @@ public class MarinaLandingBookingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_marina_landing_booking, container, false);
 
         viewModel = ViewModelProviders.of(this).get(MarinaLandingBookingViewModel.class);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(getContext());
 
         datePicker = view.findViewById(R.id.marina_booking_calender);
 
-        RecyclerView recyclerView = view.findViewById(R.id.marina_booking_arrival_departure_recyclerview);
-        final List<MarinaBookingsModel> list = new ArrayList<>();
-        final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
 
         bookedCount = view.findViewById(R.id.marina_booked_count);
         availableCount = view.findViewById(R.id.marina_available_count);
         arrivalCount = view.findViewById(R.id.marina_booking_arrival_count);
         departureCount = view.findViewById(R.id.marina_booking_departure_count);
         stayCount = view.findViewById(R.id.marina_booking_stay_count);
+        recyclerView = view.findViewById(R.id.marina_booking_arrival_departure_recyclerview);
 
         prepareData(datePicker.getYear(),datePicker.getMonth()+1,datePicker.getDayOfMonth());
 
@@ -109,16 +124,12 @@ public class MarinaLandingBookingFragment extends Fragment {
                 prepareData(datePicker.getYear(),datePicker.getMonth()+1,datePicker.getDayOfMonth());
             }
         });
-        // Dummy data for bookings fragment recycler view.
-        for (int i=0;i<5;i++) {
-            MarinaBookingsModel bookingsModel = new MarinaBookingsModel(R.drawable.ic_marina_booking_arrival_24dp, "Suyash Jain", "29/12/2018", "02/01/2019");
-            list.add(bookingsModel);
-            adapter.notifyDataSetChanged();
-        }
-
-        RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(recycler);
-        recyclerView.setAdapter(adapter);
+//        // Dummy data for bookings fragment recycler view.
+//        for (int i=0;i<5;i++) {
+//            MarinaBookingsModel bookingsModel = new MarinaBookingsModel(R.drawable.ic_marina_booking_arrival_24dp, "Suyash Jain", "29/12/2018", "02/01/2019");
+//            list.add(bookingsModel);
+//            adapter.notifyDataSetChanged();
+//        }
 
         return view;
     }
@@ -129,28 +140,65 @@ public class MarinaLandingBookingFragment extends Fragment {
         stay=0;
         available=0;
         booked=0;
+        bookingID = new ArrayList<>();
+        final List<MarinaBookingsModel> list = new ArrayList<>();
+        final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
+        progressDialog.setMessage("Fetching data...");
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
-
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if(dataSnapshot!=null){
+                    progressDialog.show();
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(year)).child(String.valueOf(month)).child(String.valueOf(date)).getChildren()){
-                        String s = snapshot.getValue(String.class);
-                        if(s!=null && !s.isEmpty()){
-                            if(s.equals("arrival")) arrival++;
-                            else if(s.equals("departure")) departure++;
-                            else if(s.equals("stay")) stay++;
+                        if(snapshot!=null) {
+                            MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
+                            bookingID.add(snapshot.getKey());
+                            String s = snapshot.getValue(String.class);
+                            if (s != null && !s.isEmpty()) {
+                                if (s.equals("arrival")) {
+                                    arrival++;
+                                    marinaBookingsModel.setBitmap(R.drawable.ic_marina_booking_arrival_24dp);
+                                }
+                                else if (s.equals("departure")){
+                                    departure++;
+                                    marinaBookingsModel.setBitmap(R.drawable.ic_marina_booking_departure_24dp);
+                                }
+                                else if (s.equals("stay")) {
+                                    stay++;
+                                    marinaBookingsModel.setBitmap(R.drawable.ic_marina_booking_stay_24dp);
+                                }
+                            }
+                            DatabaseReference ref = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings");
+                            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                    marinaBookingsModel.setGuestName(dataSnapshot1.child(snapshot.getKey()).child("boaterName").getValue(String.class));
+                                    marinaBookingsModel.setArrivingOn(dataSnapshot1.child(snapshot.getKey()).child("fromDate").getValue(String.class));
+                                    marinaBookingsModel.setDepartingOn(dataSnapshot1.child(snapshot.getKey()).child("toDate").getValue(String.class));
+                                    list.add(marinaBookingsModel);
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     }
                     arrivalCount.setText(String.valueOf(arrival));
                     departureCount.setText(String.valueOf(departure));
                     stayCount.setText(String.valueOf(stay));
+                    progressDialog.dismiss();
                 }
                 else{
                     Log.d("DatePicker","Null datasnapshot");
                 }
             }
         });
+        RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(recycler);
+        recyclerView.setAdapter(adapter);
     }
 }

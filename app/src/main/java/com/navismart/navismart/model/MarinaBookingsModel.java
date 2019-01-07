@@ -13,6 +13,9 @@ public class MarinaBookingsModel {
         this.departingOn = departingOn;
     }
 
+    public MarinaBookingsModel() {
+    }
+
     public int getBitmap() {
         return icon;
     }
@@ -27,5 +30,21 @@ public class MarinaBookingsModel {
 
     public String getDepartingOn() {
         return departingOn;
+    }
+
+    public void setBitmap(int icon) {
+        this.icon = icon;
+    }
+
+    public void setGuestName(String name) {
+        this.name = name;
+    }
+
+    public void setArrivingOn(String arrivingOn) {
+        this.arrivingOn = arrivingOn;
+    }
+
+    public void setDepartingOn(String departingOn) {
+        this.departingOn = departingOn;
     }
 }
