@@ -39,7 +39,7 @@ public class MarinaLandingBookingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private int booked=0,available=0,arrival=0,departure=0,stay=0;
     private String mParam1;
     private String mParam2;
     private TextView bookedCount, availableCount, arrivalCount,departureCount, stayCount;
@@ -124,14 +124,28 @@ public class MarinaLandingBookingFragment extends Fragment {
     }
 
     public void prepareData(int year,int month,int date){
+        arrival=0;
+        departure=0;
+        stay=0;
+        available=0;
+        booked=0;
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
 
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if(dataSnapshot!=null){
-                    long c = dataSnapshot.child(String.valueOf(year)).child(String.valueOf(month)).child(String.valueOf(date)).getChildrenCount();
-                    arrivalCount.setText(String.valueOf(c));
+                    for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(year)).child(String.valueOf(month)).child(String.valueOf(date)).getChildren()){
+                        String s = snapshot.getValue(String.class);
+                        if(s!=null && !s.isEmpty()){
+                            if(s.equals("arrival")) arrival++;
+                            else if(s.equals("departure")) departure++;
+                            else if(s.equals("stay")) stay++;
+                        }
+                    }
+                    arrivalCount.setText(String.valueOf(arrival));
+                    departureCount.setText(String.valueOf(departure));
+                    stayCount.setText(String.valueOf(stay));
                 }
                 else{
                     Log.d("DatePicker","Null datasnapshot");
