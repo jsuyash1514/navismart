@@ -1,25 +1,36 @@
 package com.navismart.navismart.view;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MarinaBookingsAdapter;
 import com.navismart.navismart.model.MarinaBookingsModel;
+import com.navismart.navismart.viewmodels.MarinaLandingBookingViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MarinaLandingBookingFragment extends Fragment {
@@ -31,6 +42,9 @@ public class MarinaLandingBookingFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
+    private TextView bookedCount, availableCount, arrivalCount,departureCount, stayCount;
+    private MarinaLandingBookingViewModel viewModel;
+    private DatePicker datePicker;
 
 
     public MarinaLandingBookingFragment() {
@@ -70,11 +84,31 @@ public class MarinaLandingBookingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_marina_landing_booking, container, false);
 
+        viewModel = ViewModelProviders.of(this).get(MarinaLandingBookingViewModel.class);
+
+        datePicker = view.findViewById(R.id.marina_booking_calender);
 
         RecyclerView recyclerView = view.findViewById(R.id.marina_booking_arrival_departure_recyclerview);
         final List<MarinaBookingsModel> list = new ArrayList<>();
         final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
 
+        bookedCount = view.findViewById(R.id.marina_booked_count);
+        availableCount = view.findViewById(R.id.marina_available_count);
+        arrivalCount = view.findViewById(R.id.marina_booking_arrival_count);
+        departureCount = view.findViewById(R.id.marina_booking_departure_count);
+        stayCount = view.findViewById(R.id.marina_booking_stay_count);
+
+        prepareData(datePicker.getYear(),datePicker.getMonth()+1,datePicker.getDayOfMonth());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                prepareData(datePicker.getYear(),datePicker.getMonth()+1,datePicker.getDayOfMonth());
+            }
+        });
         // Dummy data for bookings fragment recycler view.
         for (int i=0;i<5;i++) {
             MarinaBookingsModel bookingsModel = new MarinaBookingsModel(R.drawable.ic_marina_booking_arrival_24dp, "Suyash Jain", "29/12/2018", "02/01/2019");
@@ -87,5 +121,22 @@ public class MarinaLandingBookingFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         return view;
+    }
+
+    public void prepareData(int year,int month,int date){
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
+
+        liveData.observe(this, new Observer<DataSnapshot>() {
+            @Override
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                if(dataSnapshot!=null){
+                    long c = dataSnapshot.child(String.valueOf(year)).child(String.valueOf(month)).child(String.valueOf(date)).getChildrenCount();
+                    arrivalCount.setText(String.valueOf(c));
+                }
+                else{
+                    Log.d("DatePicker","Null datasnapshot");
+                }
+            }
+        });
     }
 }
