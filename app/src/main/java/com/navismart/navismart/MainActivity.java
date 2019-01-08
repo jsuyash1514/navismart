@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.SphericalUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return new Date();
+    }
+
+    public static String getCurrentStringDate() {
+
+        Date date = Calendar.getInstance().getTime();
+
+        return date.getDate() + "/" + (date.getMonth() + 1) + (date.getYear() + 1900);
+
     }
 
     @Override
