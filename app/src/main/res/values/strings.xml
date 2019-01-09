@@ -99,4 +99,6 @@
     <string name="dry_port">Dry Port</string>
     <string name="maintenance">Maintenance</string>
     <string name="see_more_reviews"><u>See more reviews</u></string>
+    <string name="send_a_message">Send a message</string>
+    <string name="type_a_message">Type a message</string>
 </resources>
