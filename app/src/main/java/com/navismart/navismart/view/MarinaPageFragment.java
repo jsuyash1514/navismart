@@ -43,6 +43,7 @@ public class MarinaPageFragment extends Fragment {
     private TextView seeMoreReviewsTextView;
     private RatingBar ratingBar;
     private Button bookButton;
+    private Button sendMsgButton;
     private ImageView marinaImageView;
     private NavController navController;
     private RecyclerView reviewListView;
@@ -84,6 +85,7 @@ public class MarinaPageFragment extends Fragment {
         reviewListView = view.findViewById(R.id.review_list);
         reviewTab = view.findViewById(R.id.review_tab);
         seeMoreReviewsTextView = view.findViewById(R.id.see_more_reviews_text);
+        sendMsgButton = view.findViewById(R.id.send_msg_button);
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
@@ -119,6 +121,17 @@ public class MarinaPageFragment extends Fragment {
                 bundle.putString("marinaName", marinaModel.getName());
                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_viewReviewFragment);
 
+            }
+        });
+
+        sendMsgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("marinaName", marinaModel.getName());
+                bundle.putString("marinaID", marinaModel.getMarinaUID());
+                bundle.putString("boaterID", auth.getCurrentUser().getUid());
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle);
             }
         });
 

@@ -309,6 +309,16 @@
                     android:layout_marginEnd="5dp"
                     android:background="@android:color/darker_gray" />
 
+                <Button
+                    android:id="@+id/send_msg_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/button_bg_r4"
+                    android:text="@string/send_a_message"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorPrimary" />
+
             </LinearLayout>
 
         </LinearLayout>

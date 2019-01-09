@@ -74,7 +74,7 @@
         android:id="@+id/boaterProfileFragment"
         android:name="com.navismart.navismart.view.BoaterProfileFragment"
         android:label="fragment_boater_profile"
-        tools:layout="@layout/fragment_boater_profile"></fragment>
+        tools:layout="@layout/fragment_boater_profile" />
     <fragment
         android:id="@+id/boaterSearchFragment"
         android:name="com.navismart.navismart.view.BoaterSearchFragment"
@@ -108,6 +108,13 @@
         <action
             android:id="@+id/action_marinaPageFragment_to_viewReviewFragment"
             app:destination="@id/viewReviewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_marinaPageFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -241,4 +248,9 @@
         android:name="com.navismart.navismart.view.ViewReviewFragment"
         android:label="fragment_view_review"
         tools:layout="@layout/fragment_view_review" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.navismart.navismart.view.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
 </navigation>
