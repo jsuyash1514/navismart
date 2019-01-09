@@ -1,12 +1,12 @@
 package com.navismart.navismart.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.navismart.navismart.R;
@@ -45,18 +45,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
         holder.nameView.setText(chatModel.getMsgName());
         holder.messageView.setText(chatModel.getMsg());
-        holder.msgDateTimeView.setText(chatModel.getMsgDate() + " " + chatModel.getMsgTime());
+        holder.msgDateTimeView.setText(chatModel.getMsgDate() + "   " + chatModel.getMsgTime());
 
         if (chatModel.getSENDER_TYPE() == USER_TYPE) {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            holder.chatBrickCard.setLayoutParams(params);
-            holder.chatBrickCard.setBackgroundColor(context.getResources().getColor(R.color.green));
+            holder.chatBrickHolder.setGravity(Gravity.END);
+            holder.chatBrickView.setBackground(context.getResources().getDrawable(R.drawable.rounded_rectangle_green));
         } else {
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_START);
-            holder.chatBrickCard.setLayoutParams(params);
-            holder.chatBrickCard.setBackgroundColor(context.getResources().getColor(R.color.white));
+            holder.chatBrickHolder.setGravity(Gravity.START);
+            holder.chatBrickView.setBackground(context.getResources().getDrawable(R.drawable.rounded_rectangle_white));
         }
 
     }
@@ -68,14 +64,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView nameView, messageView, msgDateTimeView;
-        public CardView chatBrickCard;
+        public LinearLayout chatBrickHolder, chatBrickView;
 
         public MyViewHolder(View view) {
             super(view);
             nameView = view.findViewById(R.id.msg_name);
             messageView = view.findViewById(R.id.msg_text);
             msgDateTimeView = view.findViewById(R.id.msg_date_time);
-            chatBrickCard = view.findViewById(R.id.chat_brick_card);
+            chatBrickHolder = view.findViewById(R.id.chat_brick_holder);
+            chatBrickView = view.findViewById(R.id.chat_brick_card);
         }
     }
 
