@@ -19,6 +19,9 @@ import com.navismart.navismart.adapters.MarinaLandingViewPagerAdapter;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import static com.navismart.navismart.MainActivity.USER_TYPE;
+import static com.navismart.navismart.adapters.ChatAdapter.SENDER_MARINA;
+
 public class MarinaManagerLandingFragment extends Fragment {
     FirebaseAuth auth;
     TabLayout tabLayout;
@@ -56,6 +59,7 @@ public class MarinaManagerLandingFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
+        USER_TYPE = SENDER_MARINA;
 
         /* LOGOUT BUTTON */
 //        Button logout = view.findViewById(R.id.logout_button);

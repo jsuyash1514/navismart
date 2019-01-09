@@ -128,9 +128,10 @@ public class MarinaPageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("marinaID", marinaModel.getMarinaUID());
                 bundle.putString("marinaName", marinaModel.getName());
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment);
+                bundle.putString("marinaID", marinaModel.getMarinaUID());
+                bundle.putString("boaterID", auth.getCurrentUser().getUid());
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle);
             }
         });
 

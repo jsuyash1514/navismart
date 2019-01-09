@@ -1,6 +1,7 @@
 package com.navismart.navismart.livedata;
 
 import android.arch.lifecycle.LiveData;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -13,10 +14,17 @@ import com.google.firebase.database.ValueEventListener;
 public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
 
     public static final String LOG_TAG = "FirebaseQueryLiveData";
-
+    private final Handler handler = new Handler();
     private final Query query;
-
     private final MyValueEventListener listener = new MyValueEventListener();
+    private boolean listenerRemovalPending = false;
+    private final Runnable removeListener = new Runnable() {
+        @Override
+        public void run() {
+            query.removeEventListener(listener);
+            listenerRemovalPending = false;
+        }
+    };
 
     public FirebaseQueryLiveData(DatabaseReference ref) {
 
@@ -26,12 +34,19 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
 
     @Override
     protected void onActive() {
-        query.addValueEventListener(listener);
+        if (listenerRemovalPending) {
+            handler.removeCallbacks(removeListener);
+        } else {
+            query.addValueEventListener(listener);
+        }
+        listenerRemovalPending = false;
     }
 
     @Override
     protected void onInactive() {
-        query.removeEventListener(listener);
+        //Listener removal is scheduled on a two second delay
+        handler.postDelayed(removeListener, 2000);
+        listenerRemovalPending = true;
     }
 
     private class MyValueEventListener implements ValueEventListener {
