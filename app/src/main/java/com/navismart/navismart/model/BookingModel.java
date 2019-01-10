@@ -26,6 +26,7 @@ public class BookingModel implements Parcelable {
     private String boaterName = "default";
     private String fromDate = "default";
     private String toDate = "default";
+    private String dateTimeStamp = "default";
     private long bookingTimeStamp;
     private int bookingTense = 0;
     private float finalPrice = 0;
@@ -141,6 +142,15 @@ public class BookingModel implements Parcelable {
     public int getBookingTense() {
 
         return bookingTense;
+    }
+
+
+    public String getDateTimeStamp() {
+        return dateTimeStamp;
+    }
+
+    public void setDateTimeStamp(String dateTimeStamp) {
+        this.dateTimeStamp = dateTimeStamp;
     }
 
     public void setBookingTense(int bookingTense) {

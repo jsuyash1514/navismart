@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -87,6 +88,7 @@ public class CheckoutFragment extends Fragment {
 
         prepareBoatList();
 
+
         fromDateTextView.setText(fromDate);
         toDateTextView.setText(toDate);
 
@@ -124,6 +126,11 @@ public class CheckoutFragment extends Fragment {
                 Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 long time = cal.getTimeInMillis();
                 bookingModel.setBookingDate(time);
+                SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
+                df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                String gmtTime = df.format(new Date());
+                bookingModel.setDateTimeStamp(gmtTime);
+
                 ///////////////////////////////////////////////////////ADD TO USER BOOKING/////////////////////////////////////////////////////////////////////////////////////////////////
                 databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingUID).setValue(bookingModel)
                         .addOnFailureListener(new OnFailureListener() {

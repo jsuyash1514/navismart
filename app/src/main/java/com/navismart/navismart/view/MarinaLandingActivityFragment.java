@@ -28,9 +28,13 @@ import com.navismart.navismart.model.MarinaActivityNewBookingsCardModel;
 import com.navismart.navismart.model.MarinaActivityNewReviewsCardModel;
 import com.navismart.navismart.viewmodels.MarinaLandingActivityViewModel;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static android.text.format.DateUtils.MINUTE_IN_MILLIS;
@@ -96,11 +100,23 @@ public class MarinaLandingActivityFragment extends Fragment {
                     long time = cal.getTimeInMillis();
                     list = new ArrayList<>();
                     adapter = new MarinaActivityAdapter(getContext(),list);
-                    MarinaActivityModel model = new MarinaActivityModel(0,"Today");
-                    list.add(model);
-                    adapter.notifyDataSetChanged();
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         if(snapshot!=null){
+                            String dateStr = snapshot.child("dateTimeStamp").getValue(String.class);
+                            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
+                            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            Date date = null;
+                            try {
+                                date = df.parse(dateStr);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            df.setTimeZone(TimeZone.getDefault());
+//                            df.setTimeZone(Calendar.getInstance().getTimeZone());
+                            String formattedDate = df.format(date);
+
+
+                            MarinaActivityModel dateModel = new MarinaActivityModel(0,formattedDate);
                             MarinaActivityModel modelBooking = new MarinaActivityModel(
                                     1,
                                     new MarinaActivityNewBookingsCardModel(
@@ -113,6 +129,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                                             snapshot.child("bookingID").getValue(String.class),
                                             String.valueOf(snapshot.child("finalPrice").getValue())
                             ));
+                            list.add(dateModel);
                             list.add(modelBooking);
                             adapter.notifyDataSetChanged();
                         }
