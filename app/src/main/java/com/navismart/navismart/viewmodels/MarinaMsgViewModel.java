@@ -10,25 +10,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.livedata.FirebaseQueryLiveData;
 
-public class ChatViewModel extends ViewModel {
+public class MarinaMsgViewModel extends ViewModel {
 
-    private static DatabaseReference databaseReference;
-    private FirebaseQueryLiveData liveData;
-    FirebaseAuth auth;
+    private static FirebaseAuth auth = FirebaseAuth.getInstance();
+    private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("chats");
 
-    public ChatViewModel(String rec_id, String send_id) {
-        super();
-        auth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(send_id).child("chats").child(rec_id);
-        liveData = new FirebaseQueryLiveData(databaseReference);
-
-    }
-
+    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(databaseReference);
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapshotLiveData() {
         return liveData;
     }
-
 
 }

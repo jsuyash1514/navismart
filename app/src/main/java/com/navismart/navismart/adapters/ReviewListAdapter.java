@@ -15,7 +15,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
 
     private List<ReviewModel> reviewList;
 
-    public ReviewListAdapter(List<ReviewModel> boatList) {
+    public ReviewListAdapter(List<ReviewModel> reviewList) {
         this.reviewList = reviewList;
     }
 
@@ -33,9 +33,9 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
         ReviewModel reviewModel = reviewList.get(position);
         holder.nameView.setText(reviewModel.getReviewerName());
         holder.dateView.setText(reviewModel.getReviewDate());
-        holder.ratingView.setText(reviewModel.getStarRating());
+        holder.ratingView.setText(reviewModel.getStarRating()+"");
         holder.reviewText.setText(reviewModel.getReview());
-
+        holder.initialView.setText(reviewModel.getReviewerName().toUpperCase().charAt(0)+"");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameView, dateView, reviewText, ratingView;
+        public TextView nameView, dateView, reviewText, ratingView, initialView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -52,6 +52,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
             dateView = view.findViewById(R.id.review_date);
             reviewText = view.findViewById(R.id.reviewTextView);
             ratingView = view.findViewById(R.id.rating_display_box);
+            initialView = view.findViewById(R.id.initial_text_view);
         }
     }
 }
