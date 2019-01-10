@@ -70,9 +70,7 @@ public class MarinaLandingActivityFragment extends Fragment {
         fetchData();
 
 
-//        MarinaActivityModel model = new MarinaActivityModel(0,"Today");
-//        list.add(model);
-//        adapter.notifyDataSetChanged();
+
 //
 //        MarinaActivityModel model1 = new MarinaActivityModel(0,"30 Oct 18");
 //        list.add(model1);
@@ -98,6 +96,9 @@ public class MarinaLandingActivityFragment extends Fragment {
                     long time = cal.getTimeInMillis();
                     list = new ArrayList<>();
                     adapter = new MarinaActivityAdapter(getContext(),list);
+                    MarinaActivityModel model = new MarinaActivityModel(0,"Today");
+                    list.add(model);
+                    adapter.notifyDataSetChanged();
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         if(snapshot!=null){
                             MarinaActivityModel modelBooking = new MarinaActivityModel(
