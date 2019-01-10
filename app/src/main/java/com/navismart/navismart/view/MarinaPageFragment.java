@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,7 @@ public class MarinaPageFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("marinaID", marinaModel.getMarinaUID());
                 bundle.putString("marinaName", marinaModel.getName());
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_viewReviewFragment);
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_viewReviewFragment, bundle);
 
             }
         });
@@ -129,6 +130,7 @@ public class MarinaPageFragment extends Fragment {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("marinaName", marinaModel.getName());
+                bundle.putString("boaterName", auth.getCurrentUser().getDisplayName());
                 bundle.putString("marinaID", marinaModel.getMarinaUID());
                 bundle.putString("boaterID", auth.getCurrentUser().getUid());
                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle);
@@ -140,13 +142,13 @@ public class MarinaPageFragment extends Fragment {
 
     private void loadReviews(String marinaID) {
 
-        ArrayList<ReviewModel> initReview = new ArrayList<>();
-
         ReviewListViewModel reviewListViewModel = ViewModelProviders.of(this, new ReviewListViewModelFactory(marinaID)).get(ReviewListViewModel.class);
         LiveData<DataSnapshot> liveData = reviewListViewModel.getDataSnapshotLiveData();
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                ArrayList<ReviewModel> initReview = new ArrayList<>();
+                Log.d("DataSnapshot", dataSnapshot.toString());
                 if (dataSnapshot != null) {
                     reviewList = new ArrayList<>();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

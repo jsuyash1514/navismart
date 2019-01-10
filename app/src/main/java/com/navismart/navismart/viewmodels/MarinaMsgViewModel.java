@@ -10,19 +10,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.livedata.FirebaseQueryLiveData;
 
-public class ReviewListViewModel extends ViewModel {
+public class MarinaMsgViewModel extends ViewModel {
 
-    private static DatabaseReference databaseReference;
-    private FirebaseQueryLiveData liveData;
+    private static FirebaseAuth auth = FirebaseAuth.getInstance();
+    private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("chats");
 
-    public ReviewListViewModel(String marina_id) {
-
-        super();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(marina_id).child("marina-description").child("review");
-        liveData = new FirebaseQueryLiveData(databaseReference);
-
-    }
-
+    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(databaseReference);
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapshotLiveData() {
