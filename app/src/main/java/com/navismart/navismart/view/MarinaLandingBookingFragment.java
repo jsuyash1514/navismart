@@ -113,44 +113,48 @@ public class MarinaLandingBookingFragment extends Fragment {
         stayCount = view.findViewById(R.id.marina_booking_stay_count);
         recyclerView = view.findViewById(R.id.marina_booking_arrival_departure_recyclerview);
 
-        prepareData(datePicker.getYear(),datePicker.getMonth()+1,datePicker.getDayOfMonth());
+        if(viewModel.getYear() == 0){
+            viewModel.setYear(datePicker.getYear());
+            viewModel.setMonth(datePicker.getMonth()+1);
+            viewModel.setDay(datePicker.getDayOfMonth());
+        }
+
+        prepareData();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
 
             @Override
-            public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                prepareData(datePicker.getYear(),datePicker.getMonth()+1,datePicker.getDayOfMonth());
+            public void onDateChanged(DatePicker dP, int y, int m, int d) {
+                viewModel.setYear(y);
+                viewModel.setMonth(m+1);
+                viewModel.setDay(d);
+                prepareData();
             }
         });
-//        // Dummy data for bookings fragment recycler view.
-//        for (int i=0;i<5;i++) {
-//            MarinaBookingsModel bookingsModel = new MarinaBookingsModel(R.drawable.ic_marina_booking_arrival_24dp, "Suyash Jain", "29/12/2018", "02/01/2019");
-//            list.add(bookingsModel);
-//            adapter.notifyDataSetChanged();
-//        }
 
         return view;
     }
 
-    public void prepareData(int year,int month,int date){
-        arrival=0;
-        departure=0;
-        stay=0;
-        available=0;
-        booked=0;
-        bookingID = new ArrayList<>();
-        final List<MarinaBookingsModel> list = new ArrayList<>();
-        final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
-        progressDialog.setMessage("Fetching data...");
+    public void prepareData(){
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if(dataSnapshot!=null){
+                    arrival=0;
+                    departure=0;
+                    stay=0;
+                    available=0;
+                    booked=0;
+                    bookingID = new ArrayList<>();
+                    final List<MarinaBookingsModel> list = new ArrayList<>();
+                    final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
+                    progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
-                    for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(year)).child(String.valueOf(month)).child(String.valueOf(date)).getChildren()){
+//                    Log.d("insideOnChanged", "Date: " + date);
+                    for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
                         if(snapshot!=null) {
                             MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
                             bookingID.add(snapshot.getKey());
@@ -191,14 +195,15 @@ public class MarinaLandingBookingFragment extends Fragment {
                     departureCount.setText(String.valueOf(departure));
                     stayCount.setText(String.valueOf(stay));
                     progressDialog.dismiss();
+
+                    RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(recycler);
+                    recyclerView.setAdapter(adapter);
                 }
                 else{
                     Log.d("DatePicker","Null datasnapshot");
                 }
             }
         });
-        RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(recycler);
-        recyclerView.setAdapter(adapter);
     }
 }
