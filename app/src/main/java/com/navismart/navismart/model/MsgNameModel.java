@@ -3,17 +3,17 @@ package com.navismart.navismart.model;
 public class MsgNameModel {
 
     private String msgName;
-    private String boaterID;
+    private String ID;
 
     public MsgNameModel() {
     }
 
-    public String getBoaterID() {
-        return boaterID;
+    public String getID() {
+        return ID;
     }
 
-    public void setBoaterID(String boaterID) {
-        this.boaterID = boaterID;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public String getMsgName() {

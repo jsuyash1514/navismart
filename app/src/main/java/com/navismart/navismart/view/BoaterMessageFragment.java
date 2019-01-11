@@ -1,5 +1,6 @@
 package com.navismart.navismart.view;
 
+
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -21,12 +22,12 @@ import com.navismart.navismart.viewmodels.MsgViewModel;
 
 import java.util.ArrayList;
 
-public class MarinaLandingMessagesFragment extends Fragment {
+public class BoaterMessageFragment extends Fragment {
 
     private RecyclerView msgRecyclerView;
     private ArrayList<MsgNameModel> msgNameModelArrayList;
 
-    public MarinaLandingMessagesFragment() {
+    public BoaterMessageFragment() {
         // Required empty public constructor
     }
 
@@ -38,9 +39,9 @@ public class MarinaLandingMessagesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_marina_landing_messages, container, false);
+        View view = inflater.inflate(R.layout.fragment_boater_message, container, false);
 
-        msgRecyclerView = view.findViewById(R.id.boaterMessageRecyclerView);
+        msgRecyclerView = view.findViewById(R.id.marinaMessageRecyclerView);
 
         MsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(MsgViewModel.class);
         LiveData<DataSnapshot> liveData = marinaMsgViewModel.getDataSnapshotLiveData();
@@ -52,7 +53,7 @@ public class MarinaLandingMessagesFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         MsgNameModel msgNameModel = new MsgNameModel();
                         msgNameModel.setID(snapshot.getKey());
-                        msgNameModel.setMsgName(snapshot.child("boaterName").getValue().toString());
+                        msgNameModel.setMsgName(snapshot.child("marinaName").getValue().toString());
                         msgNameModelArrayList.add(msgNameModel);
                     }
                     MsgNameAdapter msgNameListAdapter = new MsgNameAdapter(getActivity(), msgNameModelArrayList);
@@ -66,4 +67,5 @@ public class MarinaLandingMessagesFragment extends Fragment {
 
         return view;
     }
+
 }

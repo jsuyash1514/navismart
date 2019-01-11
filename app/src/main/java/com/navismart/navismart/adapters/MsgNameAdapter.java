@@ -16,12 +16,16 @@ import java.util.List;
 
 import androidx.navigation.Navigation;
 
-public class MarinaMsgAdapter extends RecyclerView.Adapter<MarinaMsgAdapter.MyViewHolder> {
+import static com.navismart.navismart.MainActivity.USER_TYPE;
+import static com.navismart.navismart.adapters.ChatAdapter.SENDER_BOATER;
+import static com.navismart.navismart.adapters.ChatAdapter.SENDER_MARINA;
+
+public class MsgNameAdapter extends RecyclerView.Adapter<MsgNameAdapter.MyViewHolder> {
 
     private List<MsgNameModel> msgNameList;
     private Activity activity;
 
-    public MarinaMsgAdapter(Activity activity, List<MsgNameModel> msgNameList) {
+    public MsgNameAdapter(Activity activity, List<MsgNameModel> msgNameList) {
         this.msgNameList = msgNameList;
         this.activity = activity;
     }
@@ -44,11 +48,20 @@ public class MarinaMsgAdapter extends RecyclerView.Adapter<MarinaMsgAdapter.MyVi
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("boaterName", msgName.getMsgName());
-                bundle.putString("marinaID", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                bundle.putString("boaterID", msgName.getBoaterID());
-                bundle.putString("marinaName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_chatFragment, bundle);
+                if (USER_TYPE == SENDER_MARINA) {
+                    bundle.putString("boaterName", msgName.getMsgName());
+                    bundle.putString("marinaID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    bundle.putString("boaterID", msgName.getID());
+                    bundle.putString("marinaName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                    Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_chatFragment, bundle);
+                } else if (USER_TYPE == SENDER_BOATER) {
+                    bundle.putString("boaterName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                    bundle.putString("marinaID", msgName.getID());
+                    bundle.putString("boaterID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    bundle.putString("marinaName", msgName.getMsgName());
+                    Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_chatFragment, bundle);
+                }
+
             }
         });
     }
