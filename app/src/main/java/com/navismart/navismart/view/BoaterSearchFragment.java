@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
@@ -41,6 +42,7 @@ public class BoaterSearchFragment extends Fragment {
     private EditText locationEditText;
     private Button searchButton;
     private String fromDate, toDate;
+    private NumberPicker noOfDockPicker;
 
     public BoaterSearchFragment() {
         // Required empty public constructor
@@ -60,6 +62,9 @@ public class BoaterSearchFragment extends Fragment {
         dateFromEditText = view.findViewById(R.id.date_display_from_editText);
         dateToEditText = view.findViewById(R.id.date_display_to_editText);
         locationEditText = view.findViewById(R.id.location_search_editText);
+        noOfDockPicker = view.findViewById(R.id.no_of_dock_picker);
+        noOfDockPicker.setMaxValue(10);
+        noOfDockPicker.setMinValue(1);
 
         final Calendar c = Calendar.getInstance();
         mYearFrom = c.get(Calendar.YEAR);
@@ -70,8 +75,8 @@ public class BoaterSearchFragment extends Fragment {
         mMonthTo = c.get(Calendar.MONTH);
         mDateTo = c.get(Calendar.DATE);
 
-        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom);
-        dateToEditText.setText(mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo);
+        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
+        dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
 
         locationEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,8 +90,8 @@ public class BoaterSearchFragment extends Fragment {
             }
         });
 
-        fromDate = mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom;
-        toDate = mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo;
+        fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
+        toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
 
 
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
@@ -101,8 +106,8 @@ public class BoaterSearchFragment extends Fragment {
                         mYearFrom = year;
                         mMonthFrom = month;
                         mDateFrom = dayOfMonth;
-                        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom);
-                        fromDate = mDateFrom + "/" + (mMonthFrom+1) + "/" + mYearFrom;
+                        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
+                        fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
 
                     }
                 }, mYearFrom, mMonthFrom, mDateFrom);
@@ -125,14 +130,14 @@ public class BoaterSearchFragment extends Fragment {
                         mYearTo = year;
                         mMonthTo = month;
                         mDateTo = dayOfMonth;
-                        dateToEditText.setText(mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo);
-                        toDate = mDateTo + "/" + (mMonthTo+1) + "/" + mYearTo;
+                        dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
+                        toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
                         if (getCountOfDays(fromDate, toDate) < 0) {
                             Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, mYearTo, mMonthTo, mDateTo);
-                datePickerDialogTo.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
+                datePickerDialogTo.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
                 datePickerDialogTo.show();
 
@@ -151,6 +156,7 @@ public class BoaterSearchFragment extends Fragment {
                     bundle.putString("fromDate", dateFromEditText.getText().toString());
                     bundle.putString("toDate", dateToEditText.getText().toString());
                     bundle.putString("location_address", locationAddress);
+                    bundle.putInt("noOfDocks", noOfDockPicker.getValue());
                     bundle.putParcelable("locationLatLng", locationLatLng);
                     NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
                     navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);

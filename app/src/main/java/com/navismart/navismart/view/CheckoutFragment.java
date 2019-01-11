@@ -45,6 +45,7 @@ import androidx.navigation.Navigation;
 import static com.navismart.navismart.MainActivity.getCountOfDays;
 import static com.navismart.navismart.MainActivity.getDateFromString;
 import static com.navismart.navismart.view.BoaterSearchResultsFragment.fromDate;
+import static com.navismart.navismart.view.BoaterSearchResultsFragment.noOfDocks;
 import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
 
 public class CheckoutFragment extends Fragment {
@@ -120,6 +121,7 @@ public class CheckoutFragment extends Fragment {
                 String bookingUID = UUID.randomUUID().toString();
                 bookingModel.setBookingID(bookingUID);
                 bookingModel.setMarinaUID(marinaModel.getMarinaUID());
+                bookingModel.setNoOfDocks(noOfDocks);
                 bookingModel.setBoaterUID(auth.getCurrentUser().getUid());
                 Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 long time = cal.getTimeInMillis();
