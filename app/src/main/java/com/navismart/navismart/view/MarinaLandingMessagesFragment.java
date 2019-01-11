@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MsgNameAdapter;
 import com.navismart.navismart.model.MsgNameModel;
-import com.navismart.navismart.viewmodels.MsgViewModel;
+import com.navismart.navismart.viewmodels.MarinaMsgViewModel;
 
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class MarinaLandingMessagesFragment extends Fragment {
 
         msgRecyclerView = view.findViewById(R.id.boaterMessageRecyclerView);
 
-        MsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(MsgViewModel.class);
+        MarinaMsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(MarinaMsgViewModel.class);
         LiveData<DataSnapshot> liveData = marinaMsgViewModel.getDataSnapshotLiveData();
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
@@ -52,6 +53,7 @@ public class MarinaLandingMessagesFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         MsgNameModel msgNameModel = new MsgNameModel();
                         msgNameModel.setID(snapshot.getKey());
+                        Log.d("snapshot.getKey marina", snapshot.getKey());
                         msgNameModel.setMsgName(snapshot.child("boaterName").getValue().toString());
                         msgNameModelArrayList.add(msgNameModel);
                     }

@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,10 @@ public class ChatFragment extends Fragment {
 
         marinaID = getArguments().getString("marinaID");
         boaterID = getArguments().getString("boaterID");
+
+        Log.d("marinaID", marinaID);
+        Log.d("boaterID", boaterID);
+        Log.d("USER_TYPE", USER_TYPE+"");
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,7 +167,9 @@ public class ChatFragment extends Fragment {
 
     private void uploadMessage(ChatModel chatModel) {
 
-        DatabaseReference chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("messages");
+        DatabaseReference chatReference;
+
+        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("messages");
         chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

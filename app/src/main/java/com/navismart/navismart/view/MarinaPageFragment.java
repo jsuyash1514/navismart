@@ -132,6 +132,7 @@ public class MarinaPageFragment extends Fragment {
                 bundle.putString("marinaName", marinaModel.getName());
                 bundle.putString("boaterName", auth.getCurrentUser().getDisplayName());
                 bundle.putString("marinaID", marinaModel.getMarinaUID());
+                Log.d("marinaID marinaPage", marinaModel.getMarinaUID());
                 bundle.putString("boaterID", auth.getCurrentUser().getUid());
                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle);
             }
