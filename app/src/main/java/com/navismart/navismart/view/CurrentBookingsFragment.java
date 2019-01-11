@@ -132,7 +132,7 @@ public class CurrentBookingsFragment extends Fragment {
 
         Date date = Calendar.getInstance().getTime();
 
-        String curr = date.getDate() + "/" + date.getMonth() + "/" + (date.getYear()+1900);
+        String curr = date.getDate() + "/" + (date.getMonth()+1) + "/" + (date.getYear()+1900);
 
         int dF = getCountOfDays(curr, from);
         int dT = getCountOfDays(curr, to);

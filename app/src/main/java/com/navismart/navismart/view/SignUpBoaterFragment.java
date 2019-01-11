@@ -30,6 +30,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -274,6 +276,10 @@ public class SignUpBoaterFragment extends Fragment {
                             currentUser.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("boater");
+
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            user.updateProfile(profileUpdates);
 
                             currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType));
                             if (profilePicUri != null) {

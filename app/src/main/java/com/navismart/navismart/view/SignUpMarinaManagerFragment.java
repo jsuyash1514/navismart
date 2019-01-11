@@ -44,6 +44,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -454,6 +456,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
+
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            user.updateProfile(profileUpdates);
+
                             if (!TextUtils.isEmpty(descr))
                                 currentUser.child("marina-description").child("description").setValue(descr);
                             if (!TextUtils.isEmpty(termsAndCond))
