@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.livedata.FirebaseQueryLiveData;
 
 public class MarinaLandingBookingViewModel extends ViewModel {
-    int y=0,m=0,d=0;
+    int y=0,m=0,d=0,capacity=0;
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
     private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("bookings").child(auth.getCurrentUser().getUid());
 
@@ -44,5 +44,13 @@ public class MarinaLandingBookingViewModel extends ViewModel {
 
     public void setDay(int d) {
         this.d = d;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }

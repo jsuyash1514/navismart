@@ -24,6 +24,7 @@ import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,7 +49,7 @@ public class MarinaLandingBookingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private int booked=0,available=0,arrival=0,departure=0,stay=0;
+    private int arrival=0,departure=0,stay=0;
     private String mParam1;
     private String mParam2;
     private TextView bookedCount, availableCount, arrivalCount,departureCount, stayCount;
@@ -119,7 +120,22 @@ public class MarinaLandingBookingFragment extends Fragment {
             viewModel.setDay(datePicker.getDayOfMonth());
         }
 
-        prepareData();
+        if(viewModel.getCapacity()==0){
+            DatabaseReference reference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("marina-description");
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    viewModel.setCapacity(Integer.parseInt(dataSnapshot.child("capacity").getValue(String.class)));
+                    Log.d("capacity","" + viewModel.getCapacity());
+                    prepareData();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(getContext(),"Some error occured. Please try again!",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -146,14 +162,11 @@ public class MarinaLandingBookingFragment extends Fragment {
                     arrival=0;
                     departure=0;
                     stay=0;
-                    available=0;
-                    booked=0;
                     bookingID = new ArrayList<>();
                     final List<MarinaBookingsModel> list = new ArrayList<>();
                     final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
                     progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
-//                    Log.d("insideOnChanged", "Date: " + date);
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
                         if(snapshot!=null) {
                             MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
@@ -191,6 +204,8 @@ public class MarinaLandingBookingFragment extends Fragment {
                             });
                         }
                     }
+                    bookedCount.setText(String.valueOf(arrival+stay));
+                    availableCount.setText(String.valueOf(viewModel.getCapacity()-(arrival+stay)));
                     arrivalCount.setText(String.valueOf(arrival));
                     departureCount.setText(String.valueOf(departure));
                     stayCount.setText(String.valueOf(stay));
