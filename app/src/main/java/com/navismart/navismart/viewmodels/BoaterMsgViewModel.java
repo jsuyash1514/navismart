@@ -10,12 +10,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.livedata.FirebaseQueryLiveData;
 
-public class MsgViewModel extends ViewModel {
+public class BoaterMsgViewModel extends ViewModel {
 
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
-    private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("chats");
+    private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("chats");
+    private FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(databaseReference);
 
-    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(databaseReference);
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapshotLiveData() {
