@@ -44,6 +44,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -454,6 +456,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
+
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            user.updateProfile(profileUpdates);
+
                             if (!TextUtils.isEmpty(descr))
                                 currentUser.child("marina-description").child("description").setValue(descr);
                             if (!TextUtils.isEmpty(termsAndCond))
@@ -599,21 +606,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
                     marinaUIDList = (ArrayList<String>) doc.get("Marina List");
-                    Log.d("Firestore: ", "Recieved marina list with size: " + marinaUIDList.size());
                     marinaUIDList.add(firebaseAuth.getCurrentUser().getUid());
                     Map<String, ArrayList<String>> map = new HashMap<>();
                     map.put("Marina List", marinaUIDList);
                     location.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d("Firestore: ", "Successfully added new marina manager in firestore.");
                         }
                     })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(getContext(), "Can't add your location.", Toast.LENGTH_LONG).show();
-                                    Log.d("Firestore: ", "Failed to add new user location in firestore with error: " + e.toString());
                                 }
                             });
                 }
@@ -622,7 +626,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Firestore", "Failed to recieve marina list.");
                         Toast.makeText(getContext(), "Can't add your location.", Toast.LENGTH_LONG).show();
                     }
                 });

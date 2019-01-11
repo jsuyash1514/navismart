@@ -70,6 +70,7 @@ import static com.navismart.navismart.MainActivity.toBounds;
 public class BoaterSearchResultsFragment extends Fragment {
 
     public static String fromDate, toDate;
+    public static int noOfDocks = 0;
     private static float minRange, maxRange;
     private static boolean freeCancellationNeeded = false;
     int PLACE_PICKER_REQUEST = 1;
@@ -142,6 +143,8 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         fromDate = getArguments().getString("fromDate");
         toDate = getArguments().getString("toDate");
+
+        noOfDocks = getArguments().getInt("noOfDocks");
 
         noResultsDisplay = view.findViewById(R.id.no_results_display);
 
@@ -263,8 +266,8 @@ public class BoaterSearchResultsFragment extends Fragment {
                 if (getCountOfDays(fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear(), toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear()) < 0) {
                     Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
                 } else {
-                    fromDate = fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear();
-                    toDate = toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear();
+                    fromDate = fromDatePicker.getDayOfMonth() + "/" + (fromDatePicker.getMonth() + 1) + "/" + fromDatePicker.getYear();
+                    toDate = toDatePicker.getDayOfMonth() + "/" + (toDatePicker.getMonth() + 1) + "/" + toDatePicker.getYear();
                     dateChangeDialog.dismiss();
                 }
             }

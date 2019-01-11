@@ -2,6 +2,7 @@ package com.navismart.navismart.view;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,26 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.R;
+import com.navismart.navismart.model.ReviewModel;
 
 import androidx.navigation.Navigation;
+
+import static com.navismart.navismart.MainActivity.getCurrentStringDate;
 
 public class WriteReviewFragment extends Fragment {
 
     private RatingBar ratingBar;
     private EditText reviewEditText;
     private Button submitReviewButton;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth auth;
+    private String reviewMarinaUID;
 
     public WriteReviewFragment() {
         // Required empty public constructor
@@ -37,6 +49,11 @@ public class WriteReviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_write_review, container, false);
 
+        auth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        reviewMarinaUID = getArguments().getString("marina_id");
+
         ratingBar = view.findViewById(R.id.reviewRatingBar);
         reviewEditText = view.findViewById(R.id.review_editText);
         submitReviewButton = view.findViewById(R.id.submit_review_button);
@@ -47,12 +64,7 @@ public class WriteReviewFragment extends Fragment {
                 if (ratingBar.getRating() == 0) {
                     Toast.makeText(getContext(), "Rating not given!", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (submitReview((int) ratingBar.getRating(), reviewEditText.getText().toString())) {
-                        Toast.makeText(getContext(), "Review Submitted Successfully!", Toast.LENGTH_SHORT).show();
-                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                    } else {
-                        Toast.makeText(getContext(), "Unable to Submit Review. Sorry for the inconvenience.", Toast.LENGTH_SHORT).show();
-                    }
+                    submitReview((int) ratingBar.getRating(), reviewEditText.getText().toString());
                 }
             }
         });
@@ -60,9 +72,30 @@ public class WriteReviewFragment extends Fragment {
         return view;
     }
 
-    private boolean submitReview(int rating, String review) {
+    private void submitReview(int rating, String review) {
 
-        return true;
+        DatabaseReference marinaReviewReference = databaseReference.child("users").child(reviewMarinaUID).child("marina-description").child("review");
+
+        ReviewModel reviewModel = new ReviewModel();
+        reviewModel.setReview(review);
+        reviewModel.setStarRating(rating);
+        reviewModel.setReviewDate(getCurrentStringDate());
+        reviewModel.setReviewerName(auth.getCurrentUser().getDisplayName());
+
+        marinaReviewReference.push().setValue(reviewModel)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getContext(), "Review Submitted Successfully!", Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Unable to Submit Review. Sorry for the inconvenience.", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
