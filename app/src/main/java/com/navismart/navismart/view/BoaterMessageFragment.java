@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,13 +48,11 @@ public class BoaterMessageFragment extends Fragment {
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                Log.d("dataSnapshot", dataSnapshot.toString());
                 if (dataSnapshot != null) {
                     msgNameModelArrayList = new ArrayList<>();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         MsgNameModel msgNameModel = new MsgNameModel();
                         msgNameModel.setID(snapshot.getKey());
-                        Log.d("snapshot.getKey boater", snapshot.getKey());
                         msgNameModel.setMsgName(snapshot.child("marinaName").getValue().toString());
                         msgNameModelArrayList.add(msgNameModel);
                     }

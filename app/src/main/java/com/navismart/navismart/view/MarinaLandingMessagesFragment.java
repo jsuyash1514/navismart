@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,6 @@ public class MarinaLandingMessagesFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         MsgNameModel msgNameModel = new MsgNameModel();
                         msgNameModel.setID(snapshot.getKey());
-                        Log.d("snapshot.getKey marina", snapshot.getKey());
                         msgNameModel.setMsgName(snapshot.child("boaterName").getValue().toString());
                         msgNameModelArrayList.add(msgNameModel);
                     }

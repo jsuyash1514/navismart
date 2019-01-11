@@ -82,7 +82,7 @@ public class ChatFragment extends Fragment {
 
         Log.d("marinaID", marinaID);
         Log.d("boaterID", boaterID);
-        Log.d("USER_TYPE", USER_TYPE+"");
+        Log.d("USER_TYPE", USER_TYPE + "");
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,8 +137,7 @@ public class ChatFragment extends Fragment {
 
                     ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
 
-
-                    for (DataSnapshot snapshot : dataSnapshot.child("messages   ").getChildren()) {
+                    for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
 
                         ChatModel chatModel = snapshot.getValue(ChatModel.class);
                         if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
