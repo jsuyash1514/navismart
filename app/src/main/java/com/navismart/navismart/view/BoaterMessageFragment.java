@@ -18,7 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MsgNameAdapter;
 import com.navismart.navismart.model.MsgNameModel;
-import com.navismart.navismart.viewmodels.MsgViewModel;
+import com.navismart.navismart.viewmodels.BoaterMsgViewModel;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ public class BoaterMessageFragment extends Fragment {
 
         msgRecyclerView = view.findViewById(R.id.marinaMessageRecyclerView);
 
-        MsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(MsgViewModel.class);
+        BoaterMsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(BoaterMsgViewModel.class);
         LiveData<DataSnapshot> liveData = marinaMsgViewModel.getDataSnapshotLiveData();
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override

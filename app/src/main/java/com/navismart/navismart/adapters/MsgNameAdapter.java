@@ -3,6 +3,7 @@ package com.navismart.navismart.adapters;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,8 @@ public class MsgNameAdapter extends RecyclerView.Adapter<MsgNameAdapter.MyViewHo
                     bundle.putString("boaterName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
                     bundle.putString("marinaID", msgName.getID());
                     bundle.putString("boaterID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Log.d("adapter marinaID", msgName.getID());
+                    Log.d("adapter boaterID", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     bundle.putString("marinaName", msgName.getMsgName());
                     Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_chatFragment, bundle);
                 }
