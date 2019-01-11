@@ -133,7 +133,7 @@ public class ChatFragment extends Fragment {
                     ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
 
 
-                    for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
+                    for (DataSnapshot snapshot : dataSnapshot.child("messages   ").getChildren()) {
 
                         ChatModel chatModel = snapshot.getValue(ChatModel.class);
                         if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {

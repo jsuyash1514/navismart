@@ -109,19 +109,30 @@
             </TableRow>
         </TableLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/special_needs_editText"
-                android:layout_width="match_parent"
+            <NumberPicker
+                android:id="@+id/no_of_dock_picker"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:baselineAligned="false"
-                android:hint="@string/special_needs"
-                android:theme="@style/BaseLineTheme" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="@string/no_of_docks"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/common_google_signin_btn_text_light_default" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

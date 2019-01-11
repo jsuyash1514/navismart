@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.navismart.navismart.view.BoaterMessageFragment;
 import com.navismart.navismart.view.BoaterProfileFragment;
 import com.navismart.navismart.view.BoaterSearchFragment;
 import com.navismart.navismart.view.BookingsFragment;
@@ -29,12 +30,16 @@ public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
             fragment = new BoaterProfileFragment();
 
         }
+        else if (position == 3)
+        {
+            fragment = new BoaterMessageFragment();
+        }
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -46,6 +51,8 @@ public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
             title = "Bookings";
         } else if (position == 2) {
             title = "Profile";
+        } else if (position == 3) {
+            title = "Messages";
         }
         return title;
     }
