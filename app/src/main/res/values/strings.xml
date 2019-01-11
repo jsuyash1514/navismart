@@ -98,4 +98,11 @@
     <string name="restaurant">Restaurant</string>
     <string name="dry_port">Dry Port</string>
     <string name="maintenance">Maintenance</string>
+    <string name="see_more_reviews"><u>See more reviews</u></string>
+    <string name="send_a_message">Send a message</string>
+    <string name="type_a_message">Type a message</string>
+    <string name="verify_creds">"Verify your EmailID and password"</string>
+    <string name="verify">Verify</string>
+    <string name="enter_new_email_and_password">Enter new Email and Password</string>
+    <string name="change">Change</string>
 </resources>

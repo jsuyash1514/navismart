@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.BoaterViewPagerAdapter;
 
+import static com.navismart.navismart.MainActivity.USER_TYPE;
+import static com.navismart.navismart.adapters.ChatAdapter.SENDER_BOATER;
+
 public class BoaterLandingFragment extends Fragment {
 
     private ViewPager boaterViewPager;
@@ -42,6 +45,8 @@ public class BoaterLandingFragment extends Fragment {
         boaterTabLayout.getTabAt(0).setIcon(R.drawable.ic_search_gray_24dp);
         boaterTabLayout.getTabAt(1).setIcon(R.drawable.ic_port_gray_24dp);
         boaterTabLayout.getTabAt(2).setIcon(R.drawable.ic_account_circle_gray_24dp);
+
+        USER_TYPE = SENDER_BOATER;
 
         return view;
     }
