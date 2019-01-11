@@ -126,8 +126,6 @@ public class MarinaLandingBookingFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     viewModel.setCapacity(Integer.parseInt(dataSnapshot.child("capacity").getValue(String.class)));
-                    Log.d("capacity","" + viewModel.getCapacity());
-                    prepareData();
                 }
 
                 @Override
@@ -136,6 +134,8 @@ public class MarinaLandingBookingFragment extends Fragment {
                 }
             });
         }
+
+        prepareData();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
