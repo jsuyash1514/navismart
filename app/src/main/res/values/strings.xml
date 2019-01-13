@@ -107,4 +107,8 @@
     <string name="change">Change</string>
     <string name="no_of_docks">Number of docks needed</string>
     <string name="edit">Edit</string>
+    <string name="delete_boat">Do you really want to delete this boat?</string>
+    <string name="cannot_undo">This cannot be undone!</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

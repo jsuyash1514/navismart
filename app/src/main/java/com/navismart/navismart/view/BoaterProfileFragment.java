@@ -258,7 +258,7 @@ public class BoaterProfileFragment extends Fragment {
                         BoatModel boat = postSnapshot.getValue(BoatModel.class);
                         list.add(boat);
                     }
-                    BoatListAdapter boatListAdapter = new BoatListAdapter(list);
+                    BoatListAdapter boatListAdapter = new BoatListAdapter(list, getContext());
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                     boatListRecyclerView.setLayoutManager(mLayoutManager);
                     boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
