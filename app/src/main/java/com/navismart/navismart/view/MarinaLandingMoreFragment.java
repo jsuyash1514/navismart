@@ -19,6 +19,7 @@ public class MarinaLandingMoreFragment extends Fragment {
     FirebaseAuth auth;
     private View descriptionBrick;
     private View profileBrick;
+    private View reviewsBrick;
 
     public MarinaLandingMoreFragment() {
         // Required empty public constructor
@@ -37,6 +38,7 @@ public class MarinaLandingMoreFragment extends Fragment {
 
         descriptionBrick = view.findViewById(R.id.marina_more_marina_desc_layout);
         profileBrick = view.findViewById(R.id.marina_more_profile_layout);
+        reviewsBrick = view.findViewById(R.id.marina_more_review_layout);
 
         auth = FirebaseAuth.getInstance();
 
@@ -64,6 +66,16 @@ public class MarinaLandingMoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_marinaProfileFragment);
+            }
+        });
+
+        reviewsBrick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("marinaName", auth.getCurrentUser().getDisplayName());
+                bundle.putString("marinaID", auth.getCurrentUser().getUid());
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_viewReviewFragment, bundle);
             }
         });
 

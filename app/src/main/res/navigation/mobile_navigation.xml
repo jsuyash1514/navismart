@@ -90,6 +90,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_landingFragment_to_viewReviewFragment"
+            app:destination="@id/viewReviewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/boaterProfileFragment"
@@ -308,13 +315,13 @@
         android:id="@+id/marinaProfileFragment"
         android:name="com.navismart.navismart.view.MarinaProfileFragment"
         android:label="fragment_marina_profile"
-        tools:layout="@layout/fragment_marina_profile" >
+        tools:layout="@layout/fragment_marina_profile">
         <action
             android:id="@+id/action_marinaProfileFragment_to_startFragment"
             app:destination="@id/startFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 </navigation>

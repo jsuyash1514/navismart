@@ -487,7 +487,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("marina-description").child("marinaName").setValue(marinaName);
 
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
                             user.updateProfile(profileUpdates);
 
                             if (!TextUtils.isEmpty(descr))
