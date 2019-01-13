@@ -608,7 +608,7 @@ public class BoaterSearchResultsFragment extends Fragment {
                         marinaDesc.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                name = (String) dataSnapshot.child("profile").child("name").getValue();
+                                name = (String) dataSnapshot.child("marina-description").child("marinaName").getValue();
                                 model.setName(name);
                                 t = (String) dataSnapshot.child("marina-description").child("terms-and-condition").getValue();
                                 model.setTnc(t);
