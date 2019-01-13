@@ -24,7 +24,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,11 +88,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private StorageReference storageReference;
     private ProgressDialog progressDialog, uploadProgress;
     private NavController navController;
-    private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText, locationEditText;
+    private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText, locationEditText, marinaNameEditText;
     private NumberPicker capacityPicker;
     private Button registerButton, uploadProfilePic;
     private Uri profilePicUri = null;
-    private boolean nameFilled = false;
+    private boolean nameFilled = false, marinaNameFilled = false;
     private boolean emailValid = false;
     private boolean passwordValid = false;
     private boolean enabler = false;
@@ -137,6 +136,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
         passwordEditText = view.findViewById(R.id.password_edit_text);
         locationEditText = view.findViewById(R.id.location_edit_text);
+        marinaNameEditText = view.findViewById(R.id.marina_name_edit_text);
         registerButton = view.findViewById(R.id.register_button);
         uploadProfilePic = view.findViewById(R.id.upload_button);
         profilePic = view.findViewById(R.id.upload_marina_manager_picture);
@@ -224,7 +224,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isEmailValid(s.toString())) {
                     emailValid = true;
-                    if (passwordValid && nameFilled) enabler = true;
+                    if (passwordValid && nameFilled && marinaNameFilled) enabler = true;
                     else enabler = false;
                 } else {
                     emailValid = false;
@@ -251,7 +251,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isPasswordValid(s.toString())) {
                     passwordValid = true;
-                    if (emailValid && nameFilled) enabler = true;
+                    if (emailValid && nameFilled && marinaNameFilled) enabler = true;
                     else enabler = false;
                 } else {
                     passwordValid = false;
@@ -278,10 +278,37 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().trim().isEmpty()) {
                     nameFilled = true;
-                    if (emailValid && passwordValid) enabler = true;
+                    if (emailValid && passwordValid && marinaNameFilled) enabler = true;
                     else enabler = false;
                 } else {
                     nameFilled = false;
+                    enabler = false;
+                }
+                registerButton.setEnabled(enabler);
+                if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
+                else registerButton.setTextColor(getResources().getColor(R.color.colorAccent));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        marinaNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().trim().isEmpty()) {
+                    marinaNameFilled = true;
+                    if (emailValid && passwordValid && nameFilled) enabler = true;
+                    else enabler = false;
+                } else {
+                    marinaNameFilled = false;
                     enabler = false;
                 }
                 registerButton.setEnabled(enabler);
@@ -429,6 +456,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         final String descr = descriptionEditText.getText().toString().trim();
         final String capacity = String.valueOf(capacityPicker.getValue());
         final String termsAndCond = t_cEditText.getText().toString().trim();
+        final String marinaName = marinaNameEditText.getText().toString().trim();
 
         if (drinkingWater.isChecked()) f.add(0);
         if (electricity.isChecked()) f.add(1);
@@ -456,9 +484,10 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
+                            currentUser.child("marina-description").child("marinaName").setValue(marinaName);
 
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
                             user.updateProfile(profileUpdates);
 
                             if (!TextUtils.isEmpty(descr))

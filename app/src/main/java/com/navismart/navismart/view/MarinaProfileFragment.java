@@ -2,17 +2,10 @@ package com.navismart.navismart.view;
 
 
 import android.app.Dialog;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,24 +31,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.EmailAndPasswordChecker;
 import com.navismart.navismart.R;
-import com.navismart.navismart.adapters.BoatListAdapter;
-import com.navismart.navismart.model.BoatModel;
-import com.navismart.navismart.viewmodels.BoatListViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-public class BoaterProfileFragment extends Fragment {
+public class MarinaProfileFragment extends Fragment {
 
-    private List<BoatModel> list;
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private RecyclerView boatListRecyclerView;
-    private ImageView logoutIcon, addBoatIcon, profileImageView, editProfileIcon;
+    private ImageView profileImageView, editProfileIcon;
     private TextView nameTextView;
     private TextView emailTextView;
     private EditText emailEditText;
@@ -63,6 +48,10 @@ public class BoaterProfileFragment extends Fragment {
     private Dialog credentialVerifyDialog;
     private String verifyEmail, verifyPass;
     private Button verifyButton;
+
+    public MarinaProfileFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,8 +61,7 @@ public class BoaterProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_boater_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_marina_profile, container, false);
 
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
@@ -87,42 +75,16 @@ public class BoaterProfileFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-
-        nameTextView = view.findViewById(R.id.boater_profile_name);
-        emailTextView = view.findViewById(R.id.boater_profile_email);
-        profileImageView = view.findViewById(R.id.boater_profile_image);
+        nameTextView = view.findViewById(R.id.marina_profile_name);
+        emailTextView = view.findViewById(R.id.marina_profile_email);
+        profileImageView = view.findViewById(R.id.marina_profile_image);
         editProfileIcon = view.findViewById(R.id.edit_profile_icon);
-
-        boatListRecyclerView = view.findViewById(R.id.boat_recycler_view);
 
         credentialVerifyDialog = new Dialog(getContext());
         credentialVerifyDialog.setContentView(R.layout.credentials_dialog);
         credentialVerifyDialog.setTitle("Verify your EmailID and password");
         emailEditText = credentialVerifyDialog.findViewById(R.id.email_edit_text);
         passwordEditText = credentialVerifyDialog.findViewById(R.id.password_edit_text);
-
-        prepareBoatList();
-
-        logoutIcon = view.findViewById(R.id.logout_icon);
-        logoutIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
-                NavOptions navOptions = new NavOptions.Builder()
-                        .setPopUpTo(R.id.boaterLandingFragment, true)
-                        .build();
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
-            }
-        });
-
-        addBoatIcon = view.findViewById(R.id.add_boat_icon);
-        addBoatIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_addBoatFragment);
-            }
-        });
 
         editProfileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,10 +151,13 @@ public class BoaterProfileFragment extends Fragment {
                                     NavOptions navOptions = new NavOptions.Builder()
                                             .setPopUpTo(R.id.boaterLandingFragment, true)
                                             .build();
-                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
+                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaProfileFragment_to_startFragment, null, navOptions);
                                 }
                             });
+
+
                 }
+
             }
         });
 
@@ -242,30 +207,6 @@ public class BoaterProfileFragment extends Fragment {
             }
         });
 
-
-    }
-
-    private void prepareBoatList() {
-
-        BoatListViewModel boatListViewModel = ViewModelProviders.of(this).get(BoatListViewModel.class);
-        LiveData<DataSnapshot> liveData = boatListViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    list = new ArrayList<>();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        BoatModel boat = postSnapshot.getValue(BoatModel.class);
-                        list.add(boat);
-                    }
-                    BoatListAdapter boatListAdapter = new BoatListAdapter(list, getContext());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    boatListRecyclerView.setLayoutManager(mLayoutManager);
-                    boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    boatListRecyclerView.setAdapter(boatListAdapter);
-                }
-            }
-        });
 
     }
 

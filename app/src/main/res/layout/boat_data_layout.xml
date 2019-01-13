@@ -66,6 +66,16 @@
             android:text="@string/type"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/deleteBoat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/boat_id_display"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_delete_white_24dp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

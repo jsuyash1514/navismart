@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.SignUpMarinaManagerFragment">
+    tools:context=".view.MarinaDescriptionEditFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -14,104 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/upload_marina_manager_picture"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_margin="8dp"
-                    android:src="@drawable/gray_solid"
-
-                    />
-
-                <Button
-                    android:id="@+id/upload_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:text="@string/upload"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/colorPrimary" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:text="@string/you"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/white" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/colorPrimary" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/name_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:baselineAligned="false"
-                    android:hint="@string/name"
-                    android:inputType="textPersonName"
-                    android:maxLines="1"
-                    android:theme="@style/BaseLineTheme" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/email_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:baselineAligned="false"
-                    android:hint="@string/email_id"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:theme="@style/BaseLineTheme" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true">
-
-                <EditText
-                    android:id="@+id/password_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:baselineAligned="false"
-                    android:hint="@string/password"
-                    android:inputType="textPassword"
-                    android:theme="@style/BaseLineTheme" />
-            </android.support.design.widget.TextInputLayout>
-
 
             <View
                 android:layout_width="match_parent"
@@ -416,31 +317,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/location_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:baselineAligned="false"
-                    android:enabled="false"
-                    android:hint="@string/location"
-                    android:theme="@style/BaseLineTheme" />
-
-                <ImageView
-                    android:id="@+id/add_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:src="@drawable/ic_add_location_black_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
                 <NumberPicker
                     android:id="@+id/reception_capacity_number_picker"
                     android:layout_width="wrap_content"
@@ -482,13 +358,12 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/register_button"
+                android:id="@+id/edit_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:backgroundTint="@color/colorPrimary"
-                android:enabled="false"
-                android:text="@string/register"
+                android:text="@string/edit"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/white" />
         </LinearLayout>

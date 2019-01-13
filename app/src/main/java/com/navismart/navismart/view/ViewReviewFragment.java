@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public class ViewReviewFragment extends Fragment {
 
     private TextView marinaNameTextView;
     private RecyclerView reviewRecyclerView;
+    DividerItemDecoration itemDecoration;
 
     public ViewReviewFragment() {
         // Required empty public constructor
@@ -45,6 +47,8 @@ public class ViewReviewFragment extends Fragment {
 
         marinaNameTextView = view.findViewById(R.id.marina_name_textView);
         reviewRecyclerView = view.findViewById(R.id.review_recycler_view);
+
+        itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
 
         marinaNameTextView.setText(getArguments().getString("marinaName"));
 
@@ -64,6 +68,7 @@ public class ViewReviewFragment extends Fragment {
                 reviewRecyclerView.setLayoutManager(mLayoutManager);
                 reviewRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 reviewRecyclerView.setAdapter(reviewListAdapter);
+                reviewRecyclerView.addItemDecoration(itemDecoration);
 
             }
         });
