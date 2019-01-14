@@ -133,7 +133,7 @@ public class MarinaLandingBookingFragment extends Fragment {
                     stay=0;
                     bookingID = new ArrayList<>();
                     final List<MarinaBookingsModel> list = new ArrayList<>();
-                    final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getActivity(),getContext(),list);
+                    final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getActivity(),list);
                     progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
@@ -162,6 +162,7 @@ public class MarinaLandingBookingFragment extends Fragment {
                                     marinaBookingsModel.setGuestName(dataSnapshot1.child(snapshot.getKey()).child("boaterName").getValue(String.class));
                                     marinaBookingsModel.setArrivingOn(dataSnapshot1.child(snapshot.getKey()).child("fromDate").getValue(String.class));
                                     marinaBookingsModel.setDepartingOn(dataSnapshot1.child(snapshot.getKey()).child("toDate").getValue(String.class));
+                                    marinaBookingsModel.setBookingID(dataSnapshot1.child(snapshot.getKey()).child("bookingID").getValue(String.class));
                                     list.add(marinaBookingsModel);
                                     adapter.notifyDataSetChanged();
                                 }

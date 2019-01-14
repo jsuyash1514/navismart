@@ -2,6 +2,7 @@ package com.navismart.navismart.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -19,13 +20,11 @@ import java.util.List;
 import androidx.navigation.Navigation;
 
 public class MarinaBookingsAdapter extends RecyclerView.Adapter<MarinaBookingsAdapter.MarinaBookingsViewHolder> {
-    private Context context;
     private List<MarinaBookingsModel> list;
     private Activity activity;
 
-    public MarinaBookingsAdapter(Activity activity, Context context, List<MarinaBookingsModel> list) {
+    public MarinaBookingsAdapter(Activity activity, List<MarinaBookingsModel> list) {
         this.activity = activity;
-        this.context = context;
         this.list = list;
     }
 
@@ -46,7 +45,9 @@ public class MarinaBookingsAdapter extends RecyclerView.Adapter<MarinaBookingsAd
         marinaBookingsViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("Booking_id",bookingsModel.getBookingID());
+                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment,bundle);
 
             }
         });
