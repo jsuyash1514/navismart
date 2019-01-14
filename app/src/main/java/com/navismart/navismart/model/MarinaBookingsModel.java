@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 public class MarinaBookingsModel {
     int icon;
     String name, arrivingOn, departingOn;
+    String bookingID;
 
     public MarinaBookingsModel(int icon, String name, String arrivingOn, String departingOn) {
         this.icon = icon;
@@ -46,5 +47,13 @@ public class MarinaBookingsModel {
 
     public void setDepartingOn(String departingOn) {
         this.departingOn = departingOn;
+    }
+
+    public String getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
     }
 }
