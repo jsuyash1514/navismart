@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.navigation.Navigation;
+
 public class MarinaLandingBookingFragment extends Fragment {
 
 
@@ -50,8 +52,6 @@ public class MarinaLandingBookingFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private int arrival=0,departure=0,stay=0;
-    private String mParam1;
-    private String mParam2;
     private TextView bookedCount, availableCount, arrivalCount,departureCount, stayCount;
     private MarinaLandingBookingViewModel viewModel;
     private DatePicker datePicker;
@@ -61,37 +61,6 @@ public class MarinaLandingBookingFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressDialog progressDialog;
 
-
-    public MarinaLandingBookingFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MarinaLandingBookingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MarinaLandingBookingFragment newInstance(String param1, String param2) {
-        MarinaLandingBookingFragment fragment = new MarinaLandingBookingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,7 +133,7 @@ public class MarinaLandingBookingFragment extends Fragment {
                     stay=0;
                     bookingID = new ArrayList<>();
                     final List<MarinaBookingsModel> list = new ArrayList<>();
-                    final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getContext(),list);
+                    final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getActivity(),getContext(),list);
                     progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
