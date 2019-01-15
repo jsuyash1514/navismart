@@ -1,7 +1,10 @@
 package com.navismart.navismart.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +16,15 @@ import com.navismart.navismart.model.MarinaActivityModel;
 
 import java.util.List;
 
+import androidx.navigation.Navigation;
+
 public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    Activity activity;
     Context context;
     List<MarinaActivityModel> list;
 
-    public MarinaActivityAdapter(Context context, List<MarinaActivityModel> list) {
+    public MarinaActivityAdapter(Activity activity, Context context, List<MarinaActivityModel> list) {
+        this.activity = activity;
         this.context = context;
         this.list = list;
     }
@@ -72,6 +79,14 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((MarinaActivityBookingsViewHolder) holder).departureTime.setText(mylist.getBookingsCardModel().getDapartureTime());
                 ((MarinaActivityBookingsViewHolder) holder).bookingNumber.setText(mylist.getBookingsCardModel().getBookingNumber());
                 ((MarinaActivityBookingsViewHolder) holder).bookingPrice.setText(mylist.getBookingsCardModel().getBookingPrice());
+                ((MarinaActivityBookingsViewHolder)holder).newBookingCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("Booking_id",mylist.getBookingsCardModel().getBookingNumber());
+                        Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment,bundle);
+                    }
+                });
             } else if (mylist.getType() == MarinaActivityModel.TYPE_REVIEW) {
                 ((MarinaActivityReviewsViewHolder) holder).timeStamp.setText(mylist.getReviewsCardModel().getTimeStamp());
                 ((MarinaActivityReviewsViewHolder) holder).guestName.setText(mylist.getReviewsCardModel().getGuestName());
@@ -108,6 +123,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     class MarinaActivityBookingsViewHolder extends RecyclerView.ViewHolder {
         TextView timeStamp, guestName, boatName, boatID, arrivalTime, departureTime, bookingNumber, bookingPrice;
+        CardView newBookingCardView;
 
         public MarinaActivityBookingsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +135,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             departureTime = (itemView).findViewById(R.id.marina_activity_guest_detail_departure);
             bookingNumber = (itemView).findViewById(R.id.marina_activity_guest_detail_booking);
             bookingPrice = (itemView).findViewById(R.id.marina_activity_guest_detail_price);
+            newBookingCardView = (itemView).findViewById(R.id.marina_activity_new_booking_card_view);
         }
     }
 

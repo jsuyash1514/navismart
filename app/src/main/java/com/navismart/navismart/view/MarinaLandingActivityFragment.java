@@ -71,7 +71,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                     Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     long time = cal.getTimeInMillis();
                     list = new ArrayList<>();
-                    adapter = new MarinaActivityAdapter(getContext(), list);
+                    adapter = new MarinaActivityAdapter(getActivity(),getContext(), list);
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         if (snapshot != null) {
                             String dateStr = snapshot.child("dateTimeStamp").getValue(String.class);

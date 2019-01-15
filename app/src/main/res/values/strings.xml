@@ -111,4 +111,14 @@
     <string name="cannot_undo">This cannot be undone!</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="boat_name_details">Boat Name:</string>
+    <string name="boat_id_details">Boat ID:</string>
+    <string name="default_string">default</string>
+    <string name="marina_name_details">Marina Name:</string>
+    <string name="number_of_docks_details">Number of docks:</string>
+    <string name="arrival_date_details">Arrival date:</string>
+    <string name="departure_date_details">Departure date:</string>
+    <string name="price_details">Price:</string>
+    <string name="booking_id_details">Booking ID:</string>
+    <string name="booking_date_details">Booking date:</string>
 </resources>
