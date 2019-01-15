@@ -1,7 +1,9 @@
 package com.navismart.navismart.adapters;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.MarinaModel;
 
@@ -22,10 +29,12 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
 
     private List<MarinaModel> marinaList;
     private Activity activity;
+    private StorageReference storageReference;
 
     public MarinaListAdapter(Activity activity, List<MarinaModel> marinaList) {
         this.marinaList = marinaList;
         this.activity = activity;
+        storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -45,7 +54,22 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         holder.marinaLocationTextView.setText(marinaModel.getLocation());
         holder.marinaNameTextView.setText(marinaModel.getName());
         holder.marinaImageView.setImageBitmap(marinaModel.getImage());
-        holder.marinaDistaFromSearchTextView.setText(Integer.toString((int)Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
+        holder.marinaDistaFromSearchTextView.setText(Integer.toString((int) Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
+
+        StorageReference picReference = storageReference.child("users").child(marinaModel.getMarinaUID()).child("marina1");
+        picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(activity)
+                        .load(uri)
+                        .into(holder.marinaImageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
 
         holder.seeMarinaDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -5,9 +5,11 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,9 +23,14 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
+import com.navismart.navismart.adapters.MarinaImagesAdapter;
 import com.navismart.navismart.adapters.ReviewListAdapter;
 import com.navismart.navismart.model.MarinaModel;
 import com.navismart.navismart.model.ReviewModel;
@@ -50,8 +57,11 @@ public class MarinaPageFragment extends Fragment {
     private RecyclerView reviewListView;
     private ArrayList<ReviewModel> reviewList;
     private DatabaseReference databaseReference;
+    private StorageReference storageReference;
     private FirebaseAuth auth;
     private View reviewTab;
+    private RecyclerView imagesRecyclerView;
+    private int noImages = 0;
 
     public MarinaPageFragment() {
         // Required empty public constructor
@@ -71,6 +81,7 @@ public class MarinaPageFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         nameTextView = view.findViewById(R.id.marina_name_textView);
         fromDateTextView = view.findViewById(R.id.from_date_display_textView);
@@ -87,6 +98,7 @@ public class MarinaPageFragment extends Fragment {
         reviewTab = view.findViewById(R.id.review_tab);
         seeMoreReviewsTextView = view.findViewById(R.id.see_more_reviews_text);
         sendMsgButton = view.findViewById(R.id.send_msg_button);
+        imagesRecyclerView = view.findViewById(R.id.imagesrecyclerView);
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
@@ -105,6 +117,31 @@ public class MarinaPageFragment extends Fragment {
         marinaImageView.setImageBitmap(marinaModel.getImage());
         fromDateTextView.setText(fromDate);
         toDateTextView.setText(toDate);
+
+        databaseReference.child("users").child(marinaModel.getMarinaUID()).child("marina-description").child("no-images").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("DATASNAPSHOT", dataSnapshot.toString());
+                try {
+                    noImages = dataSnapshot.getValue(Integer.class);
+                } catch (Exception e) {
+                    noImages = 0;
+                }
+                if (noImages > 0) {
+                    marinaImageView.setVisibility(View.GONE);
+                    imagesRecyclerView.setVisibility(View.VISIBLE);
+                    loadImages(noImages, marinaModel.getMarinaUID());
+                } else {
+                    marinaImageView.setVisibility(View.VISIBLE);
+                    imagesRecyclerView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         bookButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +175,17 @@ public class MarinaPageFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void loadImages(int n, String marinaUID) {
+
+        MarinaImagesAdapter marinaImagesAdapter = new MarinaImagesAdapter(n, marinaUID, getContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        imagesRecyclerView.setLayoutManager(mLayoutManager);
+        imagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        imagesRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        imagesRecyclerView.setAdapter(marinaImagesAdapter);
+
     }
 
     private void loadReviews(String marinaID) {
