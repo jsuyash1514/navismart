@@ -16,9 +16,7 @@
             android:id="@+id/marina_booking_calender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/BaseLineTheme">
-
-        </DatePicker>
+            android:theme="@style/BaseLineTheme" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/marina_booking_stats_card"
@@ -91,8 +89,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="#ededed"
-                    />
+                    android:background="#ededed" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
