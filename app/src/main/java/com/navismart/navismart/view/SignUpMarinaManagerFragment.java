@@ -505,6 +505,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
 
                             if (marinaPicModelList.size() > 1) {
+                                currentUser.child("marina-description").child("no-images").setValue(marinaPicModelList.size());
                                 for (int i = 1; i < marinaPicModelList.size(); i++) {
                                     MarinaPicModel model = marinaPicModelList.get(i);
                                     Bitmap bitmap = model.getPic();
