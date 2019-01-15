@@ -22,6 +22,7 @@ import com.navismart.navismart.model.ReviewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -81,14 +82,16 @@ public class WriteReviewFragment extends Fragment {
         DatabaseReference marinaReviewReference = databaseReference.child("users").child(reviewMarinaUID).child("review");
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        long time = cal.getTimeInMillis();
         SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String gmtTime = df.format(cal.getTime());
+        String gmtTime = df.format(new Date());
 
         ReviewModel reviewModel = new ReviewModel();
         reviewModel.setReview(review);
         reviewModel.setStarRating(rating);
         reviewModel.setReviewDate(gmtTime);
+        reviewModel.setTimeStamp(time);
         reviewModel.setReviewerName(auth.getCurrentUser().getDisplayName());
         reviewModel.setBookingID(bookingID);
         reviewModel.setReviewerID(auth.getCurrentUser().getUid());

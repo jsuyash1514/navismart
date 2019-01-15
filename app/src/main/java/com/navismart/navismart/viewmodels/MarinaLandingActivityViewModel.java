@@ -12,7 +12,7 @@ import com.navismart.navismart.livedata.FirebaseQueryLiveData;
 
 public class MarinaLandingActivityViewModel extends ViewModel {
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
-    private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("bookings");
+    private static final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid());
 
     private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(databaseReference);
 

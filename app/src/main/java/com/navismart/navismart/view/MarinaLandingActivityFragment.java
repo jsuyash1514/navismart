@@ -18,6 +18,7 @@ import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MarinaActivityAdapter;
 import com.navismart.navismart.model.MarinaActivityModel;
 import com.navismart.navismart.model.MarinaActivityNewBookingsCardModel;
+import com.navismart.navismart.model.MarinaActivityNewReviewsCardModel;
 import com.navismart.navismart.viewmodels.MarinaLandingActivityViewModel;
 
 import java.text.ParseException;
@@ -72,7 +73,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                     long time = cal.getTimeInMillis();
                     list = new ArrayList<>();
                     adapter = new MarinaActivityAdapter(getActivity(),getContext(), list);
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot snapshot : dataSnapshot.child("bookings").getChildren()) {
                         if (snapshot != null) {
                             String dateStr = snapshot.child("dateTimeStamp").getValue(String.class);
                             SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
@@ -100,6 +101,32 @@ public class MarinaLandingActivityFragment extends Fragment {
                                     ));
                             list.add(dateModel);
                             list.add(modelBooking);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                    for (DataSnapshot snapshot : dataSnapshot.child("review").getChildren()) {
+                        if (snapshot != null) {
+                            String dateStr = snapshot.child("reviewDate").getValue(String.class);
+                            SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
+                            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            Date date = null;
+                            try {
+                                date = df.parse(dateStr);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            df.setTimeZone(TimeZone.getDefault());
+                            String formattedDate = df.format(date);
+                            MarinaActivityModel dateModel = new MarinaActivityModel(0, formattedDate);
+                            MarinaActivityModel modelReview = new MarinaActivityModel(
+                                    2,
+                                    new MarinaActivityNewReviewsCardModel(
+                                            snapshot.child("reviewerName").getValue(String.class),
+                                            String.valueOf(snapshot.child("starRating").getValue()),
+                                            String.valueOf(DateUtils.getRelativeTimeSpanString((long) snapshot.child("timeStamp").getValue(), time, MINUTE_IN_MILLIS))
+                                    ));
+                            list.add(dateModel);
+                            list.add(modelReview);
                             adapter.notifyDataSetChanged();
                         }
                     }
