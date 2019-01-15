@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
+import com.navismart.navismart.Triplet;
 import com.navismart.navismart.adapters.MarinaActivityAdapter;
 import com.navismart.navismart.model.MarinaActivityModel;
 import com.navismart.navismart.model.MarinaActivityNewBookingsCardModel;
@@ -25,6 +26,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +38,7 @@ import static android.text.format.DateUtils.MINUTE_IN_MILLIS;
 public class MarinaLandingActivityFragment extends Fragment {
     private MarinaLandingActivityViewModel viewModel;
     private List<MarinaActivityModel> list;
+    private List<Triplet<Long, Integer, String>> tripletList;
     private MarinaActivityAdapter adapter;
     private RecyclerView recyclerView;
 
@@ -52,14 +56,6 @@ public class MarinaLandingActivityFragment extends Fragment {
 
         fetchData();
 
-//        MarinaActivityModel model1 = new MarinaActivityModel(0,"30 Oct 18");
-//        list.add(model1);
-//        adapter.notifyDataSetChanged();
-//
-//        MarinaActivityModel modelReview = new MarinaActivityModel(2,new MarinaActivityNewReviewsCardModel("Karthik","3.9","5w ago"));
-//        list.add(modelReview);
-//        adapter.notifyDataSetChanged();
-
         return view;
     }
 
@@ -72,10 +68,27 @@ public class MarinaLandingActivityFragment extends Fragment {
                     Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     long time = cal.getTimeInMillis();
                     list = new ArrayList<>();
-                    adapter = new MarinaActivityAdapter(getActivity(),getContext(), list);
+                    tripletList = new ArrayList<>();
+                    adapter = new MarinaActivityAdapter(getActivity(), getContext(), list);
                     for (DataSnapshot snapshot : dataSnapshot.child("bookings").getChildren()) {
                         if (snapshot != null) {
-                            String dateStr = snapshot.child("dateTimeStamp").getValue(String.class);
+                            tripletList.add(new Triplet<Long, Integer, String>((long) snapshot.child("bookingDate").getValue(), 1, snapshot.child("bookingID").getValue(String.class)));
+                        }
+                    }
+                    for (DataSnapshot snapshot : dataSnapshot.child("review").getChildren()) {
+                        if (snapshot != null) {
+                            tripletList.add(new Triplet<Long, Integer, String>((long) snapshot.child("timeStamp").getValue(), 2, snapshot.getKey()));
+                        }
+                    }
+                    Collections.sort(tripletList, new Comparator<Triplet<Long, Integer, String>>() {
+                        @Override
+                        public int compare(Triplet<Long, Integer, String> object1, Triplet<Long, Integer, String> object2) {
+                            return (int) (object2.getFirst() - object1.getFirst());
+                        }
+                    });
+                    for (int i = 0; i < tripletList.size(); i++) {
+                        if (tripletList.get(i).getSecond() == 1) {
+                            String dateStr = dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("dateTimeStamp").getValue(String.class);
                             SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
                             df.setTimeZone(TimeZone.getTimeZone("UTC"));
                             Date date = null;
@@ -90,23 +103,20 @@ public class MarinaLandingActivityFragment extends Fragment {
                             MarinaActivityModel modelBooking = new MarinaActivityModel(
                                     1,
                                     new MarinaActivityNewBookingsCardModel(
-                                            snapshot.child("boaterName").getValue(String.class),
-                                            String.valueOf(DateUtils.getRelativeTimeSpanString((long) snapshot.child("bookingDate").getValue(), time, MINUTE_IN_MILLIS)),
-                                            snapshot.child("boatName").getValue(String.class),
-                                            snapshot.child("boatID").getValue(String.class),
-                                            snapshot.child("fromDate").getValue(String.class),
-                                            snapshot.child("toDate").getValue(String.class),
-                                            snapshot.child("bookingID").getValue(String.class),
-                                            String.valueOf(snapshot.child("finalPrice").getValue())
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("boaterName").getValue(String.class),
+                                            String.valueOf(DateUtils.getRelativeTimeSpanString((long) dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("bookingDate").getValue(), time, MINUTE_IN_MILLIS)),
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("boatName").getValue(String.class),
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("boatID").getValue(String.class),
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("fromDate").getValue(String.class),
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("toDate").getValue(String.class),
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("bookingID").getValue(String.class),
+                                            String.valueOf(dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("finalPrice").getValue())
                                     ));
                             list.add(dateModel);
                             list.add(modelBooking);
                             adapter.notifyDataSetChanged();
-                        }
-                    }
-                    for (DataSnapshot snapshot : dataSnapshot.child("review").getChildren()) {
-                        if (snapshot != null) {
-                            String dateStr = snapshot.child("reviewDate").getValue(String.class);
+                        } else if (tripletList.get(i).getSecond() == 2) {
+                            String dateStr = dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("reviewDate").getValue(String.class);
                             SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
                             df.setTimeZone(TimeZone.getTimeZone("UTC"));
                             Date date = null;
@@ -121,15 +131,16 @@ public class MarinaLandingActivityFragment extends Fragment {
                             MarinaActivityModel modelReview = new MarinaActivityModel(
                                     2,
                                     new MarinaActivityNewReviewsCardModel(
-                                            snapshot.child("reviewerName").getValue(String.class),
-                                            String.valueOf(snapshot.child("starRating").getValue()),
-                                            String.valueOf(DateUtils.getRelativeTimeSpanString((long) snapshot.child("timeStamp").getValue(), time, MINUTE_IN_MILLIS))
+                                            dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("reviewerName").getValue(String.class),
+                                            String.valueOf(dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("starRating").getValue()),
+                                            String.valueOf(DateUtils.getRelativeTimeSpanString((long) dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("timeStamp").getValue(), time, MINUTE_IN_MILLIS))
                                     ));
                             list.add(dateModel);
                             list.add(modelReview);
                             adapter.notifyDataSetChanged();
                         }
                     }
+
                     RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(recycler);
                     recyclerView.setAdapter(adapter);
