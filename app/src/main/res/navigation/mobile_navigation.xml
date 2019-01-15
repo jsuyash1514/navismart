@@ -294,7 +294,15 @@
         android:id="@+id/bookingDetailsFragment"
         android:name="com.navismart.navismart.view.BookingDetailsFragment"
         android:label="fragment_booking_details"
-        tools:layout="@layout/fragment_booking_details" />
+        tools:layout="@layout/fragment_booking_details" >
+        <action
+            android:id="@+id/action_bookingDetailsFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.navismart.navismart.view.ChatFragment"

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,9 +23,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.navigation.Navigation;
+
 public class BookingDetailsFragment extends Fragment {
-    private String bookingID;
-    private TextView boaterName, boatName, boatID, marinaName, docksCount, arrival, departure, price, bookingDate, bookingid;
+    private String bookingID, marinaName, marinaID, boaterName, boaterID;
+    private TextView boaterNameView, boatName, boatID, marinaNameView, docksCount, arrival, departure, price, bookingDate, bookingid;
+    private Button sendMsgButton;
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
 
@@ -36,28 +40,45 @@ public class BookingDetailsFragment extends Fragment {
 
         bookingID = getArguments().getString("Booking_id");
 
-        boaterName = view.findViewById(R.id.bookings_details_boater_name);
+        boaterNameView = view.findViewById(R.id.bookings_details_boater_name);
         boatName = view.findViewById(R.id.bookings_details_boat_name);
         boatID = view.findViewById(R.id.bookings_details_boat_id);
-        marinaName = view.findViewById(R.id.booking_details_marina_name);
+        marinaNameView = view.findViewById(R.id.booking_details_marina_name);
         docksCount = view.findViewById(R.id.booking_details_number_of_docks);
         arrival = view.findViewById(R.id.booking_details_arrival_date);
         departure = view.findViewById(R.id.booking_details_departure_date);
         price = view.findViewById(R.id.booking_details_price);
         bookingDate = view.findViewById(R.id.booking_details_booking_date);
         bookingid = view.findViewById(R.id.booking_details_booking_id);
+        sendMsgButton = view.findViewById(R.id.send_msg_button);
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        sendMsgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("marinaName", marinaName);
+                bundle.putString("marinaID", marinaID);
+                bundle.putString("boaterName", boaterName);
+                bundle.putString("boaterID", boaterID);
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_bookingDetailsFragment_to_chatFragment, bundle);
+            }
+        });
 
         DatabaseReference ref = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingID);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boaterName.setText(dataSnapshot.child("boaterName").getValue(String.class));
+                marinaID = dataSnapshot.child("marinaUID").getValue(String.class);
+                boaterID = dataSnapshot.child("boaterUID").getValue(String.class);
+                boaterName = dataSnapshot.child("boaterName").getValue(String.class);
+                boaterNameView.setText(boaterName);
                 boatName.setText(dataSnapshot.child("boatName").getValue(String.class));
                 boatID.setText(dataSnapshot.child("boatID").getValue(String.class));
-                marinaName.setText(dataSnapshot.child("marinaName").getValue(String.class));
+                marinaName = dataSnapshot.child("marinaName").getValue(String.class);
+                marinaNameView.setText(marinaName);
                 docksCount.setText(String.valueOf(dataSnapshot.child("noOfDocks").getValue()));
                 arrival.setText(dataSnapshot.child("fromDate").getValue(String.class));
                 departure.setText(dataSnapshot.child("toDate").getValue(String.class));

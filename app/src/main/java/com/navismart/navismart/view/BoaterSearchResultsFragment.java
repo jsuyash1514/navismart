@@ -333,7 +333,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     private boolean facilitiesMatch(MarinaModel m) {
 
-        int array[] = m.getFacilitiesAvlbl();
+        ArrayList<Integer> array = m.getFacilitiesAvlbl();
         for (int i = 0; i < facilitiesBool.length; i++) {
 
             if (facilitiesBool[i]) {
@@ -345,10 +345,10 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     }
 
-    private boolean contains(int x, int y[]) {
+    private boolean contains(Integer x, ArrayList<Integer> y) {
 
-        for (int i = 0; i < y.length; i++) {
-            if (y[i] == x) return true;
+        for(Integer a : y){
+            if(x.equals(a))return true;
         }
         return false;
     }
@@ -616,7 +616,11 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 model.setLocation(marinaAddress);
                                 d = (String) dataSnapshot.child("marina-description").child("description").getValue();
                                 model.setDescription(d);
-                                model.setFacilities(new int[]{1, 2, 3});
+                                ArrayList<Integer> f = new ArrayList<>();
+                                for (DataSnapshot snapshot: dataSnapshot.child("marina-description").child("facilities").getChildren()){
+                                    f.add(((Long)snapshot.getValue()).intValue());
+                                }
+                                model.setFacilities(f);
                                 model.setMarinaUID(uid);
                                 Log.d("LAT", dataSnapshot.child("marina-description").child("latitude").getValue() + "");
                                 model.setLat((double) dataSnapshot.child("marina-description").child("latitude").getValue());

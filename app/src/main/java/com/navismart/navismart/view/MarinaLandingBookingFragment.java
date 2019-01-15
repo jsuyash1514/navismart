@@ -163,6 +163,7 @@ public class MarinaLandingBookingFragment extends Fragment {
                                     marinaBookingsModel.setArrivingOn(dataSnapshot1.child(snapshot.getKey()).child("fromDate").getValue(String.class));
                                     marinaBookingsModel.setDepartingOn(dataSnapshot1.child(snapshot.getKey()).child("toDate").getValue(String.class));
                                     marinaBookingsModel.setBookingID(dataSnapshot1.child(snapshot.getKey()).child("bookingID").getValue(String.class));
+                                    marinaBookingsModel.setBoaterID(dataSnapshot1.child(snapshot.getKey()).child("boaterUID").getValue(String.class));
                                     list.add(marinaBookingsModel);
                                     adapter.notifyDataSetChanged();
                                 }

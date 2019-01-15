@@ -13,81 +13,91 @@
     card_view:cardBackgroundColor="#ffffff">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <RelativeLayout
+            android:id="@+id/marina_booking_inner_block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/marina_booking_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="20dp" />
+
+            <TextView
+                android:id="@+id/guest_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@id/marina_booking_image"
+                android:padding="2dp"
+                android:textColor="#444444"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/guest_arrival"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/guest_name"
+                android:layout_toEndOf="@id/marina_booking_image"
+                android:paddingStart="2dp"
+                android:text="@string/arriving"
+                android:textColor="#737373"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:id="@+id/guest_arriving_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/guest_name"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/guest_arrival"
+                android:textColor="#737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/guest_departure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/guest_arrival"
+                android:layout_marginBottom="10dp"
+                android:layout_toEndOf="@id/marina_booking_image"
+                android:paddingStart="2dp"
+                android:text="@string/departing"
+                android:textColor="#737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/guest_departing_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/guest_arrival"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="10dp"
+                android:layout_toEndOf="@id/guest_departure"
+                android:textColor="#737373"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
         <ImageView
-            android:id="@+id/marina_booking_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="20dp" />
-
-        <TextView
-            android:id="@+id/guest_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@id/marina_booking_image"
-            android:padding="2dp"
-            android:textColor="#444444"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/guest_arrival"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/guest_name"
-            android:layout_toEndOf="@id/marina_booking_image"
-            android:paddingStart="2dp"
-            android:text="@string/arriving"
-            android:textColor="#737373"
-            android:textSize="12sp" />
-
-
-        <TextView
-            android:id="@+id/guest_arriving_on"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/guest_name"
-            android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/guest_arrival"
-            android:textColor="#737373"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/guest_departure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/guest_arrival"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@id/marina_booking_image"
-            android:paddingStart="2dp"
-            android:text="@string/departing"
-            android:textColor="#737373"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/guest_departing_on"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/guest_arrival"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@id/guest_departure"
-            android:textColor="#737373"
-            android:textSize="12sp" />
-
-        <ImageView
+            android:id="@+id/marina_chat_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="15dp"
+            android:padding="8dp"
             android:src="@drawable/ic_forum_black_24dp" />
 
     </RelativeLayout>
+
 
 </android.support.v7.widget.CardView>
 
