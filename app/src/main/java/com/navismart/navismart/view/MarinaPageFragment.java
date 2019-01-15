@@ -122,7 +122,11 @@ public class MarinaPageFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("DATASNAPSHOT", dataSnapshot.toString());
-                noImages = dataSnapshot.getValue(Integer.class);
+                try {
+                    noImages = dataSnapshot.getValue(Integer.class);
+                } catch (Exception e) {
+                    noImages = 0;
+                }
                 if (noImages > 0) {
                     marinaImageView.setVisibility(View.GONE);
                     imagesRecyclerView.setVisibility(View.VISIBLE);
