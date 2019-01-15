@@ -29,7 +29,7 @@ public class MarinaModel implements Parcelable {
     private String description = "default";
     private String tnc = "default";
     private ArrayList<String> facilities;
-    private int f[];
+    private ArrayList<Integer> f;
     private String fromDate = "default";
     private String toDate = "default";
     private String marinaUID = "default";
@@ -42,11 +42,11 @@ public class MarinaModel implements Parcelable {
         Canvas canvas = new Canvas(image);
         canvas.drawColor(Color.GRAY);
         initializeFacilities();
-        f = new int[10];
+        f = new ArrayList<>();
 
     }
 
-    public MarinaModel(String name, Bitmap image, String price, String location, float distFromSearch, int rating, boolean freeCancellation, String description, String tnc, int f[]) {
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromSearch, int rating, boolean freeCancellation, String description, String tnc, ArrayList<Integer> f) {
         this.name = name;
         this.image = image;
         this.price = price;
@@ -60,7 +60,7 @@ public class MarinaModel implements Parcelable {
         initializeFacilities();
     }
 
-    public MarinaModel(String name, Bitmap image, String price, String location, float distFromSearch, int rating, boolean freeCancellation, String description, String tnc, int f[], String fromDate, String toDate) {
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromSearch, int rating, boolean freeCancellation, String description, String tnc, ArrayList<Integer> f, String fromDate, String toDate) {
         this.name = name;
         this.image = image;
         this.price = price;
@@ -149,7 +149,7 @@ public class MarinaModel implements Parcelable {
         return facilities;
     }
 
-    public void setFacilities(int[] f) {
+    public void setFacilities(ArrayList<Integer> f) {
         this.f = f;
     }
 
@@ -234,15 +234,17 @@ public class MarinaModel implements Parcelable {
 
     }
 
-    public int[] getFacilitiesAvlbl() {
+    public ArrayList<Integer> getFacilitiesAvlbl() {
         return f;
     }
 
     public String getFacilityString() {
         String s = "";
-        for (int a : f) {
-            s = s.concat(facilities.get(a) + ", ");
+        if (!f.isEmpty()) {
+            for (Integer a : f) {
+                s = s.concat(facilities.get(a) + "\n");
+            }
         }
-        return s.substring(0, s.length() - 2);
+        return s;
     }
 }
