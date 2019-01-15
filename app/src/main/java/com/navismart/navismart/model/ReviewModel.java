@@ -8,6 +8,7 @@ public class ReviewModel {
     private int starRating;
     private String bookingID;
     private String reviewerID;
+    private long timeStamp;
 
     public ReviewModel() {
     }
@@ -61,5 +62,13 @@ public class ReviewModel {
 
     public void setStarRating(int starRating) {
         this.starRating = starRating;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }
