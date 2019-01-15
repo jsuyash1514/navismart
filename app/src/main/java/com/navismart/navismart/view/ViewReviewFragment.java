@@ -27,9 +27,10 @@ import java.util.ArrayList;
 
 public class ViewReviewFragment extends Fragment {
 
+    DividerItemDecoration itemDecoration;
     private TextView marinaNameTextView;
     private RecyclerView reviewRecyclerView;
-    DividerItemDecoration itemDecoration;
+    private TextView noReview;
 
     public ViewReviewFragment() {
         // Required empty public constructor
@@ -47,6 +48,7 @@ public class ViewReviewFragment extends Fragment {
 
         marinaNameTextView = view.findViewById(R.id.marina_name_textView);
         reviewRecyclerView = view.findViewById(R.id.review_recycler_view);
+        noReview = view.findViewById(R.id.no_review_text);
 
         itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
 
@@ -62,13 +64,19 @@ public class ViewReviewFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     reviewList.add(snapshot.getValue(ReviewModel.class));
                 }
-
-                ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewList);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                reviewRecyclerView.setLayoutManager(mLayoutManager);
-                reviewRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                reviewRecyclerView.setAdapter(reviewListAdapter);
-                reviewRecyclerView.addItemDecoration(itemDecoration);
+                if (reviewList.size() > 0) {
+                    ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewList);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                    reviewRecyclerView.setLayoutManager(mLayoutManager);
+                    reviewRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                    reviewRecyclerView.setAdapter(reviewListAdapter);
+                    reviewRecyclerView.addItemDecoration(itemDecoration);
+                    reviewRecyclerView.setVisibility(View.VISIBLE);
+                    noReview.setVisibility(View.GONE);
+                } else {
+                    reviewRecyclerView.setVisibility(View.GONE);
+                    noReview.setVisibility(View.VISIBLE);
+                }
 
             }
         });
