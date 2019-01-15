@@ -27,6 +27,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -136,6 +138,12 @@ public class MarinaLandingActivityFragment extends Fragment {
 //                            adapter.notifyDataSetChanged();
                         }
                     }
+                    Collections.sort(tripletList, new Comparator<Triplet<Long, Integer, String>>(){
+                        @Override
+                        public int compare(Triplet<Long, Integer, String> object1, Triplet<Long, Integer, String> object2) {
+                            return (int)(object2.getFirst()-object1.getFirst());
+                        }
+                    });
                     for (int i=0;i<tripletList.size();i++){
                         Log.d("tripletList["+i+"]", tripletList.get(i).getFirst().toString() + "\t" +  tripletList.get(i).getSecond() + "\t" + tripletList.get(i).getThird());
                     }
