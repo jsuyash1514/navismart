@@ -18,7 +18,7 @@ public class ReviewListViewModel extends ViewModel {
     public ReviewListViewModel(String marina_id) {
 
         super();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(marina_id).child("marina-description").child("review");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(marina_id).child("review");
         liveData = new FirebaseQueryLiveData(databaseReference);
 
     }

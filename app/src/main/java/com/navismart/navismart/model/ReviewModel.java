@@ -6,8 +6,28 @@ public class ReviewModel {
     private String reviewerName;
     private String reviewDate;
     private int starRating;
+    private String bookingID;
+    private String reviewerID;
 
     public ReviewModel() {
+    }
+
+    public String getReviewerID() {
+
+        return reviewerID;
+    }
+
+    public void setReviewerID(String reviewerID) {
+        this.reviewerID = reviewerID;
+    }
+
+    public String getBookingID() {
+
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
     }
 
     public String getReview() {
