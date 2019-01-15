@@ -31,7 +31,7 @@ public class ViewBookingFragment extends Fragment {
     private TextView boatID;
     private TextView price;
     private Button reviewButton;
-    private StorageReference profilePicReference;
+    private StorageReference picReference;
 
     public ViewBookingFragment() {
         // Required empty public constructor
@@ -58,8 +58,8 @@ public class ViewBookingFragment extends Fragment {
 
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
 
-        profilePicReference = FirebaseStorage.getInstance().getReference().child("users").child(bookingModel.getMarinaUID()).child("profile");
-        profilePicReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        picReference = FirebaseStorage.getInstance().getReference().child("users").child(bookingModel.getMarinaUID()).child("marina1");
+        picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
 

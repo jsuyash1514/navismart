@@ -100,8 +100,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                             df.setTimeZone(TimeZone.getDefault());
                             String formattedDate = df.format(date);
                             MarinaActivityModel dateModel = new MarinaActivityModel(0, formattedDate);
-                            MarinaActivityModel modelBooking = new MarinaActivityModel(
-                                    1,
+                            MarinaActivityModel modelBooking = new MarinaActivityModel(1,
                                     new MarinaActivityNewBookingsCardModel(
                                             dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("boaterName").getValue(String.class),
                                             String.valueOf(DateUtils.getRelativeTimeSpanString((long) dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("bookingDate").getValue(), time, MINUTE_IN_MILLIS)),

@@ -121,4 +121,6 @@
     <string name="price_details">Price:</string>
     <string name="booking_id_details">Booking ID:</string>
     <string name="booking_date_details">Booking date:</string>
+    <string name="no_msg">No messages yet</string>
+    <string name="no_review">No reviews yet</string>
 </resources>
