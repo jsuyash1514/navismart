@@ -90,6 +90,7 @@ public class ViewBookingFragment extends Fragment {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("marina_id", bookingModel.getMarinaUID());
+                bundle.putString("bookingID", bookingModel.getBookingID());
                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewBookingFragment_to_writeReviewFragment, bundle);
             }
         });

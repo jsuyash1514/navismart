@@ -20,9 +20,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.ReviewModel;
 
-import androidx.navigation.Navigation;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
-import static com.navismart.navismart.MainActivity.getCurrentStringDate;
+import androidx.navigation.Navigation;
 
 public class WriteReviewFragment extends Fragment {
 
@@ -31,7 +34,7 @@ public class WriteReviewFragment extends Fragment {
     private Button submitReviewButton;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
-    private String reviewMarinaUID;
+    private String reviewMarinaUID, bookingID;
 
     public WriteReviewFragment() {
         // Required empty public constructor
@@ -53,6 +56,7 @@ public class WriteReviewFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         reviewMarinaUID = getArguments().getString("marina_id");
+        bookingID = getArguments().getString("bookingID");
 
         ratingBar = view.findViewById(R.id.reviewRatingBar);
         reviewEditText = view.findViewById(R.id.review_editText);
@@ -74,13 +78,20 @@ public class WriteReviewFragment extends Fragment {
 
     private void submitReview(int rating, String review) {
 
-        DatabaseReference marinaReviewReference = databaseReference.child("users").child(reviewMarinaUID).child("marina-description").child("review");
+        DatabaseReference marinaReviewReference = databaseReference.child("users").child(reviewMarinaUID).child("review");
+
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String gmtTime = df.format(cal.getTime());
 
         ReviewModel reviewModel = new ReviewModel();
         reviewModel.setReview(review);
         reviewModel.setStarRating(rating);
-        reviewModel.setReviewDate(getCurrentStringDate());
+        reviewModel.setReviewDate(gmtTime);
         reviewModel.setReviewerName(auth.getCurrentUser().getDisplayName());
+        reviewModel.setBookingID(bookingID);
+        reviewModel.setReviewerID(auth.getCurrentUser().getUid());
 
         marinaReviewReference.push().setValue(reviewModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
