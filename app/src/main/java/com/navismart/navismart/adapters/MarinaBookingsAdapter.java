@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.MarinaBookingsModel;
 
@@ -42,13 +43,24 @@ public class MarinaBookingsAdapter extends RecyclerView.Adapter<MarinaBookingsAd
         marinaBookingsViewHolder.name.setText(bookingsModel.getGuestName());
         marinaBookingsViewHolder.arrivingDate.setText(bookingsModel.getArrivingOn());
         marinaBookingsViewHolder.departingDate.setText(bookingsModel.getDepartingOn());
-        marinaBookingsViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+        marinaBookingsViewHolder.innerBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("Booking_id",bookingsModel.getBookingID());
                 Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment,bundle);
 
+            }
+        });
+        marinaBookingsViewHolder.chatIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("marinaID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                bundle.putString("marinaName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                bundle.putString("boaterName", bookingsModel.getGuestName());
+                bundle.putString("boaterID", bookingsModel.getBoaterID());
+                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_chatFragment, bundle);
             }
         });
     }
@@ -69,9 +81,9 @@ public class MarinaBookingsAdapter extends RecyclerView.Adapter<MarinaBookingsAd
     }
 
     class MarinaBookingsViewHolder extends RecyclerView.ViewHolder {
-        ImageView icon;
+        ImageView icon, chatIcon;
         TextView name, arrivingDate, departingDate;
-        CardView cardView;
+        View innerBlock;
 
         public MarinaBookingsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,7 +91,8 @@ public class MarinaBookingsAdapter extends RecyclerView.Adapter<MarinaBookingsAd
             name = itemView.findViewById(R.id.guest_name);
             arrivingDate = itemView.findViewById(R.id.guest_arriving_on);
             departingDate = itemView.findViewById(R.id.guest_departing_on);
-            cardView = itemView.findViewById(R.id.marina_booking_card_view);
+            innerBlock = itemView.findViewById(R.id.marina_booking_inner_block);
+            chatIcon = itemView.findViewById(R.id.marina_chat_icon);
         }
     }
 }
