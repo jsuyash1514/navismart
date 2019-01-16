@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.navismart.navismart.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -133,13 +128,11 @@ public class LoginFragment extends Fragment {
         if (firebaseAuth.getCurrentUser() != null) {
             progressDialog.setMessage("Logging in Please wait...");
             progressDialog.show();
-            Log.d("Category", "Already logged in");
             DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     category = dataSnapshot.getValue(String.class);
-                    Log.d("Category: ", category);
                     NavOptions navOptions = new NavOptions.Builder()
                             .setPopUpTo(R.id.startFragment, true)
                             .build();
@@ -150,15 +143,16 @@ public class LoginFragment extends Fragment {
                         } else if (category.equals("marina-manager")) {
                             progressDialog.dismiss();
                             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
-                        } else {
-                            Log.d("category", "No match found. ");
                         }
+                    } else {
+                        firebaseAuth.signOut();
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    progressDialog.dismiss();
                 }
             });
         }
@@ -194,7 +188,6 @@ public class LoginFragment extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     category = dataSnapshot.getValue(String.class);
-                                    Log.d("Category new login: ", category);
                                     Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                                     NavOptions navOptions = new NavOptions.Builder()
                                             .setPopUpTo(R.id.startFragment, true)
@@ -205,7 +198,6 @@ public class LoginFragment extends Fragment {
                                         } else if (category.equals("marina-manager")) {
                                             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
                                         } else {
-                                            Log.d("category", "No match found. ");
                                         }
                                     }
                                 }
