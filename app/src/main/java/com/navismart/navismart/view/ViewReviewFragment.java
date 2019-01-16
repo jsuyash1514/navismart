@@ -28,7 +28,6 @@ import java.util.ArrayList;
 public class ViewReviewFragment extends Fragment {
 
     DividerItemDecoration itemDecoration;
-    private TextView marinaNameTextView;
     private RecyclerView reviewRecyclerView;
     private TextView noReview;
 
@@ -46,13 +45,10 @@ public class ViewReviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_review, container, false);
 
-        marinaNameTextView = view.findViewById(R.id.marina_name_textView);
         reviewRecyclerView = view.findViewById(R.id.review_recycler_view);
         noReview = view.findViewById(R.id.no_review_text);
 
         itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
-
-        marinaNameTextView.setText(getArguments().getString("marinaName"));
 
         ReviewListViewModel reviewListViewModel = ViewModelProviders.of(this, new ReviewListViewModelFactory(getArguments().getString("marinaID"))).get(ReviewListViewModel.class);
         LiveData<DataSnapshot> liveData = reviewListViewModel.getDataSnapshotLiveData();

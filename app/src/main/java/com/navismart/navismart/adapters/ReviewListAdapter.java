@@ -4,12 +4,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.ReviewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.MyViewHolder> {
 
@@ -32,8 +38,20 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
 
         ReviewModel reviewModel = reviewList.get(position);
         holder.nameView.setText(reviewModel.getReviewerName());
-        holder.dateView.setText(reviewModel.getReviewDate());
-        holder.ratingView.setText(reviewModel.getStarRating()+"");
+
+        String dateStr = reviewModel.getReviewDate();
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = null;
+        try {
+            date = df.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        df.setTimeZone(TimeZone.getDefault());
+        String formattedDate = df.format(date);
+        holder.dateView.setText(formattedDate);
+        holder.ratingView.setRating(reviewModel.getStarRating());
         holder.reviewText.setText(reviewModel.getReview());
         holder.initialView.setText(reviewModel.getReviewerName().toUpperCase().charAt(0)+"");
     }
@@ -44,7 +62,8 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameView, dateView, reviewText, ratingView, initialView;
+        public TextView nameView, dateView, reviewText, initialView;
+        public RatingBar ratingView;
 
         public MyViewHolder(View view) {
             super(view);
