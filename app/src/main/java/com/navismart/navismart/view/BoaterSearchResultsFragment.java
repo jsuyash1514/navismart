@@ -255,8 +255,8 @@ public class BoaterSearchResultsFragment extends Fragment {
         Date from = getDateFromString(fromDate);
         Date to = getDateFromString(toDate);
 
-        fromDatePicker.updateDate(from.getYear() + 1900, from.getMonth() + 1, from.getDate());
-        toDatePicker.updateDate(to.getYear() + 1900, to.getMonth() + 1, to.getDate());
+        fromDatePicker.updateDate(from.getYear() + 1900, from.getMonth(), from.getDate());
+        toDatePicker.updateDate(to.getYear() + 1900, to.getMonth(), to.getDate());
 
         setDateButton = dateChangeDialog.findViewById(R.id.set_date_button);
         setDateButton.setOnClickListener(new View.OnClickListener() {
