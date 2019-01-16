@@ -71,6 +71,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     public static String fromDate, toDate;
     public static int noOfDocks = 0;
+    private float rating;
     private static float minRange, maxRange;
     private static boolean freeCancellationNeeded = false;
     int PLACE_PICKER_REQUEST = 1;
@@ -321,7 +322,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         for (MarinaModel m : marinaList) {
 
-            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[m.getRating()]) && facilitiesMatch(m)) {
+            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[(int)m.getRating()]) && facilitiesMatch(m)) {
                 temp.add(m);
             }
 
@@ -616,6 +617,8 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 model.setLocation(marinaAddress);
                                 d = (String) dataSnapshot.child("marina-description").child("description").getValue();
                                 model.setDescription(d);
+                                rating = Float.parseFloat(dataSnapshot.child("marina-description").child("starRating").getValue(String.class));
+                                model.setRating(rating);
                                 ArrayList<Integer> f = new ArrayList<>();
                                 for (DataSnapshot snapshot: dataSnapshot.child("marina-description").child("facilities").getChildren()){
                                     f.add(((Long)snapshot.getValue()).intValue());
