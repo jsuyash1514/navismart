@@ -102,7 +102,7 @@ public class SignUpBoaterFragment extends Fragment {
 
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         passwordEditText = view.findViewById(R.id.password_edit_text);
-        registerButton = view.findViewById(R.id.register_button);
+        registerButton = view.findViewById(R.id.boater_register_button);
         nameEditText = view.findViewById(R.id.person_name_edit_text);
         emailEditText = view.findViewById(R.id.email_edit_text);
         boatBeamEditText = view.findViewById(R.id.boat_beam_edit_text);

@@ -94,6 +94,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private Uri profilePicUri = null;
     private boolean nameFilled = false, marinaNameFilled = false;
     private boolean emailValid = false;
+    private boolean locationFilled = false;
     private boolean passwordValid = false;
     private boolean enabler = false;
     private LatLng locationLatLng;
@@ -137,7 +138,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.password_edit_text);
         locationEditText = view.findViewById(R.id.location_edit_text);
         marinaNameEditText = view.findViewById(R.id.marina_name_edit_text);
-        registerButton = view.findViewById(R.id.register_button);
+        registerButton = view.findViewById(R.id.marina_register_button);
         uploadProfilePic = view.findViewById(R.id.upload_button);
         profilePic = view.findViewById(R.id.upload_marina_manager_picture);
         nameEditText = view.findViewById(R.id.name_edit_text);
@@ -224,7 +225,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isEmailValid(s.toString())) {
                     emailValid = true;
-                    if (passwordValid && nameFilled && marinaNameFilled) enabler = true;
+                    if (passwordValid && nameFilled && marinaNameFilled && locationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     emailValid = false;
@@ -251,7 +252,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isPasswordValid(s.toString())) {
                     passwordValid = true;
-                    if (emailValid && nameFilled && marinaNameFilled) enabler = true;
+                    if (emailValid && nameFilled && marinaNameFilled && locationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     passwordValid = false;
@@ -278,7 +279,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().trim().isEmpty()) {
                     nameFilled = true;
-                    if (emailValid && passwordValid && marinaNameFilled) enabler = true;
+                    if (emailValid && passwordValid && marinaNameFilled && locationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     nameFilled = false;
@@ -305,7 +306,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().trim().isEmpty()) {
                     marinaNameFilled = true;
-                    if (emailValid && passwordValid && nameFilled) enabler = true;
+                    if (emailValid && passwordValid && nameFilled && locationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     marinaNameFilled = false;
@@ -321,6 +322,35 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
             }
         });
+
+        locationEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().trim().isEmpty()) {
+                    locationFilled = true;
+                    if (emailValid && passwordValid && nameFilled && marinaNameFilled) enabler = true;
+                    else enabler = false;
+                } else {
+                    marinaNameFilled = false;
+                    enabler = false;
+                }
+                registerButton.setEnabled(enabler);
+                if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
+                else registerButton.setTextColor(getResources().getColor(R.color.colorAccent));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -441,12 +471,17 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
 
     public void checkUserLoggedIn() {
-        if (firebaseAuth.getCurrentUser() != null) {
-            NavOptions navOptions = new NavOptions.Builder()
-                    .setPopUpTo(R.id.startFragment, true)
-                    .build();
-            navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
-        }
+        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() != null) {
+                    NavOptions navOptions = new NavOptions.Builder()
+                            .setPopUpTo(R.id.startFragment, true)
+                            .build();
+                    navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
+                }
+            }
+        });
     }
 
     public void registerUser() {
@@ -485,6 +520,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("category").setValue("marina-manager");
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
                             currentUser.child("marina-description").child("marinaName").setValue(marinaName);
+                            currentUser.child("marina-description").child("numberOfReviews").setValue(0);
+                            currentUser.child("marina-description").child("starRating").setValue(0);
 
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
@@ -588,7 +625,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                        Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
                                         uploadProgress.dismiss();
 
                                         NavOptions navOptions = new NavOptions.Builder()
@@ -598,7 +634,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                     }
                                 });
                             } else {
-                                Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
 
                                 NavOptions navOptions = new NavOptions.Builder()
                                         .setPopUpTo(R.id.startFragment, true)

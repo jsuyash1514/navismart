@@ -61,19 +61,6 @@ public class MarinaManagerLandingFragment extends Fragment {
 
         USER_TYPE = SENDER_MARINA;
 
-        /* LOGOUT BUTTON */
-//        Button logout = view.findViewById(R.id.logout_button);
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                auth.signOut();
-//                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
-//                NavOptions navOptions = new NavOptions.Builder()
-//                        .setPopUpTo(R.id.landingFragment, true)
-//                        .build();
-//                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
-//            }
-//        });
         return view;
     }
 
