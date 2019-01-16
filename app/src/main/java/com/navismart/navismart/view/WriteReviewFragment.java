@@ -73,7 +73,7 @@ public class WriteReviewFragment extends Fragment {
                 if (ratingBar.getRating() == 0) {
                     Toast.makeText(getContext(), "Rating not given!", Toast.LENGTH_SHORT).show();
                 } else {
-                    submitReview((int) ratingBar.getRating(), reviewEditText.getText().toString());
+                    submitReview(ratingBar.getRating(), reviewEditText.getText().toString());
                 }
             }
         });
@@ -81,7 +81,7 @@ public class WriteReviewFragment extends Fragment {
         return view;
     }
 
-    private void submitReview(int rating, String review) {
+    private void submitReview(float rating, String review) {
 
         DatabaseReference marinaReviewReference = databaseReference.child("users").child(reviewMarinaUID).child("review");
 
@@ -93,7 +93,7 @@ public class WriteReviewFragment extends Fragment {
 
         ReviewModel reviewModel = new ReviewModel();
         reviewModel.setReview(review);
-        reviewModel.setStarRating(rating);
+        reviewModel.setStarRating(String.valueOf(rating));
         reviewModel.setReviewDate(gmtTime);
         reviewModel.setTimeStamp(time);
         reviewModel.setReviewerName(reviewerName);
@@ -109,11 +109,11 @@ public class WriteReviewFragment extends Fragment {
                         reference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                long noOfReviews = (long)dataSnapshot.child("numberOfReviews").getValue();
-                                long starRating = (long)dataSnapshot.child("starRating").getValue();
-                                long newRating = ((noOfReviews*starRating) + reviewModel.getStarRating())/(noOfReviews+1);
-                                reference.child("numberOfReviews").setValue(noOfReviews+1);
-                                reference.child("starRating").setValue(newRating);
+                                float noOfReviews = Float.parseFloat(dataSnapshot.child("numberOfReviews").getValue(String.class));
+                                float starRating = Float.parseFloat(dataSnapshot.child("starRating").getValue(String.class));
+                                float newRating = ((noOfReviews*starRating) + rating)/(noOfReviews+1);
+                                reference.child("numberOfReviews").setValue(String.valueOf(noOfReviews+1));
+                                reference.child("starRating").setValue(String.valueOf(newRating));
                                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
                             }
 

@@ -2,9 +2,9 @@ package com.navismart.navismart.model;
 
 public class MarinaActivityNewReviewsCardModel {
     private String guestName, timeStamp;
-    private long ratingGiven;
+    private float ratingGiven;
 
-    public MarinaActivityNewReviewsCardModel(String guestName, long ratingGiven, String timeStamp) {
+    public MarinaActivityNewReviewsCardModel(String guestName, float ratingGiven, String timeStamp) {
         this.guestName = guestName;
         this.ratingGiven = ratingGiven;
         this.timeStamp = timeStamp;
@@ -14,7 +14,7 @@ public class MarinaActivityNewReviewsCardModel {
         return guestName;
     }
 
-    public long getRatingGiven() {
+    public float getRatingGiven() {
         return ratingGiven;
     }
 

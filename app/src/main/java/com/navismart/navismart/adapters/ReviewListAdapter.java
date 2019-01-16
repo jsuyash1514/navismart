@@ -51,7 +51,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
         df.setTimeZone(TimeZone.getDefault());
         String formattedDate = df.format(date);
         holder.dateView.setText(formattedDate);
-        holder.ratingView.setRating(reviewModel.getStarRating());
+        holder.ratingView.setRating(Float.parseFloat(reviewModel.getStarRating()));
         holder.reviewText.setText(reviewModel.getReview());
         holder.initialView.setText(reviewModel.getReviewerName().toUpperCase().charAt(0)+"");
     }

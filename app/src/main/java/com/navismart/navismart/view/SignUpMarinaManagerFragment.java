@@ -520,8 +520,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("category").setValue("marina-manager");
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
                             currentUser.child("marina-description").child("marinaName").setValue(marinaName);
-                            currentUser.child("marina-description").child("numberOfReviews").setValue(0);
-                            currentUser.child("marina-description").child("starRating").setValue(0);
+                            currentUser.child("marina-description").child("numberOfReviews").setValue("0");
+                            currentUser.child("marina-description").child("starRating").setValue("0");
 
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();

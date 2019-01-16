@@ -5,7 +5,7 @@ public class ReviewModel {
     private String review;
     private String reviewerName;
     private String reviewDate;
-    private long starRating;
+    private String starRating;
     private String bookingID;
     private String reviewerID;
     private long timeStamp;
@@ -56,11 +56,11 @@ public class ReviewModel {
         this.reviewDate = reviewDate;
     }
 
-    public long getStarRating() {
+    public String getStarRating() {
         return starRating;
     }
 
-    public void setStarRating(long starRating) {
+    public void setStarRating(String starRating) {
         this.starRating = starRating;
     }
 

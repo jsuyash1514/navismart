@@ -131,7 +131,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                                     2,
                                     new MarinaActivityNewReviewsCardModel(
                                             dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("reviewerName").getValue(String.class),
-                                            (long)dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("starRating").getValue(),
+                                            Float.parseFloat(dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("starRating").getValue(String.class)),
                                             String.valueOf(DateUtils.getRelativeTimeSpanString((long) dataSnapshot.child("review").child(tripletList.get(i).getThird()).child("timeStamp").getValue(), time, MINUTE_IN_MILLIS))
                                     ));
                             list.add(dateModel);
