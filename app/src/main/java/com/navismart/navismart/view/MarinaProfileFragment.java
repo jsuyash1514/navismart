@@ -190,30 +190,6 @@ public class MarinaProfileFragment extends Fragment {
             }
         });
 
-//        currentUser.child("profile").child("name").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                nameTextView.setText(dataSnapshot.getValue(String.class));
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
-//        currentUser.child("profile").child("email").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                emailTextView.setText(dataSnapshot.getValue(String.class));
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
         StorageReference profilePicRef = storageReference.child("users").child(auth.getCurrentUser().getUid()).child("profile");
         profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

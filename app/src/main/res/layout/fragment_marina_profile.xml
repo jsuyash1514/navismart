@@ -75,30 +75,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_section"
-        android:orientation="vertical"
         android:layout_marginTop="10dp"
+        android:orientation="vertical"
         android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/registered_email"
-            android:textStyle="bold"
+            android:textColor="#444444"
             android:textSize="16sp"
-            android:textColor="#444444"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/marina_profile_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/email_id"
             android:layout_marginStart="10dp"
-            android:textColor="#737373"
-            android:textSize="16sp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:fontFamily="monospace"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:text="@string/email_id"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="#737373"
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
