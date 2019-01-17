@@ -113,6 +113,8 @@ public class WriteReviewFragment extends Fragment {
                                 float newRating = ((noOfReviews * starRating) + rating) / (noOfReviews + 1);
                                 reference.child("numberOfReviews").setValue(String.valueOf(noOfReviews + 1));
                                 reference.child("starRating").setValue(String.valueOf(newRating));
+                                databaseReference.child("users").child(reviewMarinaUID).child("bookings").child(bookingID).child("reviewed").setValue(true);
+                                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingID).child("reviewed").setValue(true);
                                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
                             }
 

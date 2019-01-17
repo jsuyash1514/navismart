@@ -17,6 +17,7 @@ public class BookingModel implements Parcelable {
     public final static int PAST = 0;
     public final static int CURRENT = 1;
     public final static int UPCOMING = 2;
+    public boolean reviewed = false;
     private String boatName = "default";
     private String boatID = "default";
     private String bookingID = "default";
@@ -61,6 +62,15 @@ public class BookingModel implements Parcelable {
 
     public BookingModel() {
 
+    }
+
+    public boolean isReviewed() {
+
+        return reviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        this.reviewed = reviewed;
     }
 
     public int getNoOfDocks() {
@@ -156,6 +166,9 @@ public class BookingModel implements Parcelable {
         return bookingTense;
     }
 
+    public void setBookingTense(int bookingTense) {
+        this.bookingTense = bookingTense;
+    }
 
     public String getDateTimeStamp() {
         return dateTimeStamp;
@@ -163,10 +176,6 @@ public class BookingModel implements Parcelable {
 
     public void setDateTimeStamp(String dateTimeStamp) {
         this.dateTimeStamp = dateTimeStamp;
-    }
-
-    public void setBookingTense(int bookingTense) {
-        this.bookingTense = bookingTense;
     }
 
     @Override
