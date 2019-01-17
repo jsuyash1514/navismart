@@ -6,97 +6,113 @@
     android:orientation="vertical"
     tools:context=".view.BookingsFragment">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="5dp"
-        android:background="@android:color/darker_gray" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/next_pastBookings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/pastIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_past_booking_black_24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/pastIcon"
             android:text="@string/past_bookings"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/txt_selector" />
+            android:textColor="#363636"
+            android:textSize="18sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:src="@drawable/ic_navigate_next_gray_24dp" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="2dp"
+        android:background="#ededed" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/next_currentBookings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/presentIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_current_booking_black_24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/presentIcon"
             android:text="@string/current_bookings"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/txt_selector" />
+            android:textColor="#363636"
+            android:textSize="18sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:src="@drawable/ic_navigate_next_gray_24dp" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="2dp"
+        android:background="#ededed" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/next_upcomingBookings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/upcomingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_upcoming_booking_black_24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/upcomingIcon"
             android:text="@string/upcoming_bookings"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/txt_selector" />
+            android:textColor="#363636"
+            android:textSize="18sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:src="@drawable/ic_navigate_next_gray_24dp" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="2dp"
+        android:background="#ededed" />
 
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.navismart.navismart.R;
 
@@ -14,9 +15,9 @@ import androidx.navigation.Navigation;
 
 public class BookingsFragment extends Fragment {
 
-    private LinearLayout pastBookingsLayout;
-    private LinearLayout currentBookingsLayout;
-    private LinearLayout upcomingBookingsLayout;
+    private RelativeLayout pastBookingsLayout;
+    private RelativeLayout currentBookingsLayout;
+    private RelativeLayout upcomingBookingsLayout;
 
 
     public BookingsFragment() {
