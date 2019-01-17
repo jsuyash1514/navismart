@@ -24,6 +24,7 @@ import com.navismart.navismart.viewmodelfactory.ReviewListViewModelFactory;
 import com.navismart.navismart.viewmodels.ReviewListViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ViewReviewFragment extends Fragment {
 
@@ -61,6 +62,7 @@ public class ViewReviewFragment extends Fragment {
                     reviewList.add(snapshot.getValue(ReviewModel.class));
                 }
                 if (reviewList.size() > 0) {
+                    Collections.reverse(reviewList);
                     ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewList);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                     reviewRecyclerView.setLayoutManager(mLayoutManager);
