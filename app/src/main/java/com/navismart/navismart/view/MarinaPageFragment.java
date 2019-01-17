@@ -143,35 +143,30 @@ public class MarinaPageFragment extends Fragment {
             }
         });
 
-        bookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.action_marinaPageFragment_to_checkoutFragment, bundle);
-            }
+        bookButton.setOnClickListener((View v) -> {
+
+            navController.navigate(R.id.action_marinaPageFragment_to_checkoutFragment, bundle);
+
         });
 
-        seeMoreReviewsTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        seeMoreReviewsTextView.setOnClickListener((View v) -> {
 
-                Bundle bundle = new Bundle();
-                bundle.putString("marinaID", marinaModel.getMarinaUID());
-                bundle.putString("marinaName", marinaModel.getName());
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_viewReviewFragment, bundle);
+            Bundle bundle1 = new Bundle();
+            bundle.putString("marinaID", marinaModel.getMarinaUID());
+            bundle.putString("marinaName", marinaModel.getName());
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_viewReviewFragment, bundle1);
 
-            }
         });
 
-        sendMsgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("marinaName", marinaModel.getName());
-                bundle.putString("boaterName", auth.getCurrentUser().getDisplayName());
-                bundle.putString("marinaID", marinaModel.getMarinaUID());
-                bundle.putString("boaterID", auth.getCurrentUser().getUid());
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle);
-            }
+        sendMsgButton.setOnClickListener((View v) -> {
+
+            Bundle bundle2 = new Bundle();
+            bundle.putString("marinaName", marinaModel.getName());
+            bundle.putString("boaterName", auth.getCurrentUser().getDisplayName());
+            bundle.putString("marinaID", marinaModel.getMarinaUID());
+            bundle.putString("boaterID", auth.getCurrentUser().getUid());
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle2);
+
         });
 
         return view;

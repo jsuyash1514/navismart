@@ -61,12 +61,7 @@ public class AddBoatFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        addBoatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addBoat();
-            }
-        });
+        addBoatButton.setOnClickListener((View v) -> addBoat());
 
         return view;
     }

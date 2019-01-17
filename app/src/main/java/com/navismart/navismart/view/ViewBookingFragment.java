@@ -85,15 +85,13 @@ public class ViewBookingFragment extends Fragment {
             reviewButton.setVisibility(View.GONE);
         }
 
-        reviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("reviewer_name",bookingModel.getBoaterName());
-                bundle.putString("marina_id", bookingModel.getMarinaUID());
-                bundle.putString("bookingID", bookingModel.getBookingID());
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewBookingFragment_to_writeReviewFragment, bundle);
-            }
+        reviewButton.setOnClickListener((View v) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("reviewer_name", bookingModel.getBoaterName());
+            bundle.putString("marina_id", bookingModel.getMarinaUID());
+            bundle.putString("bookingID", bookingModel.getBookingID());
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewBookingFragment_to_writeReviewFragment, bundle);
+
         });
 
         return view;

@@ -55,16 +55,13 @@ public class BookingDetailsFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        sendMsgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("marinaName", marinaName);
-                bundle.putString("marinaID", marinaID);
-                bundle.putString("boaterName", boaterName);
-                bundle.putString("boaterID", boaterID);
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_bookingDetailsFragment_to_chatFragment, bundle);
-            }
+        sendMsgButton.setOnClickListener((View v) -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("marinaName", marinaName);
+            bundle.putString("marinaID", marinaID);
+            bundle.putString("boaterName", boaterName);
+            bundle.putString("boaterID", boaterID);
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_bookingDetailsFragment_to_chatFragment, bundle);
         });
 
         DatabaseReference ref = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingID);

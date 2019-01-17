@@ -78,16 +78,14 @@ public class BoaterSearchFragment extends Fragment {
         dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
         dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
 
-        locationEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        locationEditText.setOnClickListener((View v) -> {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         });
 
         fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
@@ -95,75 +93,68 @@ public class BoaterSearchFragment extends Fragment {
 
 
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
-        datePickFromImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        datePickFromImageView.setOnClickListener((View v) -> {
 
-                DatePickerDialog datePickerDialogFrom = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            DatePickerDialog datePickerDialogFrom = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        mYearFrom = year;
-                        mMonthFrom = month;
-                        mDateFrom = dayOfMonth;
-                        dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
-                        fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
+                    mYearFrom = year;
+                    mMonthFrom = month;
+                    mDateFrom = dayOfMonth;
+                    dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
+                    fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
 
-                    }
-                }, mYearFrom, mMonthFrom, mDateFrom);
-                datePickerDialogFrom.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                }
+            }, mYearFrom, mMonthFrom, mDateFrom);
+            datePickerDialogFrom.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
-                datePickerDialogFrom.show();
+            datePickerDialogFrom.show();
 
-            }
+
         });
 
         datePickToImageView = view.findViewById(R.id.date_pick_to_icon);
-        datePickToImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        datePickToImageView.setOnClickListener((View v) -> {
 
-                DatePickerDialog datePickerDialogTo = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            DatePickerDialog datePickerDialogTo = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        mYearTo = year;
-                        mMonthTo = month;
-                        mDateTo = dayOfMonth;
-                        dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
-                        toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
-                        if (getCountOfDays(fromDate, toDate) < 0) {
-                            Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
-                        }
+                    mYearTo = year;
+                    mMonthTo = month;
+                    mDateTo = dayOfMonth;
+                    dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
+                    toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
+                    if (getCountOfDays(fromDate, toDate) < 0) {
+                        Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
                     }
-                }, mYearTo, mMonthTo, mDateTo);
-                datePickerDialogTo.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                }
+            }, mYearTo, mMonthTo, mDateTo);
+            datePickerDialogTo.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
-                datePickerDialogTo.show();
+            datePickerDialogTo.show();
 
-            }
+
         });
 
         searchButton = view.findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        searchButton.setOnClickListener((View v) -> {
 
-                if (getCountOfDays(fromDate, toDate) < 0) {
-                    Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
-                } else if (locationAddress != null && !locationAddress.trim().isEmpty()) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("fromDate", dateFromEditText.getText().toString());
-                    bundle.putString("toDate", dateToEditText.getText().toString());
-                    bundle.putString("location_address", locationAddress);
-                    bundle.putInt("noOfDocks", noOfDockPicker.getValue());
-                    bundle.putParcelable("locationLatLng", locationLatLng);
-                    NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
-                    navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
-                } else {
-                    Toast.makeText(getContext(), "Enter Search location!", Toast.LENGTH_SHORT).show();
+            if (getCountOfDays(fromDate, toDate) < 0) {
+                Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+            } else if (locationAddress != null && !locationAddress.trim().isEmpty()) {
+                Bundle bundle = new Bundle();
+                bundle.putString("fromDate", dateFromEditText.getText().toString());
+                bundle.putString("toDate", dateToEditText.getText().toString());
+                bundle.putString("location_address", locationAddress);
+                bundle.putInt("noOfDocks", noOfDockPicker.getValue());
+                bundle.putParcelable("locationLatLng", locationLatLng);
+                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+                navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
+            } else {
+                Toast.makeText(getContext(), "Enter Search location!", Toast.LENGTH_SHORT).show();
 
-                }
             }
         });
 

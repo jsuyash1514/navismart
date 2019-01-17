@@ -67,15 +67,14 @@ public class WriteReviewFragment extends Fragment {
         reviewEditText = view.findViewById(R.id.review_editText);
         submitReviewButton = view.findViewById(R.id.submit_review_button);
 
-        submitReviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ratingBar.getRating() == 0) {
-                    Toast.makeText(getContext(), "Rating not given!", Toast.LENGTH_SHORT).show();
-                } else {
-                    submitReview(ratingBar.getRating(), reviewEditText.getText().toString());
-                }
+        submitReviewButton.setOnClickListener((View v) -> {
+
+            if (ratingBar.getRating() == 0) {
+                Toast.makeText(getContext(), "Rating not given!", Toast.LENGTH_SHORT).show();
+            } else {
+                submitReview(ratingBar.getRating(), reviewEditText.getText().toString());
             }
+
         });
 
         return view;
@@ -111,8 +110,8 @@ public class WriteReviewFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 float noOfReviews = Float.parseFloat(dataSnapshot.child("numberOfReviews").getValue(String.class));
                                 float starRating = Float.parseFloat(dataSnapshot.child("starRating").getValue(String.class));
-                                float newRating = ((noOfReviews*starRating) + rating)/(noOfReviews+1);
-                                reference.child("numberOfReviews").setValue(String.valueOf(noOfReviews+1));
+                                float newRating = ((noOfReviews * starRating) + rating) / (noOfReviews + 1);
+                                reference.child("numberOfReviews").setValue(String.valueOf(noOfReviews + 1));
                                 reference.child("starRating").setValue(String.valueOf(newRating));
                                 Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
                             }

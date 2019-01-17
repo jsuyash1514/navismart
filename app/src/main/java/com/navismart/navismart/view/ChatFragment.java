@@ -114,7 +114,7 @@ public class ChatFragment extends Fragment {
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    Log.d("TAGTAGTAG", "Here");
+
                     if (item.getItemId() == R.id.delete_chats) {
                         deleteDialog.show();
                     }
