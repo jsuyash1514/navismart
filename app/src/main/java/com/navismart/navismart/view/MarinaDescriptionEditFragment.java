@@ -151,16 +151,15 @@ public class MarinaDescriptionEditFragment extends Fragment {
             }
         });
 
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!marinaNameEditText.getText().toString().trim().isEmpty()) {
-                    editProfile();
-                } else {
-                    marinaNameEditText.requestFocus();
-                    Toast.makeText(getContext(), "Enter marina name!", Toast.LENGTH_SHORT).show();
-                }
+        editButton.setOnClickListener((View v) -> {
+
+            if (!marinaNameEditText.getText().toString().trim().isEmpty()) {
+                editProfile();
+            } else {
+                marinaNameEditText.requestFocus();
+                Toast.makeText(getContext(), "Enter marina name!", Toast.LENGTH_SHORT).show();
             }
+
         });
 
         return view;

@@ -184,12 +184,9 @@ public class SignUpMarinaManagerFragment extends Fragment {
         if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
         else registerButton.setTextColor(Color.GRAY);
 
-        uploadProfilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 100);
-            }
-        });
+        uploadProfilePic.setOnClickListener((View v) ->
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 100)
+        );
 
         final Observer<Uri> profilePicObserver = new Observer<Uri>() {
             @Override
@@ -352,23 +349,16 @@ public class SignUpMarinaManagerFragment extends Fragment {
         });
 
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registerUser();
-            }
-        });
+        registerButton.setOnClickListener((View v) -> registerUser());
 
-        addLocationIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        addLocationIcon.setOnClickListener((View v) -> {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         });
 
 

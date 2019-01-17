@@ -64,12 +64,7 @@ public class UpcomingBookingsFragment extends Fragment {
 //        upcomingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        upcomingRecyclerView.setAdapter(bookingListAdapter);
 
-        reloadIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prepareList();
-            }
-        });
+        reloadIcon.setOnClickListener((View v) -> prepareList());
 
         return view;
     }
@@ -136,7 +131,7 @@ public class UpcomingBookingsFragment extends Fragment {
 
         Date date = Calendar.getInstance().getTime();
 
-        String curr = date.getDate() + "/" + (date.getMonth()+1) + "/" + (date.getYear() + 1900);
+        String curr = date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900);
 
         int dF = getCountOfDays(curr, from);
 

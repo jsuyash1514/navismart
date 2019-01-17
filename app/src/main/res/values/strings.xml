@@ -125,4 +125,6 @@
     <string name="no_review">No reviews yet</string>
     <string name="change_email_or_password">Change Email or Password</string>
     <string name="registered_email">Registered Email:</string>
+    <string name="delete_all_chats">Delete all chats</string>
+    <string name="delete_chat_msg">Do you really want to delete all chats?</string>
 </resources>

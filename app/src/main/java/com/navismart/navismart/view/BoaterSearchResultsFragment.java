@@ -71,13 +71,13 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     public static String fromDate, toDate;
     public static int noOfDocks = 0;
-    private float rating;
     private static float minRange, maxRange;
     private static boolean freeCancellationNeeded = false;
     int PLACE_PICKER_REQUEST = 1;
     List<String> starRating;
     ArrayList<String> facilities;
     String t = "", d = "";
+    private float rating;
     private EditText locationEditText;
     private String locationAddress, marinaAddress, name;
     private LatLng locationLatLng;
@@ -168,20 +168,14 @@ public class BoaterSearchResultsFragment extends Fragment {
 
 
         closestSortTextView = view.findViewById(R.id.closest_sort_textView);
-        closestSortTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sortByDist();
-                marinaListAdapter.notifyDataSetChanged();
-            }
+        closestSortTextView.setOnClickListener((View v) -> {
+            sortByDist();
+            marinaListAdapter.notifyDataSetChanged();
         });
         cheapestSortTextView = view.findViewById(R.id.cheapest_sort_textView);
-        cheapestSortTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sortByPrice();
-                marinaListAdapter.notifyDataSetChanged();
-            }
+        cheapestSortTextView.setOnClickListener((View v) -> {
+            sortByPrice();
+            marinaListAdapter.notifyDataSetChanged();
         });
 
         filterDialog = new Dialog(getContext());
@@ -216,36 +210,23 @@ public class BoaterSearchResultsFragment extends Fragment {
         });
 
         showResults = filterDialog.findViewById(R.id.show_result_button);
-        showResults.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filteredMarinaList = filterMarinaList();
-                marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
-                marinaListRecyclerView.setAdapter(marinaListAdapter);
-                filterDialog.dismiss();
-                filtered = true;
-            }
+        showResults.setOnClickListener((View v) -> {
+            filteredMarinaList = filterMarinaList();
+            marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
+            marinaListRecyclerView.setAdapter(marinaListAdapter);
+            filterDialog.dismiss();
+            filtered = true;
         });
 
         filterImageView = view.findViewById(R.id.change_filter_icon);
-        filterImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterDialog.show();
-            }
-        });
+        filterImageView.setOnClickListener((View v) -> filterDialog.show());
 
         dateChangeDialog = new Dialog(getContext());
         dateChangeDialog.setContentView(R.layout.date_change_dialog);
         dateChangeDialog.setTitle("Change Date");
 
         closeDialogIcon = dateChangeDialog.findViewById(R.id.close_dialog);
-        closeDialogIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dateChangeDialog.dismiss();
-            }
-        });
+        closeDialogIcon.setOnClickListener((View v) -> dateChangeDialog.dismiss());
 
         fromDatePicker = dateChangeDialog.findViewById(R.id.from_date_pick);
         toDatePicker = dateChangeDialog.findViewById(R.id.to_date_pick);
@@ -260,52 +241,39 @@ public class BoaterSearchResultsFragment extends Fragment {
         toDatePicker.updateDate(to.getYear() + 1900, to.getMonth(), to.getDate());
 
         setDateButton = dateChangeDialog.findViewById(R.id.set_date_button);
-        setDateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        setDateButton.setOnClickListener((View v) -> {
 
-                if (getCountOfDays(fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear(), toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear()) < 0) {
-                    Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
-                } else {
-                    fromDate = fromDatePicker.getDayOfMonth() + "/" + (fromDatePicker.getMonth() + 1) + "/" + fromDatePicker.getYear();
-                    toDate = toDatePicker.getDayOfMonth() + "/" + (toDatePicker.getMonth() + 1) + "/" + toDatePicker.getYear();
-                    dateChangeDialog.dismiss();
-                }
+            if (getCountOfDays(fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear(), toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear()) < 0) {
+                Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+            } else {
+                fromDate = fromDatePicker.getDayOfMonth() + "/" + (fromDatePicker.getMonth() + 1) + "/" + fromDatePicker.getYear();
+                toDate = toDatePicker.getDayOfMonth() + "/" + (toDatePicker.getMonth() + 1) + "/" + toDatePicker.getYear();
+                dateChangeDialog.dismiss();
             }
+
         });
 
         changeDateImageView = view.findViewById(R.id.change_date_icon);
-        changeDateImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dateChangeDialog.show();
-            }
-        });
+        changeDateImageView.setOnClickListener((View v) -> dateChangeDialog.show());
         locationEditText.setText(locationAddress);
         Log.d("Address", locationAddress);
-        locationEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                builder.setLatLngBounds(toBounds(locationLatLng, 1000));
-                try {
-                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        locationEditText.setOnClickListener((View v) -> {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            builder.setLatLngBounds(toBounds(locationLatLng, 1000));
+            try {
+                startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
-        locationChangeIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                builder.setLatLngBounds(toBounds(locationLatLng, 1000));
-                try {
-                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        locationChangeIcon.setOnClickListener((View v) -> {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            builder.setLatLngBounds(toBounds(locationLatLng, 1000));
+            try {
+                startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -322,7 +290,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         for (MarinaModel m : marinaList) {
 
-            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[(int)m.getRating()]) && facilitiesMatch(m)) {
+            if (between(Float.parseFloat(m.getPrice()), minRange, maxRange) && freeCancellation(m) && (noStarFilter || starBool[(int) m.getRating()]) && facilitiesMatch(m)) {
                 temp.add(m);
             }
 
@@ -348,8 +316,8 @@ public class BoaterSearchResultsFragment extends Fragment {
 
     private boolean contains(Integer x, ArrayList<Integer> y) {
 
-        for(Integer a : y){
-            if(x.equals(a))return true;
+        for (Integer a : y) {
+            if (x.equals(a)) return true;
         }
         return false;
     }
@@ -620,8 +588,8 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 rating = Float.parseFloat(dataSnapshot.child("marina-description").child("starRating").getValue(String.class));
                                 model.setRating(rating);
                                 ArrayList<Integer> f = new ArrayList<>();
-                                for (DataSnapshot snapshot: dataSnapshot.child("marina-description").child("facilities").getChildren()){
-                                    f.add(((Long)snapshot.getValue()).intValue());
+                                for (DataSnapshot snapshot : dataSnapshot.child("marina-description").child("facilities").getChildren()) {
+                                    f.add(((Long) snapshot.getValue()).intValue());
                                 }
                                 model.setFacilities(f);
                                 model.setMarinaUID(uid);
