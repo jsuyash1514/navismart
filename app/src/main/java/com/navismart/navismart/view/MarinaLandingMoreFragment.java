@@ -43,40 +43,36 @@ public class MarinaLandingMoreFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
 
         Button logoutButton = view.findViewById(R.id.marina_logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
-                NavOptions navOptions = new NavOptions.Builder()
-                        .setPopUpTo(R.id.landingFragment, true)
-                        .build();
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
-            }
+        logoutButton.setOnClickListener((View v) -> {
+
+            auth.signOut();
+            Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.landingFragment, true)
+                    .build();
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
+
         });
 
-        descriptionBrick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_viewMarinaDescriptionFragment);
-            }
+        descriptionBrick.setOnClickListener((View v) -> {
+
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_viewMarinaDescriptionFragment);
+
         });
 
-        profileBrick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_marinaProfileFragment);
-            }
+        profileBrick.setOnClickListener((View v) -> {
+
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_marinaProfileFragment);
+
         });
 
-        reviewsBrick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("marinaName", auth.getCurrentUser().getDisplayName());
-                bundle.putString("marinaID", auth.getCurrentUser().getUid());
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_viewReviewFragment, bundle);
-            }
+        reviewsBrick.setOnClickListener((View v) -> {
+
+            Bundle bundle = new Bundle();
+            bundle.putString("marinaName", auth.getCurrentUser().getDisplayName());
+            bundle.putString("marinaID", auth.getCurrentUser().getUid());
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_viewReviewFragment, bundle);
+
         });
 
         return view;

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.navismart.navismart.R;
@@ -90,7 +91,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else if (mylist.getType() == MarinaActivityModel.TYPE_REVIEW) {
                 ((MarinaActivityReviewsViewHolder) holder).timeStamp.setText(mylist.getReviewsCardModel().getTimeStamp());
                 ((MarinaActivityReviewsViewHolder) holder).guestName.setText(mylist.getReviewsCardModel().getGuestName());
-                ((MarinaActivityReviewsViewHolder) holder).ratingGiven.setText(mylist.getReviewsCardModel().getRatingGiven());
+                ((MarinaActivityReviewsViewHolder) holder).ratingGiven.setRating(mylist.getReviewsCardModel().getRatingGiven());
             } else if (mylist.getType() == MarinaActivityModel.TYPE_DATE) {
                 ((MarinaActivityDateViewHolder) holder).dateStamp.setText(mylist.getDate());
             }
@@ -140,7 +141,8 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class MarinaActivityReviewsViewHolder extends RecyclerView.ViewHolder {
-        TextView timeStamp, guestName, ratingGiven;
+        TextView timeStamp, guestName;
+        RatingBar ratingGiven;
 
         public MarinaActivityReviewsViewHolder(@NonNull View itemView) {
             super(itemView);

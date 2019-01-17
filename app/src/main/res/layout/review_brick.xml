@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -12,13 +14,14 @@
 
         <TextView
             android:id="@+id/initial_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
             android:background="@drawable/circle"
+            android:gravity="center"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -30,26 +33,33 @@
                 android:id="@+id/reviewer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="3dp"
                 android:text="@string/name"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/review_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:text="@string/date" />
+                android:layout_marginStart="12dp"
+                android:text="@string/date"
+                android:textColor="#737373"
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <TextView
+        <RatingBar
             android:id="@+id/rating_display_box"
+            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:background="@drawable/rating_background_drawable"
-            android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:layout_below="@id/newReviewsTextView"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:progressTint="@color/goldenYellow" />
 
     </LinearLayout>
 
@@ -61,4 +71,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="8dp"
         android:text="@string/review" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ededed" />
 </LinearLayout>

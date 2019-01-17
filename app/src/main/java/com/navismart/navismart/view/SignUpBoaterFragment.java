@@ -98,11 +98,9 @@ public class SignUpBoaterFragment extends Fragment {
         storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
         uploadProgress = new ProgressDialog(getContext());
-        checkUserLoggedIn();
-
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         passwordEditText = view.findViewById(R.id.password_edit_text);
-        registerButton = view.findViewById(R.id.register_button);
+        registerButton = view.findViewById(R.id.boater_register_button);
         nameEditText = view.findViewById(R.id.person_name_edit_text);
         emailEditText = view.findViewById(R.id.email_edit_text);
         boatBeamEditText = view.findViewById(R.id.boat_beam_edit_text);
@@ -117,12 +115,10 @@ public class SignUpBoaterFragment extends Fragment {
         if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
         else registerButton.setTextColor(Color.GRAY);
 
-        uploadProfilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 200);
-            }
-        });
+        uploadProfilePic.setOnClickListener((View v) ->
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 200)
+
+        );
 
         final Observer<Uri> profilePicObserver = new Observer<Uri>() {
             @Override
@@ -280,8 +276,9 @@ public class SignUpBoaterFragment extends Fragment {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                             user.updateProfile(profileUpdates);
-
-                            currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType));
+                            if (boatLength != null && !boatLength.isEmpty()) {
+                                currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType));
+                            }
                             if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 

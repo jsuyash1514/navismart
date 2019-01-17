@@ -59,12 +59,7 @@ public class PastBookingsFragment extends Fragment {
 
         prepareList();
 
-        reloadIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prepareList();
-            }
-        });
+        reloadIcon.setOnClickListener((View v) -> prepareList());
 
 //        bookingListAdapter = new BookingListAdapter(getActivity(), list);
 //        pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -132,7 +127,7 @@ public class PastBookingsFragment extends Fragment {
 
         Date date = Calendar.getInstance().getTime();
 
-        String curr = date.getDate() + "/" + (date.getMonth()+1) + "/" + (date.getYear() + 1900);
+        String curr = date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900);
 
         int dT = getCountOfDays(curr, to);
 

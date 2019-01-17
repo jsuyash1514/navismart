@@ -84,7 +84,7 @@
     <string name="new_reviews">New reviews</string>
     <string name="boat_name">Boat Name</string>
     <string name="boat_ID">Boat ID</string>
-    <string name="booking_number">Booking Number</string>
+    <string name="booking_number">Booking ID</string>
     <string name="profile">Profile</string>
     <string name="no_results_found">No Results Found</string>
     <string name="upload_marina_images_long_press_on_image_to_delete">Upload marina images (Long press to delete)</string>
@@ -123,4 +123,8 @@
     <string name="booking_date_details">Booking date:</string>
     <string name="no_msg">No messages yet</string>
     <string name="no_review">No reviews yet</string>
+    <string name="change_email_or_password">Change Email or Password</string>
+    <string name="registered_email">Registered Email:</string>
+    <string name="delete_all_chats">Delete all chats</string>
+    <string name="delete_chat_msg">Do you really want to delete all chats?</string>
 </resources>

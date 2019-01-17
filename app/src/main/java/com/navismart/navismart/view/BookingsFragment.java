@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.navismart.navismart.R;
 
@@ -14,9 +14,9 @@ import androidx.navigation.Navigation;
 
 public class BookingsFragment extends Fragment {
 
-    private LinearLayout pastBookingsLayout;
-    private LinearLayout currentBookingsLayout;
-    private LinearLayout upcomingBookingsLayout;
+    private RelativeLayout pastBookingsLayout;
+    private RelativeLayout currentBookingsLayout;
+    private RelativeLayout upcomingBookingsLayout;
 
 
     public BookingsFragment() {
@@ -38,25 +38,16 @@ public class BookingsFragment extends Fragment {
         currentBookingsLayout = view.findViewById(R.id.next_currentBookings);
         upcomingBookingsLayout = view.findViewById(R.id.next_upcomingBookings);
 
-        pastBookingsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_pastBookingsFragment);
-            }
+        pastBookingsLayout.setOnClickListener((View v) -> {
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_pastBookingsFragment);
         });
 
-        currentBookingsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_currentBookingsFragment);
-            }
+        currentBookingsLayout.setOnClickListener((View v) -> {
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_currentBookingsFragment);
         });
 
-        upcomingBookingsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(),R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_upcomingBookingsFragment);
-            }
+        upcomingBookingsLayout.setOnClickListener((View v) -> {
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_upcomingBookingsFragment);
         });
 
         return view;
