@@ -98,8 +98,6 @@ public class SignUpBoaterFragment extends Fragment {
         storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
         uploadProgress = new ProgressDialog(getContext());
-        checkUserLoggedIn();
-
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         passwordEditText = view.findViewById(R.id.password_edit_text);
         registerButton = view.findViewById(R.id.boater_register_button);
@@ -280,8 +278,9 @@ public class SignUpBoaterFragment extends Fragment {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                             user.updateProfile(profileUpdates);
-
-                            currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType));
+                            if (boatLength != null && !boatLength.isEmpty()) {
+                                currentUser.child("boats").child("ID " + boatID).setValue(new BoatModel(boatName, boatID, Float.parseFloat(boatLength), Float.parseFloat(boatBeam), boatType));
+                            }
                             if (profilePicUri != null) {
                                 StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
