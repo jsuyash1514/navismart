@@ -123,4 +123,6 @@
     <string name="booking_date_details">Booking date:</string>
     <string name="no_msg">No messages yet</string>
     <string name="no_review">No reviews yet</string>
+    <string name="change_email_or_password">Change Email or Password</string>
+    <string name="registered_email">Registered Email:</string>
 </resources>

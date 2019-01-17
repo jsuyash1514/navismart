@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,14 +41,14 @@ public class MarinaProfileFragment extends Fragment {
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private ImageView profileImageView, editProfileIcon;
-    private TextView nameTextView;
-    private TextView emailTextView;
+    private ImageView profileImageView;
+    private TextView nameTextView, emailTextView,marinaNameTextView,marinaAddressTextView;
+    private RatingBar ratingBar;
     private EditText emailEditText;
     private EditText passwordEditText;
     private Dialog credentialVerifyDialog;
     private String verifyEmail, verifyPass;
-    private Button verifyButton;
+    private Button verifyButton, editProfileButton;
 
     public MarinaProfileFragment() {
         // Required empty public constructor
@@ -78,7 +79,10 @@ public class MarinaProfileFragment extends Fragment {
         nameTextView = view.findViewById(R.id.marina_profile_name);
         emailTextView = view.findViewById(R.id.marina_profile_email);
         profileImageView = view.findViewById(R.id.marina_profile_image);
-        editProfileIcon = view.findViewById(R.id.edit_profile_icon);
+        editProfileButton = view.findViewById(R.id.edit_profile_icon);
+        marinaNameTextView = view.findViewById(R.id.marina_name);
+        marinaAddressTextView = view.findViewById(R.id.marina_address);
+        ratingBar = view.findViewById(R.id.rating_display);
 
         credentialVerifyDialog = new Dialog(getContext());
         credentialVerifyDialog.setContentView(R.layout.credentials_dialog);
@@ -86,7 +90,7 @@ public class MarinaProfileFragment extends Fragment {
         emailEditText = credentialVerifyDialog.findViewById(R.id.email_edit_text);
         passwordEditText = credentialVerifyDialog.findViewById(R.id.password_edit_text);
 
-        editProfileIcon.setOnClickListener(new View.OnClickListener() {
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 credentialVerifyDialog.show();
@@ -170,10 +174,14 @@ public class MarinaProfileFragment extends Fragment {
 
         DatabaseReference currentUser = databaseReference.child("users").child(auth.getCurrentUser().getUid());
 
-        currentUser.child("profile").child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                nameTextView.setText(dataSnapshot.getValue(String.class));
+                nameTextView.setText(dataSnapshot.child("profile").child("name").getValue(String.class));
+                emailTextView.setText(dataSnapshot.child("profile").child("email").getValue(String.class));
+                marinaNameTextView.setText(dataSnapshot.child("marina-description").child("marinaName").getValue(String.class));
+                marinaAddressTextView.setText(dataSnapshot.child("marina-description").child("locationAddress").getValue(String.class));
+                ratingBar.setRating(Float.parseFloat(dataSnapshot.child("marina-description").child("starRating").getValue(String.class)));
             }
 
             @Override
@@ -182,17 +190,29 @@ public class MarinaProfileFragment extends Fragment {
             }
         });
 
-        currentUser.child("profile").child("email").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                emailTextView.setText(dataSnapshot.getValue(String.class));
-            }
+//        currentUser.child("profile").child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                nameTextView.setText(dataSnapshot.getValue(String.class));
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        currentUser.child("profile").child("email").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                emailTextView.setText(dataSnapshot.getValue(String.class));
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         StorageReference profilePicRef = storageReference.child("users").child(auth.getCurrentUser().getUid()).child("profile");
         profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
