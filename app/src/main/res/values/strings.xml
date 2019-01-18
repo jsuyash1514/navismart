@@ -127,5 +127,8 @@
     <string name="registered_email">Registered Email:</string>
     <string name="delete_all_chats">Delete all chats</string>
     <string name="delete_chat_msg">Do you really want to delete all chats?</string>
+    <string name="logout">logout</string>
+    <string name="boat_type">Boat Type</string>
     <string name="no_activity_yet">No activity yet</string>
+
 </resources>

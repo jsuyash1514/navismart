@@ -48,11 +48,11 @@ public class BoatListAdapter extends RecyclerView.Adapter<BoatListAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         BoatModel boatModel = boatList.get(position);
-        holder.typeView.setText("Type : " + boatModel.getType());
+        holder.typeView.setText(boatModel.getType());
         holder.nameView.setText(boatModel.getName());
-        holder.lengthView.setText("Length : " + Float.toString(boatModel.getLength()) + " m");
-        holder.beamView.setText("Beam : " + Float.toString(boatModel.getBeam()) + " m");
-        holder.idView.setText("ID : " + boatModel.getId());
+        holder.lengthView.setText(Float.toString(boatModel.getLength()) + " m");
+        holder.beamView.setText(Float.toString(boatModel.getBeam()) + " m");
+        holder.idView.setText(boatModel.getId());
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
