@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
@@ -26,6 +27,7 @@ public class BoaterMessageFragment extends Fragment {
 
     private RecyclerView msgRecyclerView;
     private ArrayList<MsgNameModel> msgNameModelArrayList;
+    private TextView noMsgTextView;
 
     public BoaterMessageFragment() {
         // Required empty public constructor
@@ -42,6 +44,7 @@ public class BoaterMessageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_boater_message, container, false);
 
         msgRecyclerView = view.findViewById(R.id.marinaMessageRecyclerView);
+        noMsgTextView = view.findViewById(R.id.no_msg_text);
 
         BoaterMsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(BoaterMsgViewModel.class);
         LiveData<DataSnapshot> liveData = marinaMsgViewModel.getDataSnapshotLiveData();
@@ -56,11 +59,19 @@ public class BoaterMessageFragment extends Fragment {
                         msgNameModel.setMsgName(snapshot.child("marinaName").getValue().toString());
                         msgNameModelArrayList.add(msgNameModel);
                     }
-                    MsgNameAdapter msgNameListAdapter = new MsgNameAdapter(getActivity(), msgNameModelArrayList);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    msgRecyclerView.setLayoutManager(mLayoutManager);
-                    msgRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    msgRecyclerView.setAdapter(msgNameListAdapter);
+                    if(msgNameModelArrayList.size()>0){
+                        MsgNameAdapter msgNameListAdapter = new MsgNameAdapter(getActivity(), msgNameModelArrayList);
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                        msgRecyclerView.setLayoutManager(mLayoutManager);
+                        msgRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                        msgRecyclerView.setAdapter(msgNameListAdapter);
+                        noMsgTextView.setVisibility(View.GONE);
+                        msgRecyclerView.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        noMsgTextView.setVisibility(View.VISIBLE);
+                        msgRecyclerView.setVisibility(View.GONE);
+                    }
                 }
             }
         });

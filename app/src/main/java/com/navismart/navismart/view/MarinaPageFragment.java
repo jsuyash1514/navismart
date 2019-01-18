@@ -152,8 +152,8 @@ public class MarinaPageFragment extends Fragment {
         seeMoreReviewsTextView.setOnClickListener((View v) -> {
 
             Bundle bundle1 = new Bundle();
-            bundle.putString("marinaID", marinaModel.getMarinaUID());
-            bundle.putString("marinaName", marinaModel.getName());
+            bundle1.putString("marinaID", marinaModel.getMarinaUID());
+            bundle1.putString("marinaName", marinaModel.getName());
             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_viewReviewFragment, bundle1);
 
         });
@@ -161,10 +161,10 @@ public class MarinaPageFragment extends Fragment {
         sendMsgButton.setOnClickListener((View v) -> {
 
             Bundle bundle2 = new Bundle();
-            bundle.putString("marinaName", marinaModel.getName());
-            bundle.putString("boaterName", auth.getCurrentUser().getDisplayName());
-            bundle.putString("marinaID", marinaModel.getMarinaUID());
-            bundle.putString("boaterID", auth.getCurrentUser().getUid());
+            bundle2.putString("marinaName", marinaModel.getName());
+            bundle2.putString("boaterName", auth.getCurrentUser().getDisplayName());
+            bundle2.putString("marinaID", marinaModel.getMarinaUID());
+            bundle2.putString("boaterID", auth.getCurrentUser().getUid());
             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaPageFragment_to_chatFragment, bundle2);
 
         });

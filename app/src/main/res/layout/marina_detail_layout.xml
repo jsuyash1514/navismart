@@ -37,6 +37,7 @@
             android:layout_below="@id/marina_name_textView"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="4dp"
             android:layout_toRightOf="@id/marina_imageView"
             android:orientation="horizontal">
 
@@ -63,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/location_bar"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="4dp"
             android:layout_toRightOf="@id/marina_imageView"
             android:orientation="horizontal">
 
@@ -89,9 +91,10 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/marina_imageView"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="8dp"
             android:isIndicator="true"
             android:numStars="5"
             android:progressTint="@color/goldenYellow" />
@@ -103,7 +106,7 @@
             android:layout_below="@+id/city_search_bar"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="2dp"
             android:text="@string/price"
             android:textColor="@android:color/holo_red_dark"
