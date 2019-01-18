@@ -27,7 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MarinaImagesAdapter;
@@ -59,7 +58,7 @@ public class MarinaPageFragment extends Fragment {
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private FirebaseAuth auth;
-    private View reviewTab;
+    private View reviewTab, descriptionView, facilitiesView, termsNConditionsView;
     private RecyclerView imagesRecyclerView;
     private int noImages = 0;
 
@@ -81,7 +80,7 @@ public class MarinaPageFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
+//        storageReference = FirebaseStorage.getInstance().getReference();
 
         nameTextView = view.findViewById(R.id.marina_name_textView);
         fromDateTextView = view.findViewById(R.id.from_date_display_textView);
@@ -99,6 +98,9 @@ public class MarinaPageFragment extends Fragment {
         seeMoreReviewsTextView = view.findViewById(R.id.see_more_reviews_text);
         sendMsgButton = view.findViewById(R.id.send_msg_button);
         imagesRecyclerView = view.findViewById(R.id.imagesrecyclerView);
+        descriptionView = view.findViewById(R.id.description_brick);
+        facilitiesView = view.findViewById(R.id.facilities_brick);
+        termsNConditionsView = view.findViewById(R.id.terms_n_conditions_brick);
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
@@ -107,11 +109,31 @@ public class MarinaPageFragment extends Fragment {
 
         loadReviews(marinaModel.getMarinaUID());
 
+        if (marinaModel.getDescription() == null || marinaModel.getDescription().isEmpty()) {
+            descriptionView.setVisibility(View.GONE);
+        } else {
+            descriptionView.setVisibility(View.VISIBLE);
+            descriptionTextView.setText(marinaModel.getDescription());
+        }
+
+        if (marinaModel.getFacilityString() == null || marinaModel.getFacilityString().isEmpty()) {
+            facilitiesView.setVisibility(View.GONE);
+        } else {
+            facilitiesView.setVisibility(View.VISIBLE);
+            facilitiesTextView.setText(marinaModel.getFacilityString());
+        }
+
+        if (marinaModel.getTnc() == null || marinaModel.getTnc().isEmpty()) {
+            termsNConditionsView.setVisibility(View.GONE);
+        } else {
+            tNcTextView.setText(marinaModel.getTnc());
+            termsNConditionsView.setVisibility(View.VISIBLE);
+        }
+
         nameTextView.setText(marinaModel.getName());
         ratingBar.setRating(marinaModel.getRating());
         locationTextView.setText(marinaModel.getLocation());
         distSearchTextView.setText(Integer.toString((int) Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
-        descriptionTextView.setText(marinaModel.getDescription());
         facilitiesTextView.setText(marinaModel.getFacilityString());
         tNcTextView.setText(marinaModel.getTnc());
         marinaImageView.setImageBitmap(marinaModel.getImage());
@@ -123,7 +145,7 @@ public class MarinaPageFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("DATASNAPSHOT", dataSnapshot.toString());
                 try {
-                    noImages = dataSnapshot.getValue(Integer.class);
+                    noImages = dataSnapshot.getValue(Integer.class) - 1;
                 } catch (Exception e) {
                     noImages = 0;
                 }

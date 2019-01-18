@@ -70,7 +70,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                 if (dataSnapshot != null) {
                     Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     long time = cal.getTimeInMillis();
-                    if (dataSnapshot.child("bookings").getChildrenCount() > 0 && dataSnapshot.child("review").getChildrenCount() > 0) {
+                    if (dataSnapshot.child("bookings").getChildrenCount() > 0 || dataSnapshot.child("review").getChildrenCount() > 0) {
 
                         list = new ArrayList<>();
                         tripletList = new ArrayList<>();

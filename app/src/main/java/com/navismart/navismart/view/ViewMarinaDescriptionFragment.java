@@ -82,7 +82,7 @@ public class ViewMarinaDescriptionFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d("DATASNAPSHOT", dataSnapshot.toString());
                         try {
-                            noImages = dataSnapshot.getValue(Integer.class);
+                            noImages = dataSnapshot.getValue(Integer.class) - 1;
                         } catch (Exception e) {
                             noImages = 0;
                         }
