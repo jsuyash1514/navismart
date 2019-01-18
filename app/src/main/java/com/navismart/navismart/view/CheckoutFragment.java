@@ -61,7 +61,8 @@ public class CheckoutFragment extends Fragment {
     private DatabaseReference databaseUserReference, databaseReference;
     private FirebaseAuth auth;
     private String boaterName = "";
-    private Date startDate, endDate;
+    private long receptionCapacity;
+    private Date startDate, endDate, date;
 
     public CheckoutFragment() {
         // Required empty public constructor
@@ -100,6 +101,7 @@ public class CheckoutFragment extends Fragment {
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
         marinaNameTextView.setText(marinaModel.getName());
         priceDisplayTextView.setText(Float.toString(Float.parseFloat(marinaModel.getPrice()) * getCountOfDays(fromDate, toDate)));
+        receptionCapacity = marinaModel.getReceptionCapacity();
 
         checkoutButton.setOnClickListener((View v) -> {
             String boat = boatSelectSpinner.getSelectedItem().toString();
@@ -153,33 +155,237 @@ public class CheckoutFragment extends Fragment {
             Calendar end = Calendar.getInstance();
             end.setTime(endDate);
 
-            databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("arrival")
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+            DatabaseReference ref = databaseReference.child("bookings").child(marinaModel.getMarinaUID());
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").getValue() == null){
+                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity-noOfDocks)
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                    }
+                                });
+                    }
+                    else{
+                        long temp = (long)dataSnapshot.child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").getValue();
+                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(temp-noOfDocks)
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                    }
+                                });
+                    }
+                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("arrival")
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                }
+                            });
+                    start.add(Calendar.DATE, 1);
+
+                    for (date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                        if(dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue() == null){
+                            databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").setValue(receptionCapacity-noOfDocks)
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                        }
+                                    });
                         }
-                    });
-            start.add(Calendar.DATE, 1);
-            for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
-                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingUID).setValue("stay")
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
-                            }
-                        });
-            }
-            databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("departure")
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                        else{
+                            long temp = (long)dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue();
+                            databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").setValue(temp-noOfDocks)
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                        }
+                                    });
                         }
-                    });
+                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingUID).setValue("stay")
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                    }
+                                });
+                    }
+
+                    if(dataSnapshot.child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").getValue() == null){
+                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity-noOfDocks)
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                    }
+                                });
+                    }
+                    else{
+                        long temp = (long)dataSnapshot.child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").getValue();
+                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(temp-noOfDocks)
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                    }
+                                });
+                    }
+                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("departure")
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                                }
+                            });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+                }
+            });
+
+//            DatabaseReference ref = databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate()));
+//            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    if(dataSnapshot.child("noOfDocksAvailable").getValue() == null){
+//                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity-noOfDocks)
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                    }
+//                                });
+//                    }
+//                    else{
+//                        databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(dataSnapshot.child("noOfDocksAvailable").getValue(Integer.class)-noOfDocks)
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                    }
+//                                });
+//                    }
+//                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("arrival")
+//                            .addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                }
+//                            });
+//                    start.add(Calendar.DATE, 1);
+//
+//                    for (date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+//                        DatabaseReference reference = databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate()));
+//                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                if(dataSnapshot.child("noOfDocksAvailable").getValue() == null){
+//                                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity-noOfDocks)
+//                                            .addOnFailureListener(new OnFailureListener() {
+//                                                @Override
+//                                                public void onFailure(@NonNull Exception e) {
+//                                                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                                }
+//                                            });
+//                                }
+//                                else{
+//                                    databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").setValue(dataSnapshot.child("noOfDocksAvailable").getValue(Integer.class)-noOfDocks)
+//                                            .addOnFailureListener(new OnFailureListener() {
+//                                                @Override
+//                                                public void onFailure(@NonNull Exception e) {
+//                                                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                                }
+//                                            });
+//                                }
+//                                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingUID).setValue("stay")
+//                                        .addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                            }
+//                                        });
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                            }
+//                        });
+//                    }
+//
+//                    DatabaseReference reference = databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate()));
+//                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            if(dataSnapshot.child("noOfDocksAvailable").getValue() == null){
+//                                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity-noOfDocks)
+//                                        .addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                            }
+//                                        });
+//                            }
+//                            else{
+//                                databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(dataSnapshot.child("noOfDocksAvailable").getValue(Integer.class)-noOfDocks)
+//                                        .addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                            }
+//                                        });
+//                            }
+//                            databaseReference.child("bookings").child(marinaModel.getMarinaUID()).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child(bookingUID).setValue("departure")
+//                                    .addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                                        }
+//                                    });
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//                            Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                        }
+//                    });
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                    Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
+//                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
+//                }
+//            });
+
             ////////////////////////////////////////////////////ADD TO MARINA MANAGER BOOKING////////////////////////////////////////////////////////////////////////////////////////////
 
             databaseReference.child("users").child(marinaModel.getMarinaUID()).child("bookings").child(bookingUID).setValue(bookingModel)

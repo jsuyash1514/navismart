@@ -107,6 +107,7 @@ public class BoaterSearchResultsFragment extends Fragment {
     private StorageReference storageReference;
     private ArrayList<String> marinaUIDList;
     private ProgressDialog fetchMarinaProgress;
+    private long receptionCapacity;
 
     public BoaterSearchResultsFragment() {
         // Required empty public constructor
@@ -589,6 +590,8 @@ public class BoaterSearchResultsFragment extends Fragment {
                                 model.setDescription(d);
                                 rating = Float.parseFloat(dataSnapshot.child("marina-description").child("starRating").getValue(String.class));
                                 model.setRating(rating);
+                                receptionCapacity = Long.parseLong(dataSnapshot.child("marina-description").child("capacity").getValue(String.class));
+                                model.setReceptionCapacity(receptionCapacity);
                                 ArrayList<Integer> f = new ArrayList<>();
                                 for (DataSnapshot snapshot : dataSnapshot.child("marina-description").child("facilities").getChildren()) {
                                     f.add(((Long) snapshot.getValue()).intValue());
