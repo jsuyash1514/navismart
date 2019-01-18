@@ -103,8 +103,8 @@ public class ChatFragment extends Fragment {
             deleteDialog.dismiss();
         });
 
-        Log.d("marinaID", marinaID);
-        Log.d("boaterID", boaterID);
+        Log.d("marinaID", ""+marinaID);
+        Log.d("boaterID", ""+boaterID);
         Log.d("USER_TYPE", USER_TYPE + "");
 
         moreIcon.setOnClickListener((View v) -> {

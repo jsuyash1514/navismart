@@ -52,6 +52,7 @@ import com.navismart.navismart.model.MarinaModel;
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -230,9 +231,10 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         fromDatePicker = dateChangeDialog.findViewById(R.id.from_date_pick);
         toDatePicker = dateChangeDialog.findViewById(R.id.to_date_pick);
-
-        fromDatePicker.setMinDate(System.currentTimeMillis() - 1000);
-        toDatePicker.setMinDate(System.currentTimeMillis() - 1000);
+        Calendar c = Calendar.getInstance();
+        fromDatePicker.setMinDate(c.getTimeInMillis());
+        c.add(Calendar.DATE, 1);
+        toDatePicker.setMinDate(c.getTimeInMillis());
 
         Date from = getDateFromString(fromDate);
         Date to = getDateFromString(toDate);

@@ -131,7 +131,7 @@ public class BoaterSearchFragment extends Fragment {
                     }
                 }
             }, mYearTo, mMonthTo, mDateTo);
-            datePickerDialogTo.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            datePickerDialogTo.getDatePicker().setMinDate(c.getTimeInMillis());
 
             datePickerDialogTo.show();
 
