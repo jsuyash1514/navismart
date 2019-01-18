@@ -198,7 +198,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/price"
+                android:text="@string/no_of_docks_booked"
                 android:textColor="#737373"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -224,7 +224,7 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/marina_activity_guest_detail_price"
+                android:id="@+id/marina_activity_guest_detail_number_of_docks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

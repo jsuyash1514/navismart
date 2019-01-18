@@ -138,7 +138,10 @@ public class MarinaLandingBookingFragment extends Fragment {
                     final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getActivity(),list);
                     progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
-                    available = (long)dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).child("noOfDocksAvailable").getValue();
+                    if(dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).child("noOfDocksAvailable").getValue() == null){
+                        available = viewModel.getCapacity();
+                    }
+                    else available = (long)dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).child("noOfDocksAvailable").getValue();
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
                         if(snapshot!=null && !snapshot.getKey().equals("noOfDocksAvailable")) {
                             MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
