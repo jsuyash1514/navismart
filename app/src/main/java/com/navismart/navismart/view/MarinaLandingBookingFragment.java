@@ -52,6 +52,7 @@ public class MarinaLandingBookingFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private int arrival=0,departure=0,stay=0;
+    private long available=0;
     private TextView bookedCount, availableCount, arrivalCount,departureCount, stayCount;
     private MarinaLandingBookingViewModel viewModel;
     private DatePicker datePicker;
@@ -131,11 +132,13 @@ public class MarinaLandingBookingFragment extends Fragment {
                     arrival=0;
                     departure=0;
                     stay=0;
+                    available=0;
                     bookingID = new ArrayList<>();
                     final List<MarinaBookingsModel> list = new ArrayList<>();
                     final MarinaBookingsAdapter adapter = new MarinaBookingsAdapter(getActivity(),list);
                     progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
+                    available = (long)dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).child("noOfDocksAvailable").getValue();
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
                         if(snapshot!=null && !snapshot.getKey().equals("noOfDocksAvailable")) {
                             MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
@@ -175,8 +178,8 @@ public class MarinaLandingBookingFragment extends Fragment {
                             });
                         }
                     }
-                    bookedCount.setText(String.valueOf(arrival+stay));
-                    availableCount.setText(String.valueOf(viewModel.getCapacity()-(arrival+stay)));
+                    bookedCount.setText(String.valueOf(viewModel.getCapacity()-available));
+                    availableCount.setText(String.valueOf(available));
                     arrivalCount.setText(String.valueOf(arrival));
                     departureCount.setText(String.valueOf(departure));
                     stayCount.setText(String.valueOf(stay));
