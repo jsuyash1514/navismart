@@ -137,7 +137,7 @@ public class MarinaLandingBookingFragment extends Fragment {
                     progressDialog.setMessage("Fetching data...");
                     progressDialog.show();
                     for (DataSnapshot snapshot : dataSnapshot.child(String.valueOf(viewModel.getYear())).child(String.valueOf(viewModel.getMonth())).child(String.valueOf(viewModel.getDay())).getChildren()){
-                        if(snapshot!=null) {
+                        if(snapshot!=null && !snapshot.getKey().equals("noOfDocksAvailable")) {
                             MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
                             bookingID.add(snapshot.getKey());
                             String s = snapshot.getValue(String.class);
