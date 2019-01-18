@@ -245,8 +245,8 @@ public class BoaterSearchResultsFragment extends Fragment {
         setDateButton = dateChangeDialog.findViewById(R.id.set_date_button);
         setDateButton.setOnClickListener((View v) -> {
 
-            if (getCountOfDays(fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear(), toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear()) < 0) {
-                Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+            if (getCountOfDays(fromDatePicker.getDayOfMonth() + "/" + fromDatePicker.getMonth() + "/" + fromDatePicker.getYear(), toDatePicker.getDayOfMonth() + "/" + toDatePicker.getMonth() + "/" + toDatePicker.getYear()) <= 0) {
+                Toast.makeText(getContext(), "Departure Date cannot be earlier or the same as Arrival Date!", Toast.LENGTH_SHORT).show();
             } else {
                 fromDate = fromDatePicker.getDayOfMonth() + "/" + (fromDatePicker.getMonth() + 1) + "/" + fromDatePicker.getYear();
                 toDate = toDatePicker.getDayOfMonth() + "/" + (toDatePicker.getMonth() + 1) + "/" + toDatePicker.getYear();

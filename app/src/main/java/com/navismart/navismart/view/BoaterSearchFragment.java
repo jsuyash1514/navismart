@@ -126,8 +126,8 @@ public class BoaterSearchFragment extends Fragment {
                     mDateTo = dayOfMonth;
                     dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
                     toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
-                    if (getCountOfDays(fromDate, toDate) < 0) {
-                        Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
+                    if (getCountOfDays(fromDate, toDate) <= 0) {
+                        Toast.makeText(getContext(), "Departure Date cannot be earlier or the same as Arrival Date!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }, mYearTo, mMonthTo, mDateTo);
@@ -141,7 +141,7 @@ public class BoaterSearchFragment extends Fragment {
         searchButton = view.findViewById(R.id.search_button);
         searchButton.setOnClickListener((View v) -> {
 
-            if (getCountOfDays(fromDate, toDate) < 0) {
+            if (getCountOfDays(fromDate, toDate) <= 0) {
                 Toast.makeText(getContext(), "Departure Date cannout be earlier than Arrival Date!", Toast.LENGTH_SHORT).show();
             } else if (locationAddress != null && !locationAddress.trim().isEmpty()) {
                 Bundle bundle = new Bundle();
