@@ -55,14 +55,14 @@ public class BoaterProfileFragment extends Fragment {
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private RecyclerView boatListRecyclerView;
-    private ImageView logoutIcon, addBoatIcon, profileImageView, editProfileIcon;
+    private ImageView addBoatIcon, profileImageView;
     private TextView nameTextView;
     private TextView emailTextView;
     private EditText emailEditText;
     private EditText passwordEditText;
     private Dialog credentialVerifyDialog;
     private String verifyEmail, verifyPass;
-    private Button verifyButton;
+    private Button verifyButton, editProfileButton, logoutButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,7 @@ public class BoaterProfileFragment extends Fragment {
         nameTextView = view.findViewById(R.id.boater_profile_name);
         emailTextView = view.findViewById(R.id.boater_profile_email);
         profileImageView = view.findViewById(R.id.boater_profile_image);
-        editProfileIcon = view.findViewById(R.id.edit_profile_icon);
+        editProfileButton = view.findViewById(R.id.edit_profile_icon);
 
         boatListRecyclerView = view.findViewById(R.id.boat_recycler_view);
 
@@ -103,8 +103,8 @@ public class BoaterProfileFragment extends Fragment {
 
         prepareBoatList();
 
-        logoutIcon = view.findViewById(R.id.logout_icon);
-        logoutIcon.setOnClickListener((View v) -> {
+        logoutButton = view.findViewById(R.id.logout_icon);
+        logoutButton.setOnClickListener((View v) -> {
 
             auth.signOut();
             Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
@@ -118,7 +118,7 @@ public class BoaterProfileFragment extends Fragment {
         addBoatIcon = view.findViewById(R.id.add_boat_icon);
         addBoatIcon.setOnClickListener((View v) -> Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_addBoatFragment));
 
-        editProfileIcon.setOnClickListener((View v) -> credentialVerifyDialog.show());
+        editProfileButton.setOnClickListener((View v) -> credentialVerifyDialog.show());
 
         verifyButton = credentialVerifyDialog.findViewById(R.id.verify_button);
         verifyButton.setOnClickListener((View v) -> {

@@ -141,7 +141,6 @@ public class CheckoutFragment extends Fragment {
                     });
 
             /////////////////////////////////////////////////////////ADD TO BOOKINGS PARENT/////////////////////////////////////////////////////////////////////////////////////////////
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
 
             startDate = getDateFromString(fromDate);
             Log.d("booking date", "startDate: " + startDate);
