@@ -72,11 +72,12 @@ public class MarinaPageFragment extends Fragment {
     private View reviewTab, descriptionView, facilitiesView, termsNConditionsView;
     //    private RecyclerView imagesRecyclerView;
     private ImageSwitcher imageSwitcher;
-    private Bitmap[] images;
+    private ArrayList<Bitmap> images;
     private int noImages = 0;
     private int iLoop = 0;
-    private int imageIndex = -1;
+    private int imageIndex = 0;
     private int noImageLoaded = 0;
+    private Animation aniIn, aniOut;
 
     public MarinaPageFragment() {
         // Required empty public constructor
@@ -210,7 +211,7 @@ public class MarinaPageFragment extends Fragment {
 
         nextImage.setOnClickListener((View v) -> {
 
-            if (imageIndex < noImageLoaded) {
+            if (imageIndex < noImageLoaded - 1) {
                 imageIndex++;
                 setImageIntoSwitcherOnClick(imageIndex);
             }
@@ -237,15 +238,13 @@ public class MarinaPageFragment extends Fragment {
                         ImageSwitcher.LayoutParams.MATCH_PARENT, ImageSwitcher.LayoutParams.MATCH_PARENT
                 ));
                 switcherImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                switcherImageView.setImageBitmap(images[0]);
+                switcherImageView.setImageBitmap(images.get(0));
                 return switcherImageView;
             }
         });
 
-        Animation aniOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
-        Animation aniIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
-        imageSwitcher.setOutAnimation(aniOut);
-        imageSwitcher.setInAnimation(aniIn);
+        aniOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
+        aniIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
 
         marinaImageView.setVisibility(View.GONE);
         imageSwitcher.setVisibility(View.VISIBLE);
@@ -254,18 +253,17 @@ public class MarinaPageFragment extends Fragment {
 
     private void setImageIntoSwitcherOnClick(int index) {
 
-        Drawable drawable = new BitmapDrawable(images[index]);
+        Drawable drawable = new BitmapDrawable(images.get(index));
         imageSwitcher.setImageDrawable(drawable);
 
     }
 
     private void loadImages(int n, String marinaUID) {
 
-        images = new Bitmap[n];
+        images = new ArrayList<>(n);
         noImageLoaded = 0;
 
         for (iLoop = 0; iLoop < n; iLoop++) {
-
             StorageReference picReference = storageReference.child("users").child(marinaUID).child("marina" + (iLoop + 1));
             picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
@@ -276,7 +274,7 @@ public class MarinaPageFragment extends Fragment {
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                    images[iLoop] = resource;
+                                    images.add(resource);
                                     noImageLoaded++;
                                     if (noImageLoaded == 1) {
                                         setFirstImageIntoImageSwitcher();
