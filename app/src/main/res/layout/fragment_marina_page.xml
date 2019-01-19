@@ -18,23 +18,44 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="horizontal">
+                android:layout_height="200dp">
 
-                <ImageView
-                    android:id="@+id/marina_imageView"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:src="@drawable/gray_solid" />
+                    android:orientation="horizontal">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/imagesrecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/marina_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:src="@drawable/gray_solid" />
+
+                    <ImageSwitcher
+                        android:id="@+id/imageSwitcher"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/nextImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_keyboard_arrow_left_white_24dp" />
+
+                <ImageView
+                    android:id="@+id/prevImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_keyboard_arrow_right_white_24dp" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

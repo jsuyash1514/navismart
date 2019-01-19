@@ -140,7 +140,7 @@ public class MarinaLandingBookingFragment extends Fragment {
                         if(snapshot!=null) {
                             MarinaBookingsModel marinaBookingsModel = new MarinaBookingsModel();
                             bookingID.add(snapshot.getKey());
-                            String s = snapshot.getValue(String.class);
+                                String s = snapshot.getValue(String.class);
                             if (s != null && !s.isEmpty()) {
                                 if (s.equals("arrival")) {
                                     arrival++;
