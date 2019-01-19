@@ -79,7 +79,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((MarinaActivityBookingsViewHolder) holder).arrivalTime.setText(mylist.getBookingsCardModel().getArrivalTime());
                 ((MarinaActivityBookingsViewHolder) holder).departureTime.setText(mylist.getBookingsCardModel().getDapartureTime());
                 ((MarinaActivityBookingsViewHolder) holder).bookingNumber.setText(mylist.getBookingsCardModel().getBookingNumber());
-                ((MarinaActivityBookingsViewHolder) holder).bookingPrice.setText(mylist.getBookingsCardModel().getBookingPrice());
+                ((MarinaActivityBookingsViewHolder) holder).noOfDocks.setText(mylist.getBookingsCardModel().getNoOfDocksBooked());
                 ((MarinaActivityBookingsViewHolder)holder).newBookingCardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -123,7 +123,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class MarinaActivityBookingsViewHolder extends RecyclerView.ViewHolder {
-        TextView timeStamp, guestName, boatName, boatID, arrivalTime, departureTime, bookingNumber, bookingPrice;
+        TextView timeStamp, guestName, boatName, boatID, arrivalTime, departureTime, bookingNumber, noOfDocks;
         CardView newBookingCardView;
 
         public MarinaActivityBookingsViewHolder(@NonNull View itemView) {
@@ -135,7 +135,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             arrivalTime = (itemView).findViewById(R.id.marina_activity_guest_detail_arrival);
             departureTime = (itemView).findViewById(R.id.marina_activity_guest_detail_departure);
             bookingNumber = (itemView).findViewById(R.id.marina_activity_guest_detail_booking);
-            bookingPrice = (itemView).findViewById(R.id.marina_activity_guest_detail_price);
+            noOfDocks = (itemView).findViewById(R.id.marina_activity_guest_detail_number_of_docks);
             newBookingCardView = (itemView).findViewById(R.id.marina_activity_new_booking_card_view);
         }
     }
