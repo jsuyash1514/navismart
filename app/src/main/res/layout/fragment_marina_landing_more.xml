@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.MarinaLandingMoreFragment">
+    tools:context=".view.marina.MarinaLandingMoreFragment">
 
     <RelativeLayout
         android:id="@+id/marina_more_profile_layout"

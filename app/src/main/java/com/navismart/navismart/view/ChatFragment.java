@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,15 +30,27 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.navismart.navismart.BuildConfig;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.ChatAdapter;
 import com.navismart.navismart.model.ChatModel;
+import com.navismart.navismart.utils.PreferencesHelper;
 import com.navismart.navismart.viewmodelfactory.ChatViewModelFactory;
 import com.navismart.navismart.viewmodels.ChatViewModel;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.navismart.navismart.MainActivity.USER_TYPE;
 import static com.navismart.navismart.MainActivity.getCurrentStringDate;
@@ -46,6 +59,7 @@ import static com.navismart.navismart.adapters.ChatAdapter.SENDER_BOATER;
 
 public class ChatFragment extends Fragment {
 
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private RecyclerView chatRecyclerView;
     private FloatingActionButton sendButton;
     private EditText msgEditText;
@@ -55,6 +69,8 @@ public class ChatFragment extends Fragment {
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
     private String marinaID, boaterID, marinaName, boaterName;
+    private String receiverToken, marinaToken, boaterToken;
+    private PreferencesHelper preferencesHelper;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -70,11 +86,16 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        preferencesHelper = new PreferencesHelper(getActivity());
+
         chatRecyclerView = view.findViewById(R.id.chat_recycler_view);
         sendButton = view.findViewById(R.id.send_button);
         msgEditText = view.findViewById(R.id.msg_edit_text);
         marinaChatName = view.findViewById(R.id.marinaChatName);
         moreIcon = view.findViewById(R.id.more_icon);
+
+        msgEditText.setEnabled(false);
+        sendButton.setEnabled(false);
 
         marinaName = getArguments().getString("marinaName");
         boaterName = getArguments().getString("boaterName");
@@ -91,6 +112,37 @@ public class ChatFragment extends Fragment {
         marinaID = getArguments().getString("marinaID");
         boaterID = getArguments().getString("boaterID");
 
+        databaseReference.child("users").child(marinaID).child("profile").child("fcm_token").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                marinaToken = dataSnapshot.getValue().toString();
+                databaseReference.child("users").child(boaterID).child("profile").child("fcm_token").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        boaterToken = dataSnapshot.getValue().toString();
+                        if (USER_TYPE == SENDER_BOATER)
+                            receiverToken = marinaToken;
+                        else
+                            receiverToken = boaterToken;
+                        msgEditText.setEnabled(true);
+                        sendButton.setEnabled(true);
+                        Log.d("MARINA_TOKEN", marinaToken);
+                        Log.d("BOATER_TOKEN", boaterToken);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         Dialog deleteDialog = new Dialog(getContext());
         deleteDialog.setContentView(R.layout.delete_dialog);
         deleteButton = deleteDialog.findViewById(R.id.delete_button);
@@ -103,8 +155,8 @@ public class ChatFragment extends Fragment {
             deleteDialog.dismiss();
         });
 
-        Log.d("marinaID", ""+marinaID);
-        Log.d("boaterID", ""+boaterID);
+        Log.d("marinaID", "" + marinaID);
+        Log.d("boaterID", "" + boaterID);
         Log.d("USER_TYPE", USER_TYPE + "");
 
         moreIcon.setOnClickListener((View v) -> {
@@ -254,8 +306,52 @@ public class ChatFragment extends Fragment {
         chatReference.setValue(marinaName);
         chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("boaterName");
         chatReference.setValue(boaterName);
+        String marinaToken = "", boaterToken = "";
+        if (USER_TYPE == SENDER_BOATER) {
+            marinaToken = receiverToken;
+            boaterToken = preferencesHelper.getToken();
+        } else {
+            marinaToken = preferencesHelper.getToken();
+            boaterToken = receiverToken;
+        }
+        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("marinaToken");
+        chatReference.setValue(marinaToken);
+        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("boaterToken");
+        chatReference.setValue(boaterToken);
+        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("marinaToken");
+        chatReference.setValue(marinaToken);
+        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("boaterToken");
+        chatReference.setValue(boaterToken);
 
+        sendNotification(receiverToken, chatModel.getMsg());
+    }
 
+    private void sendNotification(String regToken, String msg) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    JSONObject json = new JSONObject();
+                    JSONObject dataJson = new JSONObject();
+                    dataJson.put("body", msg);
+                    dataJson.put("title", auth.getCurrentUser().getDisplayName());
+                    json.put("notification", dataJson);
+                    json.put("to", regToken);
+                    RequestBody body = RequestBody.create(JSON, json.toString());
+                    Request request = new Request.Builder()
+                            .header("Authorization", "key=" + BuildConfig.LEGACY_SERVER_KEY)
+                            .url("https://fcm.googleapis.com/fcm/send")
+                            .post(body)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String finalResponse = response.body().string();
+                } catch (Exception e) {
+                    Log.d("Notification Error: ", e.toString());
+                }
+                return null;
+            }
+        }.execute();
     }
 
 }

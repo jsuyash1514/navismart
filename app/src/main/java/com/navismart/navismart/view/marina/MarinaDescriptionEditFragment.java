@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.marina;
 
 
 import android.arch.lifecycle.LiveData;

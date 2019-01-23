@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.MarinaLandingMessagesFragment">
+    tools:context=".view.marina.MarinaLandingMessagesFragment">
 
     <TextView
         android:id="@+id/no_msg_text"

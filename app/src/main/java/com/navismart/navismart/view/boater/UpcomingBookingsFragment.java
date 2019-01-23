@@ -1,4 +1,5 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.boater;
+
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -30,15 +31,15 @@ import java.util.Date;
 
 import static com.navismart.navismart.MainActivity.getCountOfDays;
 
-public class PastBookingsFragment extends Fragment {
+public class UpcomingBookingsFragment extends Fragment {
 
     private ArrayList<BookingModel> list;
-    private RecyclerView pastRecyclerView;
+    private RecyclerView upcomingRecyclerView;
     private BookingListAdapter bookingListAdapter;
     private TextView noBookingTextView;
     private ImageView reloadIcon;
 
-    public PastBookingsFragment() {
+    public UpcomingBookingsFragment() {
         // Required empty public constructor
     }
 
@@ -50,21 +51,20 @@ public class PastBookingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_past_bookings, container, false);
+        View view = inflater.inflate(R.layout.fragment_upcoming_bookings, container, false);
 
-        pastRecyclerView = view.findViewById(R.id.past_bookings_recyclerView);
+        upcomingRecyclerView = view.findViewById(R.id.upcoming_bookings_recyclerView);
         noBookingTextView = view.findViewById(R.id.no_booking_display);
         reloadIcon = view.findViewById(R.id.reload_icon);
 
-
         prepareList();
 
-        reloadIcon.setOnClickListener((View v) -> prepareList());
-
 //        bookingListAdapter = new BookingListAdapter(getActivity(), list);
-//        pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        pastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        pastRecyclerView.setAdapter(bookingListAdapter);
+//        upcomingRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        upcomingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        upcomingRecyclerView.setAdapter(bookingListAdapter);
+
+        reloadIcon.setOnClickListener((View v) -> prepareList());
 
         return view;
     }
@@ -72,10 +72,10 @@ public class PastBookingsFragment extends Fragment {
     private void checkVisibility() {
 
         if (list.size() > 0) {
-            pastRecyclerView.setVisibility(View.VISIBLE);
+            upcomingRecyclerView.setVisibility(View.VISIBLE);
             noBookingTextView.setVisibility(View.GONE);
         } else {
-            pastRecyclerView.setVisibility(View.GONE);
+            upcomingRecyclerView.setVisibility(View.GONE);
             noBookingTextView.setVisibility(View.VISIBLE);
         }
 
@@ -90,12 +90,16 @@ public class PastBookingsFragment extends Fragment {
 
 //        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
 //        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
+//
+//        list = new ArrayList<>();
+//
+//
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.UPCOMING, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.UPCOMING, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.UPCOMING, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.UPCOMING, "Name"));
+//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.UPCOMING, "Name"));
 
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
 
         BookingListViewModel bookingListViewModel = ViewModelProviders.of(this).get(BookingListViewModel.class);
         LiveData<DataSnapshot> liveData = bookingListViewModel.getDataSnapshotLiveData();
@@ -106,16 +110,16 @@ public class PastBookingsFragment extends Fragment {
                     list = new ArrayList<>();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         BookingModel booking = postSnapshot.getValue(BookingModel.class);
-                        if (isPast(booking.getToDate())) {
-                            booking.setBookingTense(BookingModel.PAST);
+                        if (isUpcoming(booking.getFromDate())) {
+                            booking.setBookingTense(BookingModel.UPCOMING);
                             list.add(booking);
                         }
                     }
                     BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    pastRecyclerView.setLayoutManager(mLayoutManager);
-                    pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    pastRecyclerView.setAdapter(bookingListAdapter);
+                    upcomingRecyclerView.setLayoutManager(mLayoutManager);
+                    upcomingRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                    upcomingRecyclerView.setAdapter(bookingListAdapter);
                     checkVisibility();
                 }
             }
@@ -123,25 +127,19 @@ public class PastBookingsFragment extends Fragment {
 
     }
 
-    private boolean isPast(String to) {
+    private boolean isUpcoming(String from) {
 
         Date date = Calendar.getInstance().getTime();
 
         String curr = date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900);
 
-        int dT = getCountOfDays(curr, to);
+        int dF = getCountOfDays(curr, from);
 
-        if (dT < 0) {
+        if (dF > 0) {
             return true;
         }
 
         return false;
     }
 
-    @Override
-    public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
-
-    }
 }
-
-

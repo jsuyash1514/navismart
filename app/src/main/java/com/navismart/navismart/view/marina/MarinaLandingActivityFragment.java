@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.marina;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -70,7 +70,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                 if (dataSnapshot != null) {
                     Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                     long time = cal.getTimeInMillis();
-                    if (dataSnapshot.child("bookings").getChildrenCount() > 0 && dataSnapshot.child("review").getChildrenCount() > 0) {
+                    if (dataSnapshot.child("bookings").getChildrenCount() > 0 || dataSnapshot.child("review").getChildrenCount() > 0) {
 
                         list = new ArrayList<>();
                         tripletList = new ArrayList<>();
@@ -114,7 +114,7 @@ public class MarinaLandingActivityFragment extends Fragment {
                                                 dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("fromDate").getValue(String.class),
                                                 dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("toDate").getValue(String.class),
                                                 dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("bookingID").getValue(String.class),
-                                                String.valueOf(dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("finalPrice").getValue())
+                                                String.valueOf(dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("noOfDocks").getValue())
                                         ));
                                 list.add(dateModel);
                                 list.add(modelBooking);

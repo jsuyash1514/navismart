@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.marina;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
