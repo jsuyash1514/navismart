@@ -40,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.BoatModel;
+import com.navismart.navismart.utils.PreferencesHelper;
 import com.navismart.navismart.viewmodels.SignUpViewModel;
 
 import java.io.FileNotFoundException;
@@ -75,6 +76,7 @@ public class SignUpBoaterFragment extends Fragment {
     private boolean emailValid = false;
     private boolean passwordValid = false;
     private boolean enabler = false;
+    private PreferencesHelper preferencesHelper;
 
     public SignUpBoaterFragment() {
         // Required empty public constructor
@@ -90,6 +92,8 @@ public class SignUpBoaterFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_signup_boater, container, false);
+
+        preferencesHelper = new PreferencesHelper(getActivity());
 
         signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
 
@@ -272,6 +276,9 @@ public class SignUpBoaterFragment extends Fragment {
                             currentUser.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("boater");
+                            if (!preferencesHelper.getToken().isEmpty()) {
+                                currentUser.child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
+                            }
 
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();

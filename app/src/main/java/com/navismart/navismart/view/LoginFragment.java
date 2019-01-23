@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.navismart.navismart.R;
+import com.navismart.navismart.utils.PreferencesHelper;
 
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -42,6 +44,7 @@ public class LoginFragment extends Fragment {
     private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
     private String category;
+    private PreferencesHelper preferencesHelper;
 
 
     @Override
@@ -49,6 +52,7 @@ public class LoginFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
+        preferencesHelper = new PreferencesHelper(getActivity());
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -150,6 +154,7 @@ public class LoginFragment extends Fragment {
                     progressDialog.dismiss();
                 }
 
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     progressDialog.dismiss();
@@ -181,6 +186,11 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
+
+                        if (!preferencesHelper.getToken().isEmpty()) {
+                            Log.d("TAGTAGTAG", preferencesHelper.getToken());
+                            databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
+                        }
 
                         if (task.isSuccessful()) {
                             DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");

@@ -80,13 +80,10 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 ((MarinaActivityBookingsViewHolder) holder).departureTime.setText(mylist.getBookingsCardModel().getDapartureTime());
                 ((MarinaActivityBookingsViewHolder) holder).bookingNumber.setText(mylist.getBookingsCardModel().getBookingNumber());
                 ((MarinaActivityBookingsViewHolder) holder).noOfDocks.setText(mylist.getBookingsCardModel().getNoOfDocksBooked());
-                ((MarinaActivityBookingsViewHolder)holder).newBookingCardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("Booking_id",mylist.getBookingsCardModel().getBookingNumber());
-                        Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment,bundle);
-                    }
+                ((MarinaActivityBookingsViewHolder) holder).newBookingCardView.setOnClickListener(v -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Booking_id", mylist.getBookingsCardModel().getBookingNumber());
+                    Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment, bundle);
                 });
             } else if (mylist.getType() == MarinaActivityModel.TYPE_REVIEW) {
                 ((MarinaActivityReviewsViewHolder) holder).timeStamp.setText(mylist.getReviewsCardModel().getTimeStamp());
