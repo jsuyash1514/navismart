@@ -33,8 +33,8 @@ import com.navismart.navismart.utils.PreferencesHelper;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
-import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isEmailValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isPasswordValid;
 
 
 public class LoginFragment extends Fragment {

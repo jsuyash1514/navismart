@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.boater;
 
 
 import android.app.Dialog;
@@ -36,7 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.navismart.navismart.EmailAndPasswordChecker;
+import com.navismart.navismart.utils.EmailAndPasswordChecker;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.BoatListAdapter;
 import com.navismart.navismart.model.BoatModel;

@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.boater;
 
 
 import android.arch.lifecycle.LiveData;
@@ -52,8 +52,8 @@ import java.util.ArrayList;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import static com.navismart.navismart.view.BoaterSearchResultsFragment.fromDate;
-import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
+import static com.navismart.navismart.view.boater.BoaterSearchResultsFragment.fromDate;
+import static com.navismart.navismart.view.boater.BoaterSearchResultsFragment.toDate;
 
 public class MarinaPageFragment extends Fragment {
 

@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.marina;
 
 
 import android.app.AlertDialog;
@@ -74,8 +74,8 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import static android.app.Activity.RESULT_OK;
-import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
-import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isEmailValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isPasswordValid;
 
 public class SignUpMarinaManagerFragment extends Fragment {
 

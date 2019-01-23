@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.boater;
 
 
 import android.app.Activity;
@@ -50,8 +50,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
-import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isEmailValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isPasswordValid;
 
 public class SignUpBoaterFragment extends Fragment {
 

@@ -1,4 +1,4 @@
-package com.navismart.navismart;
+package com.navismart.navismart.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

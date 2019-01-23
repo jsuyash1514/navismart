@@ -4,10 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.navismart.navismart.view.BoaterMessageFragment;
-import com.navismart.navismart.view.BoaterProfileFragment;
-import com.navismart.navismart.view.BoaterSearchFragment;
-import com.navismart.navismart.view.BookingsFragment;
+import com.navismart.navismart.view.boater.BoaterMessageFragment;
+import com.navismart.navismart.view.boater.BoaterProfileFragment;
+import com.navismart.navismart.view.boater.BoaterSearchFragment;
+import com.navismart.navismart.view.boater.BookingsFragment;
 
 public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
     public BoaterViewPagerAdapter(FragmentManager fm) {

@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.boater;
 
 
 import android.arch.lifecycle.LiveData;
@@ -45,9 +45,9 @@ import androidx.navigation.Navigation;
 
 import static com.navismart.navismart.MainActivity.getCountOfDays;
 import static com.navismart.navismart.MainActivity.getDateFromString;
-import static com.navismart.navismart.view.BoaterSearchResultsFragment.fromDate;
-import static com.navismart.navismart.view.BoaterSearchResultsFragment.noOfDocks;
-import static com.navismart.navismart.view.BoaterSearchResultsFragment.toDate;
+import static com.navismart.navismart.view.boater.BoaterSearchResultsFragment.fromDate;
+import static com.navismart.navismart.view.boater.BoaterSearchResultsFragment.noOfDocks;
+import static com.navismart.navismart.view.boater.BoaterSearchResultsFragment.toDate;
 
 public class CheckoutFragment extends Fragment {
 
