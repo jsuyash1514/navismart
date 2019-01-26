@@ -148,7 +148,7 @@ public class BoaterSearchFragment extends Fragment {
                 bundle.putString("fromDate", dateFromEditText.getText().toString());
                 bundle.putString("toDate", dateToEditText.getText().toString());
                 bundle.putString("location_address", locationAddress);
-                bundle.putInt("noOfDocks", noOfDockPicker.getValue());
+                bundle.putLong("noOfDocks", noOfDockPicker.getValue());
                 bundle.putParcelable("locationLatLng", locationLatLng);
                 NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
                 navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);

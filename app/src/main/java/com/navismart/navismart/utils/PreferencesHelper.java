@@ -21,4 +21,10 @@ public class PreferencesHelper {
         return sharedPreferences.getString("token", "");
     }
 
+    public void clearPrefs() {
+
+        sharedPreferences.edit().clear().apply();
+
+    }
+
 }
