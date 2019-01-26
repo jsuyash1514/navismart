@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
-        android:name="com.navismart.navismart.view.MarinaManagerLandingFragment"
+        android:name="com.navismart.navismart.view.marina.MarinaManagerLandingFragment"
         android:label="fragment_landing"
         tools:layout="@layout/fragment_marina_manager_landing">
         <action
@@ -107,17 +107,17 @@
     </fragment>
     <fragment
         android:id="@+id/boaterProfileFragment"
-        android:name="com.navismart.navismart.view.BoaterProfileFragment"
+        android:name="com.navismart.navismart.view.boater.BoaterProfileFragment"
         android:label="fragment_boater_profile"
         tools:layout="@layout/fragment_boater_profile" />
     <fragment
         android:id="@+id/boaterSearchFragment"
-        android:name="com.navismart.navismart.view.BoaterSearchFragment"
+        android:name="com.navismart.navismart.view.boater.BoaterSearchFragment"
         android:label="fragment_boater_search"
         tools:layout="@layout/fragment_boater_search" />
     <fragment
         android:id="@+id/boaterSearchResultsFragment"
-        android:name="com.navismart.navismart.view.BoaterSearchResultsFragment"
+        android:name="com.navismart.navismart.view.boater.BoaterSearchResultsFragment"
         android:label="fragment_boater_search_results"
         tools:layout="@layout/fragment_boater_search_results">
         <action
@@ -130,7 +130,7 @@
     </fragment>
     <fragment
         android:id="@+id/marinaPageFragment"
-        android:name="com.navismart.navismart.view.MarinaPageFragment"
+        android:name="com.navismart.navismart.view.boater.MarinaPageFragment"
         android:label="fragment_marina_page"
         tools:layout="@layout/fragment_marina_page">
         <action
@@ -157,7 +157,7 @@
     </fragment>
     <fragment
         android:id="@+id/checkoutFragment"
-        android:name="com.navismart.navismart.view.CheckoutFragment"
+        android:name="com.navismart.navismart.view.boater.CheckoutFragment"
         android:label="fragment_checkout"
         tools:layout="@layout/fragment_checkout">
         <action
@@ -170,7 +170,7 @@
     </fragment>
     <fragment
         android:id="@+id/boaterLandingFragment"
-        android:name="com.navismart.navismart.view.BoaterLandingFragment"
+        android:name="com.navismart.navismart.view.boater.BoaterLandingFragment"
         android:label="fragment_boater_landing"
         tools:layout="@layout/fragment_boater_landing">
         <action
@@ -225,7 +225,7 @@
     </fragment>
     <fragment
         android:id="@+id/currentBookingsFragment"
-        android:name="com.navismart.navismart.view.CurrentBookingsFragment"
+        android:name="com.navismart.navismart.view.boater.CurrentBookingsFragment"
         android:label="fragment_current_bookings"
         tools:layout="@layout/fragment_current_bookings">
         <action
@@ -238,7 +238,7 @@
     </fragment>
     <fragment
         android:id="@+id/pastBookingsFragment"
-        android:name="com.navismart.navismart.view.PastBookingsFragment"
+        android:name="com.navismart.navismart.view.boater.PastBookingsFragment"
         android:label="fragment_past_bookings"
         tools:layout="@layout/fragment_past_bookings">
         <action
@@ -251,7 +251,7 @@
     </fragment>
     <fragment
         android:id="@+id/upcomingBookingsFragment"
-        android:name="com.navismart.navismart.view.UpcomingBookingsFragment"
+        android:name="com.navismart.navismart.view.boater.UpcomingBookingsFragment"
         android:label="fragment_upcoming_bookings"
         tools:layout="@layout/fragment_upcoming_bookings">
         <action
@@ -264,7 +264,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewBookingFragment"
-        android:name="com.navismart.navismart.view.ViewBookingFragment"
+        android:name="com.navismart.navismart.view.boater.ViewBookingFragment"
         android:label="fragment_view_booking"
         tools:layout="@layout/fragment_view_booking">
         <action
@@ -277,12 +277,12 @@
     </fragment>
     <fragment
         android:id="@+id/writeReviewFragment"
-        android:name="com.navismart.navismart.view.WriteReviewFragment"
+        android:name="com.navismart.navismart.view.boater.WriteReviewFragment"
         android:label="fragment_write_review"
         tools:layout="@layout/fragment_write_review" />
     <fragment
         android:id="@+id/addBoatFragment"
-        android:name="com.navismart.navismart.view.AddBoatFragment"
+        android:name="com.navismart.navismart.view.boater.AddBoatFragment"
         android:label="fragment_add_boat"
         tools:layout="@layout/fragment_add_boat" />
     <fragment
@@ -292,7 +292,7 @@
         tools:layout="@layout/fragment_view_review" />
     <fragment
         android:id="@+id/bookingDetailsFragment"
-        android:name="com.navismart.navismart.view.BookingDetailsFragment"
+        android:name="com.navismart.navismart.view.marina.BookingDetailsFragment"
         android:label="fragment_booking_details"
         tools:layout="@layout/fragment_booking_details" >
         <action
@@ -310,7 +310,7 @@
         tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/viewMarinaDescriptionFragment"
-        android:name="com.navismart.navismart.view.ViewMarinaDescriptionFragment"
+        android:name="com.navismart.navismart.view.marina.ViewMarinaDescriptionFragment"
         android:label="fragment_view_marina_description"
         tools:layout="@layout/fragment_view_marina_description">
         <action
@@ -328,12 +328,12 @@
         tools:layout="@layout/activity_main" />
     <fragment
         android:id="@+id/marinaDescriptionEditFragment2"
-        android:name="com.navismart.navismart.view.MarinaDescriptionEditFragment"
+        android:name="com.navismart.navismart.view.marina.MarinaDescriptionEditFragment"
         android:label="fragment_marina_description_edit"
         tools:layout="@layout/fragment_marina_description_edit" />
     <fragment
         android:id="@+id/marinaProfileFragment"
-        android:name="com.navismart.navismart.view.MarinaProfileFragment"
+        android:name="com.navismart.navismart.view.marina.MarinaProfileFragment"
         android:label="fragment_marina_profile"
         tools:layout="@layout/fragment_marina_profile">
         <action

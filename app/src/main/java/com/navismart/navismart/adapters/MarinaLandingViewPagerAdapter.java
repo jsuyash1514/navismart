@@ -4,10 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.navismart.navismart.view.MarinaLandingActivityFragment;
-import com.navismart.navismart.view.MarinaLandingBookingFragment;
-import com.navismart.navismart.view.MarinaLandingMessagesFragment;
-import com.navismart.navismart.view.MarinaLandingMoreFragment;
+import com.navismart.navismart.view.marina.MarinaLandingActivityFragment;
+import com.navismart.navismart.view.marina.MarinaLandingBookingFragment;
+import com.navismart.navismart.view.marina.MarinaLandingMessagesFragment;
+import com.navismart.navismart.view.marina.MarinaLandingMoreFragment;
 
 public class MarinaLandingViewPagerAdapter extends FragmentPagerAdapter {
 

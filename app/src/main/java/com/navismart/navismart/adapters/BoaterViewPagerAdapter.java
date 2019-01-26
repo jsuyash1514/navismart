@@ -4,10 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.navismart.navismart.view.BoaterMessageFragment;
-import com.navismart.navismart.view.BoaterProfileFragment;
-import com.navismart.navismart.view.BoaterSearchFragment;
-import com.navismart.navismart.view.BookingsFragment;
+import com.navismart.navismart.view.boater.BoaterMessageFragment;
+import com.navismart.navismart.view.boater.BoaterProfileFragment;
+import com.navismart.navismart.view.boater.BoaterSearchFragment;
+import com.navismart.navismart.view.boater.BookingsFragment;
 
 public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
     public BoaterViewPagerAdapter(FragmentManager fm) {
@@ -17,22 +17,15 @@ public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
-        if (position == 0)
-        {
+        if (position == 0) {
             fragment = new BoaterSearchFragment();
-        }
-        else if (position == 1)
-        {
+        } else if (position == 1) {
             fragment = new BookingsFragment();
-        }
-        else if (position == 2)
-        {
+        } else if (position == 2) {
+            fragment = new BoaterMessageFragment();
+        } else if (position == 3) {
             fragment = new BoaterProfileFragment();
 
-        }
-        else if (position == 3)
-        {
-            fragment = new BoaterMessageFragment();
         }
         return fragment;
     }
@@ -50,9 +43,9 @@ public class BoaterViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 1) {
             title = "Bookings";
         } else if (position == 2) {
-            title = "Profile";
-        } else if (position == 3) {
             title = "Messages";
+        } else if (position == 3) {
+            title = "Profile";
         }
         return title;
     }

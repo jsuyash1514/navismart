@@ -1,43 +1,61 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.marina;
 
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
-import com.navismart.navismart.adapters.MarinaImagesAdapter;
 import com.navismart.navismart.viewmodels.MarinaDescriptionViewModel;
+
+import java.util.ArrayList;
 
 import androidx.navigation.Navigation;
 
 public class ViewMarinaDescriptionFragment extends Fragment {
 
-    int noImages = 0;
     private TextView nameView, locationView, descriptionView, facilitiesView, tNcView;
-    private ImageView marinaImageView, editDescriptionIcon;
-    private RecyclerView imagesRecyclerView;
+    private ImageView marinaImageView, editDescriptionIcon, nextImage, prevImage;
+    //    private RecyclerView imagesRecyclerView;
+    private ImageSwitcher imageSwitcher;
+    private ArrayList<Bitmap> images;
+    private int noImages = 0;
+    private int iLoop = 0;
+    private int imageIndex = 0;
+    private int noImageLoaded = 0;
+    private Animation aniIn, aniOut;
     private DatabaseReference databaseReference;
+    private StorageReference storageReference;
     private FirebaseAuth auth;
 
     public ViewMarinaDescriptionFragment() {
@@ -55,6 +73,7 @@ public class ViewMarinaDescriptionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_view_marina_description, container, false);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
 
         nameView = view.findViewById(R.id.marina_name_textView);
@@ -64,7 +83,9 @@ public class ViewMarinaDescriptionFragment extends Fragment {
         tNcView = view.findViewById(R.id.tnc_display_textView);
         editDescriptionIcon = view.findViewById(R.id.editDescriptionIcon);
         marinaImageView = view.findViewById(R.id.marina_imageView);
-        imagesRecyclerView = view.findViewById(R.id.imagesrecyclerView);
+        imageSwitcher = view.findViewById(R.id.imageSwitcher);
+        nextImage = view.findViewById(R.id.nextImage);
+        prevImage = view.findViewById(R.id.prevImage);
 
         MarinaDescriptionViewModel marinaDescriptionViewModel = ViewModelProviders.of(this).get(MarinaDescriptionViewModel.class);
         LiveData<DataSnapshot> liveData = marinaDescriptionViewModel.getDataSnapshotLiveData();
@@ -82,17 +103,15 @@ public class ViewMarinaDescriptionFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d("DATASNAPSHOT", dataSnapshot.toString());
                         try {
-                            noImages = dataSnapshot.getValue(Integer.class);
+                            noImages = dataSnapshot.getValue(Integer.class) - 1;
                         } catch (Exception e) {
                             noImages = 0;
                         }
                         if (noImages > 0) {
-                            marinaImageView.setVisibility(View.GONE);
-                            imagesRecyclerView.setVisibility(View.VISIBLE);
                             loadImages(noImages, auth.getCurrentUser().getUid());
                         } else {
                             marinaImageView.setVisibility(View.VISIBLE);
-                            imagesRecyclerView.setVisibility(View.GONE);
+                            imageSwitcher.setVisibility(View.GONE);
                         }
                     }
 
@@ -147,17 +166,90 @@ public class ViewMarinaDescriptionFragment extends Fragment {
             }
         });
 
+
+        nextImage.setOnClickListener((View v) -> {
+
+            if (imageIndex < noImageLoaded - 1) {
+                imageIndex++;
+                setImageIntoSwitcherOnClick(imageIndex);
+            }
+        });
+
+        prevImage.setOnClickListener((View v) -> {
+
+            if (imageIndex > 0) {
+                imageIndex--;
+                setImageIntoSwitcherOnClick(imageIndex);
+            }
+        });
+
         return view;
+    }
+
+    private void setFirstImageIntoImageSwitcher() {
+
+        imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                ImageView switcherImageView = new ImageView(getActivity());
+                switcherImageView.setLayoutParams(new ImageSwitcher.LayoutParams(
+                        ImageSwitcher.LayoutParams.MATCH_PARENT, ImageSwitcher.LayoutParams.MATCH_PARENT
+                ));
+                switcherImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                switcherImageView.setImageBitmap(images.get(0));
+                return switcherImageView;
+            }
+        });
+
+        aniOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
+        aniIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
+
+        marinaImageView.setVisibility(View.GONE);
+        imageSwitcher.setVisibility(View.VISIBLE);
+
+    }
+
+    private void setImageIntoSwitcherOnClick(int index) {
+
+        Drawable drawable = new BitmapDrawable(images.get(index));
+        imageSwitcher.setImageDrawable(drawable);
+
     }
 
     private void loadImages(int n, String marinaUID) {
 
-        MarinaImagesAdapter marinaImagesAdapter = new MarinaImagesAdapter(n, marinaUID, getContext());
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        imagesRecyclerView.setLayoutManager(mLayoutManager);
-        imagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        imagesRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        imagesRecyclerView.setAdapter(marinaImagesAdapter);
+        images = new ArrayList<>(n);
+        noImageLoaded = 0;
+
+        for (iLoop = 0; iLoop < n; iLoop++) {
+            StorageReference picReference = storageReference.child("users").child(marinaUID).child("marina" + (iLoop + 1));
+            picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(getContext())
+                            .asBitmap()
+                            .load(uri)
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                    images.add(resource);
+                                    noImageLoaded++;
+                                    if (noImageLoaded == 1) {
+                                        setFirstImageIntoImageSwitcher();
+                                    }
+                                }
+                            });
+                }
+            });
+
+        }
+
+//        MarinaImagesAdapter marinaImagesAdapter = new MarinaImagesAdapter(n, marinaUID, getContext());
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+//        imagesRecyclerView.setLayoutManager(mLayoutManager);
+//        imagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        imagesRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+//        imagesRecyclerView.setAdapter(marinaImagesAdapter);
 
     }
 

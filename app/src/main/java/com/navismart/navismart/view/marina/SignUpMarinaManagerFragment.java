@@ -1,4 +1,4 @@
-package com.navismart.navismart.view;
+package com.navismart.navismart.view.marina;
 
 
 import android.app.AlertDialog;
@@ -58,6 +58,7 @@ import com.navismart.navismart.R;
 import com.navismart.navismart.RecyclerItemClickListener;
 import com.navismart.navismart.adapters.MarinaPicAdapter;
 import com.navismart.navismart.model.MarinaPicModel;
+import com.navismart.navismart.utils.PreferencesHelper;
 import com.navismart.navismart.viewmodels.SignUpViewModel;
 
 import java.io.ByteArrayOutputStream;
@@ -73,8 +74,8 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import static android.app.Activity.RESULT_OK;
-import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
-import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isEmailValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isPasswordValid;
 
 public class SignUpMarinaManagerFragment extends Fragment {
 
@@ -105,6 +106,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private MarinaPicAdapter picAdapter;
     private CheckBox drinkingWater, electricity, fuelStation, access, travelLift, security, residualWaterCollection, restaurant, dryPort, maintenence;
     private ArrayList<Integer> f;
+    private PreferencesHelper preferencesHelper;
 
 
     public SignUpMarinaManagerFragment() {
@@ -121,6 +123,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signup_marina_manager, container, false);
+
+        preferencesHelper = new PreferencesHelper(getActivity());
 
         signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
 
@@ -508,6 +512,11 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             currentUser.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
+
+                            if(!preferencesHelper.getToken().isEmpty()){
+                                currentUser.child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
+                            }
+
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
                             currentUser.child("marina-description").child("marinaName").setValue(marinaName);
                             currentUser.child("marina-description").child("numberOfReviews").setValue("0");

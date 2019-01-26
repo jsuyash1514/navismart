@@ -130,5 +130,6 @@
     <string name="logout">logout</string>
     <string name="boat_type">Boat Type</string>
     <string name="no_activity_yet">No activity yet</string>
+    <string name="no_of_docks_booked">No. of docks</string>
 
 </resources>

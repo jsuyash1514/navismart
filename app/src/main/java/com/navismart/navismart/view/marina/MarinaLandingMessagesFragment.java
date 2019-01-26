@@ -1,5 +1,4 @@
-package com.navismart.navismart.view;
-
+package com.navismart.navismart.view.marina;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -19,17 +18,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.MsgNameAdapter;
 import com.navismart.navismart.model.MsgNameModel;
-import com.navismart.navismart.viewmodels.BoaterMsgViewModel;
+import com.navismart.navismart.viewmodels.MarinaMsgViewModel;
 
 import java.util.ArrayList;
 
-public class BoaterMessageFragment extends Fragment {
+public class MarinaLandingMessagesFragment extends Fragment {
 
     private RecyclerView msgRecyclerView;
+    private TextView noMsg;
     private ArrayList<MsgNameModel> msgNameModelArrayList;
-    private TextView noMsgTextView;
 
-    public BoaterMessageFragment() {
+    public MarinaLandingMessagesFragment() {
         // Required empty public constructor
     }
 
@@ -41,12 +40,12 @@ public class BoaterMessageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_boater_message, container, false);
+        View view = inflater.inflate(R.layout.fragment_marina_landing_messages, container, false);
 
-        msgRecyclerView = view.findViewById(R.id.marinaMessageRecyclerView);
-        noMsgTextView = view.findViewById(R.id.no_msg_text);
+        msgRecyclerView = view.findViewById(R.id.boaterMessageRecyclerView);
+        noMsg = view.findViewById(R.id.no_msg_text);
 
-        BoaterMsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(BoaterMsgViewModel.class);
+        MarinaMsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(MarinaMsgViewModel.class);
         LiveData<DataSnapshot> liveData = marinaMsgViewModel.getDataSnapshotLiveData();
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
@@ -56,21 +55,20 @@ public class BoaterMessageFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         MsgNameModel msgNameModel = new MsgNameModel();
                         msgNameModel.setID(snapshot.getKey());
-                        msgNameModel.setMsgName(snapshot.child("marinaName").getValue().toString());
+                        msgNameModel.setMsgName(snapshot.child("boaterName").getValue().toString());
                         msgNameModelArrayList.add(msgNameModel);
                     }
-                    if(msgNameModelArrayList.size()>0){
+                    if (msgNameModelArrayList.size() > 0) {
                         MsgNameAdapter msgNameListAdapter = new MsgNameAdapter(getActivity(), msgNameModelArrayList);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                         msgRecyclerView.setLayoutManager(mLayoutManager);
                         msgRecyclerView.setItemAnimator(new DefaultItemAnimator());
                         msgRecyclerView.setAdapter(msgNameListAdapter);
-                        noMsgTextView.setVisibility(View.GONE);
                         msgRecyclerView.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        noMsgTextView.setVisibility(View.VISIBLE);
+                        noMsg.setVisibility(View.GONE);
+                    } else {
                         msgRecyclerView.setVisibility(View.GONE);
+                        noMsg.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -78,5 +76,4 @@ public class BoaterMessageFragment extends Fragment {
 
         return view;
     }
-
 }

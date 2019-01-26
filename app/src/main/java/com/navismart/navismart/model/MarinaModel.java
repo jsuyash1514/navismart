@@ -35,6 +35,7 @@ public class MarinaModel implements Parcelable {
     private String marinaUID = "default";
     private double lat = 0;
     private double lng = 0;
+    private long receptionCapacity;
 
     public MarinaModel() {
 
@@ -246,5 +247,13 @@ public class MarinaModel implements Parcelable {
             }
         }
         return s;
+    }
+
+    public long getReceptionCapacity() {
+        return receptionCapacity;
+    }
+
+    public void setReceptionCapacity(long receptionCapacity) {
+        this.receptionCapacity = receptionCapacity;
     }
 }
