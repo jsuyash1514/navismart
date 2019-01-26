@@ -629,8 +629,7 @@ public class BoaterSearchResultsFragment extends Fragment {
                                                     available = false;
 //                                                    Log.d("capacity","Marina "  + uid  + " not available!");
                                                     break;
-                                                }
-                                                else{
+                                                } else {
 //                                                    Log.d("capacity","Marina "  + uid  + " available! because noOfDocksAvailable: " + noOfDocksAvailable + " is greater than or equal to no of docks required: "+ noOfDocks);
                                                 }
                                             } else {
@@ -640,44 +639,42 @@ public class BoaterSearchResultsFragment extends Fragment {
                                                     available = false;
 //                                                    Log.d("capacity","Marina "  + uid  + " not available!");
                                                     break;
-                                                }
-                                                else{
+                                                } else {
 //                                                    Log.d("capacity","Marina "  + uid  + " available! because noOfDocksAvailable: " + noOfDocksAvailable + " is greater than or equal to no of docks required: "+ noOfDocks);
                                                 }
                                             }
                                         }
-                                        if (available) {
-//                                            Log.d("capacity","Congo!!! marina "  + uid  + " is available!");
-                                            marinaList.add(model);
-                                            filteredMarinaList = marinaList;
-                                            if (sortByClosest) {
-                                                sortByDist();
-                                            }
-                                            if (sortByCheapest) {
-                                                sortByPrice();
-                                            }
-                                            if (filtered) {
-                                                filteredMarinaList = filterMarinaList();
-                                            } else {
-                                                minRange = getMinPrice();
-                                                maxRange = getMaxPrice();
-                                            }
-                                            marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
-                                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-
-                                            marinaListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                                            marinaListRecyclerView.setLayoutManager(mLayoutManager);
-                                            marinaListRecyclerView.setAdapter(marinaListAdapter);
+                                        start.setTime(from);
+                                        Date date = start.getTime();
+                                        Long noOfDocksAvailable = (Long) dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue();
+                                        if (noOfDocksAvailable != null) {
+                                            model.setNoAvailableDisplay(noOfDocksAvailable.intValue());
                                         } else {
-                                            marinaUIDList.remove(uid);
-                                            if (marinaUIDList.size() == 0) {
-                                                marinaListRecyclerView.setVisibility(View.GONE);
-                                                noResultsDisplay.setVisibility(View.VISIBLE);
-                                            } else {
-                                                marinaListRecyclerView.setVisibility(View.VISIBLE);
-                                                noResultsDisplay.setVisibility(View.GONE);
-                                            }
+                                            model.setNoAvailableDisplay((int) model.getReceptionCapacity());
                                         }
+//                                            Log.d("capacity","Congo!!! marina "  + uid  + " is available!");
+                                        model.setAvailable(available);
+                                        marinaList.add(model);
+                                        filteredMarinaList = marinaList;
+                                        if (sortByClosest) {
+                                            sortByDist();
+                                        }
+                                        if (sortByCheapest) {
+                                            sortByPrice();
+                                        }
+                                        if (filtered) {
+                                            filteredMarinaList = filterMarinaList();
+                                        } else {
+                                            minRange = getMinPrice();
+                                            maxRange = getMaxPrice();
+                                        }
+                                        marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
+                                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+
+                                        marinaListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                                        marinaListRecyclerView.setLayoutManager(mLayoutManager);
+                                        marinaListRecyclerView.setAdapter(marinaListAdapter);
+
                                     }
 
                                     @Override

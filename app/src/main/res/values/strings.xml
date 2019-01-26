@@ -25,6 +25,7 @@
     <string name="description">Description</string>
     <string name="location">Location</string>
     <string name="reception_capacity">Reception\nCapacity</string>
+    <string name="docks_available">Docks Available: </string>
     <string name="you">You</string>
     <string name="your_boat">Your Boat</string>
     <string name="marina_description">Marina Description</string>
@@ -131,5 +132,6 @@
     <string name="boat_type">Boat Type</string>
     <string name="no_activity_yet">No activity yet</string>
     <string name="no_of_docks_booked">No. of docks</string>
+    <string name="sufficient_docks_unavailable">Sufficient docks unavaialable!</string>
 
 </resources>

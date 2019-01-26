@@ -20,6 +20,7 @@ public class MarinaLandingMoreFragment extends Fragment {
     private View descriptionBrick;
     private View profileBrick;
     private View reviewsBrick;
+    private Button logoutButton;
 
     public MarinaLandingMoreFragment() {
         // Required empty public constructor
@@ -42,11 +43,12 @@ public class MarinaLandingMoreFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
 
-        Button logoutButton = view.findViewById(R.id.marina_logout_button);
+        logoutButton = view.findViewById(R.id.marina_logout_button);
         logoutButton.setOnClickListener((View v) -> {
 
             auth.signOut();
             Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.landingFragment, true)
                     .build();
@@ -77,6 +79,5 @@ public class MarinaLandingMoreFragment extends Fragment {
 
         return view;
     }
-
 
 }

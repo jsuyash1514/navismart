@@ -112,7 +112,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/white">
 
                 <ImageView
@@ -132,6 +132,17 @@
                     android:text="@string/dist_search"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/reception_capacity_display"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/white"
+                android:padding="5dp"
+                android:text="@string/docks_available" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -353,6 +364,15 @@
                     android:text="@string/send_a_message"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/unavailable_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/sufficient_docks_unavailable"
+                    android:textColor="@color/red"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
