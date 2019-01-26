@@ -30,7 +30,7 @@ public class BookingModel implements Parcelable {
     private String dateTimeStamp = "default";
     private long bookingTimeStamp;
     private int bookingTense = 0;
-    private int noOfDocks = 0;
+    private long noOfDocks = 0;
     private float finalPrice = 0;
 
     public BookingModel(String boatName, String marinaName, String boatID, String fromDate, String toDate, int bookingTense, String boaterName) {
@@ -73,12 +73,12 @@ public class BookingModel implements Parcelable {
         this.reviewed = reviewed;
     }
 
-    public int getNoOfDocks() {
+    public long getNoOfDocks() {
 
         return noOfDocks;
     }
 
-    public void setNoOfDocks(int noOfDocks) {
+    public void setNoOfDocks(long noOfDocks) {
         this.noOfDocks = noOfDocks;
     }
 
