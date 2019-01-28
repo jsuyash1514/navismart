@@ -58,7 +58,7 @@ import static com.navismart.navismart.view.boater.BoaterSearchResultsFragment.to
 public class MarinaPageFragment extends Fragment {
 
     private TextView nameTextView, fromDateTextView, distSearchTextView, locationTextView, toDateTextView, descriptionTextView, facilitiesTextView, tNcTextView;
-    private TextView seeMoreReviewsTextView;
+    private TextView seeMoreReviewsTextView, unavailableMsg, noAvailableDisplay;
     private RatingBar ratingBar;
     private Button bookButton;
     private Button sendMsgButton;
@@ -121,11 +121,23 @@ public class MarinaPageFragment extends Fragment {
         termsNConditionsView = view.findViewById(R.id.terms_n_conditions_brick);
         nextImage = view.findViewById(R.id.nextImage);
         prevImage = view.findViewById(R.id.prevImage);
+        unavailableMsg = view.findViewById(R.id.unavailable_msg);
+        noAvailableDisplay = view.findViewById(R.id.reception_capacity_display);
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
 
         MarinaModel marinaModel = getArguments().getParcelable("marina_model");
         Bundle bundle = new Bundle();
         bundle.putParcelable("marina_model", marinaModel);
+
+        if (marinaModel.isAvailable()) {
+            bookButton.setEnabled(true);
+            unavailableMsg.setVisibility(View.GONE);
+        } else {
+            bookButton.setEnabled(false);
+            unavailableMsg.setVisibility(View.VISIBLE);
+        }
+
+        noAvailableDisplay.setText("Docks Available: " + marinaModel.getNoAvailableDisplay());
 
         loadReviews(marinaModel.getMarinaUID());
 

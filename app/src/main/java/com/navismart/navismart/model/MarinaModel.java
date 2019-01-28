@@ -36,6 +36,8 @@ public class MarinaModel implements Parcelable {
     private double lat = 0;
     private double lng = 0;
     private long receptionCapacity;
+    private boolean available = false;
+    private int noAvailableDisplay = 0;
 
     public MarinaModel() {
 
@@ -79,6 +81,24 @@ public class MarinaModel implements Parcelable {
 
     public MarinaModel(Parcel in) {
 
+    }
+
+    public int getNoAvailableDisplay() {
+
+        return noAvailableDisplay;
+    }
+
+    public void setNoAvailableDisplay(int noAvailableDisplay) {
+        this.noAvailableDisplay = noAvailableDisplay;
+    }
+
+    public boolean isAvailable() {
+
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public double getLat() {
