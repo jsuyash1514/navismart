@@ -509,16 +509,24 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
                         if (task.isSuccessful()) {
                             DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
+                            DatabaseReference adminPage = databaseReference.child("admin").child(firebaseAuth.getCurrentUser().getUid());
                             currentUser.child("profile").child("name").setValue(name);
+                            adminPage.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
+                            adminPage.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
+                            adminPage.child("profile").child("category").setValue("marina-manager");
+                            currentUser.child("profile").child("status").setValue("pending");
+                            adminPage.child("profile").child("uid").setValue(firebaseAuth.getCurrentUser().getUid());
 
                             if(!preferencesHelper.getToken().isEmpty()){
                                 currentUser.child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
                             }
 
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
+                            adminPage.child("marina-description").child("capacity").setValue(capacity);
                             currentUser.child("marina-description").child("marinaName").setValue(marinaName);
+                            adminPage.child("marina-description").child("marinaName").setValue(marinaName);
                             currentUser.child("marina-description").child("numberOfReviews").setValue("0");
                             currentUser.child("marina-description").child("starRating").setValue("0");
 
@@ -526,17 +534,25 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
                             user.updateProfile(profileUpdates);
 
-                            if (!TextUtils.isEmpty(descr))
+                            if (!TextUtils.isEmpty(descr)) {
                                 currentUser.child("marina-description").child("description").setValue(descr);
-                            if (!TextUtils.isEmpty(termsAndCond))
+                                adminPage.child("marina-description").child("description").setValue(descr);
+                            }
+                            if (!TextUtils.isEmpty(termsAndCond)) {
                                 currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                                adminPage.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                            }
                             if (!TextUtils.isEmpty(locationAddress)) {
                                 currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
+                                adminPage.child("marina-description").child("locationAddress").setValue(locationAddress);
                                 currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
+                                adminPage.child("marina-description").child("locationAddress").setValue(locationAddress);
                                 currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
+                                adminPage.child("marina-description").child("locationAddress").setValue(locationAddress);
                             }
 
                             currentUser.child("marina-description").child("facilities").setValue(f);
+                            adminPage.child("marina-description").child("facilities").setValue(f);
                             addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
 
 
@@ -625,19 +641,15 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                         uploadProgress.dismiss();
-
-                                        NavOptions navOptions = new NavOptions.Builder()
-                                                .setPopUpTo(R.id.startFragment, true)
-                                                .build();
-                                        navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
+                                        Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                        firebaseAuth.signOut();
+                                        navController.navigateUp();
                                     }
                                 });
                             } else {
-
-                                NavOptions navOptions = new NavOptions.Builder()
-                                        .setPopUpTo(R.id.startFragment, true)
-                                        .build();
-                                navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
+                                Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                firebaseAuth.signOut();
+                                navController.navigateUp();
                             }
 
                         } else {

@@ -133,5 +133,6 @@
     <string name="no_activity_yet">No activity yet</string>
     <string name="no_of_docks_booked">No. of docks</string>
     <string name="sufficient_docks_unavailable">Sufficient docks unavaialable!</string>
+    <string name="submit">Submit</string>
 
 </resources>
