@@ -509,7 +509,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
                         if (task.isSuccessful()) {
                             DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
-                            DatabaseReference adminPage = databaseReference.child("admin").child(firebaseAuth.getCurrentUser().getUid());
+                            DatabaseReference adminPage = databaseReference.child("admin").child("verification").child(firebaseAuth.getCurrentUser().getUid());
                             currentUser.child("profile").child("name").setValue(name);
                             adminPage.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
