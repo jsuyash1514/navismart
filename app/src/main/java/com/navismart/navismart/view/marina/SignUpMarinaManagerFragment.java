@@ -553,8 +553,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
                             currentUser.child("marina-description").child("facilities").setValue(f);
                             adminPage.child("marina-description").child("facilities").setValue(f);
-                            addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
-
+//                            addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
 
                             if (marinaPicModelList.size() > 1) {
                                 currentUser.child("marina-description").child("no-images").setValue(marinaPicModelList.size());
