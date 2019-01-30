@@ -134,5 +134,8 @@
     <string name="no_of_docks_booked">No. of docks</string>
     <string name="sufficient_docks_unavailable">Sufficient docks unavaialable!</string>
     <string name="submit">Submit</string>
+    <string name="address">Address</string>
+    <string name="reject">Reject</string>
+    <string name="approve">Approve</string>
 
 </resources>
