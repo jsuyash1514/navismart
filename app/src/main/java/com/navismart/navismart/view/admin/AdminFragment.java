@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +24,15 @@ public class AdminFragment extends Fragment {
     ViewPager viewPager;
     FirebaseAuth auth;
     AdminViewPagerAdapter adapter;
+    Button logout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin, container, false);
+
+        logout = view.findViewById(R.id.admin_logout_button);
 
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
@@ -46,6 +50,18 @@ public class AdminFragment extends Fragment {
         tabLayout = view.findViewById(R.id.admin_tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auth.signOut();
+                Toast.makeText(getContext(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.landingFragment, true)
+                        .build();
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_log_out_action, null, navOptions);
+            }
+        });
 
         return view;
     }
