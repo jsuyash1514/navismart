@@ -56,11 +56,14 @@ public class AdminVerificationFragment extends Fragment {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                         if(snapshot!=null) {
                             AdminVerificationModel verificationModel = new AdminVerificationModel();
+                            verificationModel.setMarinaUID(snapshot.child("profile").child("uid").getValue(String.class));
                             verificationModel.setMarinaName(snapshot.child("marina-description").child("marinaName").getValue(String.class));
                             verificationModel.setMarinaManagerName(snapshot.child("profile").child("name").getValue(String.class));
                             verificationModel.setEmail(snapshot.child("profile").child("email").getValue(String.class));
                             verificationModel.setReceptionCapacity(snapshot.child("marina-description").child("capacity").getValue(String.class));
                             verificationModel.setLocationAddress(snapshot.child("marina-description").child("locationAddress").getValue(String.class));
+                            verificationModel.setLatitude(snapshot.child("marina-description").child("latitude").getValue(Double.class));
+                            verificationModel.setLongitude(snapshot.child("marina-description").child("longitude").getValue(Double.class));
                             String description = snapshot.child("marina-description").child("description").getValue(String.class);
                             if(description != null && !description.isEmpty()) verificationModel.setDescription(description);
                             else verificationModel.setDescription("Not Uploaded");
