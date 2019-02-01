@@ -154,6 +154,41 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/description_brick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/description"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/description_display_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@string/lorem_ipsum" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@android:color/darker_gray" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/reception_capacity_display"
                 android:layout_width="match_parent"
@@ -273,40 +308,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/description_brick"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/description"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/description_display_textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/lorem_ipsum" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@android:color/darker_gray" />
-
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/facilities_brick"
