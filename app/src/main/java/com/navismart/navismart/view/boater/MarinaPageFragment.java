@@ -331,7 +331,7 @@ public class MarinaPageFragment extends Fragment {
                     }
 
                     if (initReview.size() > 0) {
-                        ReviewListAdapter reviewListAdapter = new ReviewListAdapter(initReview);
+                        ReviewListAdapter reviewListAdapter = new ReviewListAdapter(initReview, getActivity());
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                         reviewListView.setLayoutManager(mLayoutManager);
                         reviewListView.setItemAnimator(new DefaultItemAnimator());

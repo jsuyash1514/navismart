@@ -1,5 +1,7 @@
 package com.navismart.navismart.adapters;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +19,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.navigation.Navigation;
+
+import static com.navismart.navismart.MainActivity.USER_TYPE;
+import static com.navismart.navismart.adapters.ChatAdapter.SENDER_MARINA;
+
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.MyViewHolder> {
 
     private List<ReviewModel> reviewList;
+    private Activity activity;
 
-    public ReviewListAdapter(List<ReviewModel> reviewList) {
+    public ReviewListAdapter(List<ReviewModel> reviewList, Activity activity) {
         this.reviewList = reviewList;
+        this.activity = activity;
     }
 
     @Override
@@ -53,7 +62,28 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
         holder.dateView.setText(formattedDate);
         holder.ratingView.setRating(Float.parseFloat(reviewModel.getStarRating()));
         holder.reviewText.setText(reviewModel.getReview());
-        holder.initialView.setText(reviewModel.getReviewerName().toUpperCase().charAt(0)+"");
+        holder.initialView.setText(reviewModel.getReviewerName().toUpperCase().charAt(0) + "");
+        if (!reviewModel.getReply().trim().isEmpty()) {
+            holder.replyTextView.setText(reviewModel.getReply());
+            holder.replyTextView.setVisibility(View.VISIBLE);
+        } else {
+            holder.replyTextView.setVisibility(View.GONE);
+        }
+        if (!reviewModel.getReply().trim().isEmpty()) {
+            holder.replyBrick.setVisibility(View.VISIBLE);
+        } else {
+            holder.replyBrick.setVisibility(View.GONE);
+        }
+        if (USER_TYPE == SENDER_MARINA) {
+            holder.writeReplyOption.setVisibility(View.VISIBLE);
+        } else {
+            holder.writeReplyOption.setVisibility(View.GONE);
+        }
+        holder.writeReplyOption.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("reviewModel", reviewModel);
+            Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_viewReviewFragment_to_writeReviewReplyFragment, bundle);
+        });
     }
 
     @Override
@@ -62,8 +92,9 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameView, dateView, reviewText, initialView;
+        public TextView nameView, dateView, reviewText, initialView, writeReplyOption, replyTextView;
         public RatingBar ratingView;
+        public View replyBrick;
 
         public MyViewHolder(View view) {
             super(view);
@@ -72,6 +103,9 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.My
             reviewText = view.findViewById(R.id.reviewTextView);
             ratingView = view.findViewById(R.id.rating_display_box);
             initialView = view.findViewById(R.id.initial_text_view);
+            writeReplyOption = view.findViewById(R.id.write_reply_option);
+            replyTextView = view.findViewById(R.id.replyTextView);
+            replyBrick = view.findViewById(R.id.replyBrick);
         }
     }
 }

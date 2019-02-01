@@ -145,11 +145,6 @@
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/boaterProfileFragment"
-        android:name="com.navismart.navismart.view.boater.BoaterProfileFragment"
-        android:label="fragment_boater_profile"
-        tools:layout="@layout/fragment_boater_profile" />
-    <fragment
         android:id="@+id/boaterSearchFragment"
         android:name="com.navismart.navismart.view.boater.BoaterSearchFragment"
         android:label="fragment_boater_search"
@@ -342,7 +337,15 @@
         android:id="@+id/viewReviewFragment"
         android:name="com.navismart.navismart.view.ViewReviewFragment"
         android:label="fragment_view_review"
-        tools:layout="@layout/fragment_view_review" />
+        tools:layout="@layout/fragment_view_review">
+        <action
+            android:id="@+id/action_viewReviewFragment_to_writeReviewReplyFragment"
+            app:destination="@id/writeReviewReplyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/bookingDetailsFragment"
         android:name="com.navismart.navismart.view.marina.BookingDetailsFragment"
@@ -415,4 +418,9 @@
         android:name="com.navismart.navismart.view.ContactUsFragment"
         android:label="fragment_contact_us"
         tools:layout="@layout/fragment_contact_us" />
+    <fragment
+        android:id="@+id/writeReviewReplyFragment"
+        android:name="com.navismart.navismart.view.WriteReviewReplyFragment"
+        android:label="fragment_write_review_reply"
+        tools:layout="@layout/fragment_write_review_reply" />
 </navigation>
