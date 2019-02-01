@@ -41,24 +41,21 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
         holder.marinaNameTextView.setText(bookingModel.getMarinaName());
         holder.dateTextView.setText(bookingModel.getFromDate() + " to " + bookingModel.getToDate());
 
-        holder.bookingCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("booking_model", bookingModel);
-                switch (bookingModel.getBookingTense()) {
+        holder.bookingCard.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("booking_model", bookingModel);
+            switch (bookingModel.getBookingTense()) {
 
-                    case BookingModel.PAST:
-                        Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_pastBookingsFragment_to_viewBookingFragment, bundle);
-                        break;
-                    case BookingModel.CURRENT:
-                        Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_currentBookingsFragment_to_viewBookingFragment, bundle);
-                        break;
-                    case BookingModel.UPCOMING:
-                        Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_upcomingBookingsFragment_to_viewBookingFragment, bundle);
-                        break;
+                case BookingModel.PAST:
+                    Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_pastBookingsFragment_to_viewBookingFragment, bundle);
+                    break;
+                case BookingModel.CURRENT:
+                    Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_currentBookingsFragment_to_viewBookingFragment, bundle);
+                    break;
+                case BookingModel.UPCOMING:
+                    Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_upcomingBookingsFragment_to_viewBookingFragment, bundle);
+                    break;
 
-                }
             }
         });
 

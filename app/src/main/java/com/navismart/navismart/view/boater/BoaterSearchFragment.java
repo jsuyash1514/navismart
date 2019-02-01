@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -97,17 +96,14 @@ public class BoaterSearchFragment extends Fragment {
         datePickFromImageView = view.findViewById(R.id.date_pick_from_icon);
         datePickFromImageView.setOnClickListener((View v) -> {
 
-            DatePickerDialog datePickerDialogFrom = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            DatePickerDialog datePickerDialogFrom = new DatePickerDialog(getContext(), (view1, year, month, dayOfMonth) -> {
 
-                    mYearFrom = year;
-                    mMonthFrom = month;
-                    mDateFrom = dayOfMonth;
-                    dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
-                    fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
+                mYearFrom = year;
+                mMonthFrom = month;
+                mDateFrom = dayOfMonth;
+                dateFromEditText.setText(mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom);
+                fromDate = mDateFrom + "/" + (mMonthFrom + 1) + "/" + mYearFrom;
 
-                }
             }, mYearFrom, mMonthFrom, mDateFrom);
             datePickerDialogFrom.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
@@ -119,18 +115,15 @@ public class BoaterSearchFragment extends Fragment {
         datePickToImageView = view.findViewById(R.id.date_pick_to_icon);
         datePickToImageView.setOnClickListener((View v) -> {
 
-            DatePickerDialog datePickerDialogTo = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            DatePickerDialog datePickerDialogTo = new DatePickerDialog(getContext(), (view12, year, month, dayOfMonth) -> {
 
-                    mYearTo = year;
-                    mMonthTo = month;
-                    mDateTo = dayOfMonth;
-                    dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
-                    toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
-                    if (getCountOfDays(fromDate, toDate) <= 0) {
-                        Toast.makeText(getContext(), "Departure Date cannot be earlier or the same as Arrival Date!", Toast.LENGTH_SHORT).show();
-                    }
+                mYearTo = year;
+                mMonthTo = month;
+                mDateTo = dayOfMonth;
+                dateToEditText.setText(mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo);
+                toDate = mDateTo + "/" + (mMonthTo + 1) + "/" + mYearTo;
+                if (getCountOfDays(fromDate, toDate) <= 0) {
+                    Toast.makeText(getContext(), "Departure Date cannot be earlier or the same as Arrival Date!", Toast.LENGTH_SHORT).show();
                 }
             }, mYearTo, mMonthTo, mDateTo);
             datePickerDialogTo.getDatePicker().setMinDate(c.getTimeInMillis());
