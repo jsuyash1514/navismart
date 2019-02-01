@@ -21,7 +21,7 @@
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -36,7 +36,8 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="3dp"
                 android:text="@string/name"
-                android:textSize="16sp"
+                android:textColor="#444444"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -46,7 +47,8 @@
                 android:layout_marginStart="12dp"
                 android:text="@string/date"
                 android:textColor="#737373"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="italic" />
         </LinearLayout>
 
         <RatingBar
@@ -70,7 +72,8 @@
         android:layout_marginStart="43dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/review" />
+        android:text="@string/review"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/replyBrick"
@@ -83,16 +86,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="43dp"
             android:text="@string/reply"
+            android:textColor="#444444"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/replyTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="86dp"
+            android:layout_marginStart="60dp"
             android:layout_marginTop="8dp"
             android:text="@string/reply"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -104,8 +109,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
         android:text="@string/write_reply"
         android:textColor="@android:color/holo_blue_dark" />
 

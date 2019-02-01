@@ -67,7 +67,7 @@ public class MarinaManagerLandingFragment extends Fragment {
     private void setupTabIcons(){
 
         TextView tabOne = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.custom_tab, null);
-        tabOne.setText("Notifications");
+        tabOne.setText("Notification");
         tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_timeline_black_24dp, 0, 0);
         tabLayout.getTabAt(0).setCustomView(tabOne);
 
