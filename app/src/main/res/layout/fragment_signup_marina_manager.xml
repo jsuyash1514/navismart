@@ -424,7 +424,7 @@
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:baselineAligned="false"
-                    android:enabled="false"
+                    android:focusable="false"
                     android:hint="@string/location"
                     android:theme="@style/BaseLineTheme" />
 

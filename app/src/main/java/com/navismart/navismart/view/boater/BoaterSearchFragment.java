@@ -20,6 +20,8 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.navismart.navismart.R;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 
 import androidx.navigation.NavController;
@@ -168,6 +170,7 @@ public class BoaterSearchFragment extends Fragment {
         if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
             Place place = PlacePicker.getPlace(data, getContext());
             locationAddress = place.getAddress().toString();
+            locationAddress = locationAddress + "\n" + new BigDecimal(place.getLatLng().latitude).setScale(2, RoundingMode.HALF_UP).doubleValue() + ", " + new BigDecimal(place.getLatLng().longitude).setScale(2, RoundingMode.HALF_UP).doubleValue();
             locationEditText.setText(locationAddress);
             locationLatLng = place.getLatLng();
         }
