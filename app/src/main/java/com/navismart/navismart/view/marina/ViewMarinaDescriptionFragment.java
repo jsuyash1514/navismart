@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -49,6 +50,7 @@ public class ViewMarinaDescriptionFragment extends Fragment {
     private View descriptionBrick, facilitiesBrick, termsNConditionsBrick;
     private ImageSwitcher imageSwitcher;
     private ArrayList<Bitmap> images;
+    private PopupMenu popupMenu;
     private int noImages = 0;
     private int iLoop = 0;
     private int imageIndex = 0;
@@ -89,6 +91,9 @@ public class ViewMarinaDescriptionFragment extends Fragment {
         descriptionBrick = view.findViewById(R.id.description_brick);
         facilitiesBrick = view.findViewById(R.id.facilities_brick);
         termsNConditionsBrick = view.findViewById(R.id.terms_n_conditions_brick);
+
+        popupMenu = new PopupMenu(getActivity(), editDescriptionIcon);
+        popupMenu.getMenuInflater().inflate(R.menu.edit_details_menu, popupMenu.getMenu());
 
         MarinaDescriptionViewModel marinaDescriptionViewModel = ViewModelProviders.of(this).get(MarinaDescriptionViewModel.class);
         LiveData<DataSnapshot> liveData = marinaDescriptionViewModel.getDataSnapshotLiveData();
@@ -179,11 +184,14 @@ public class ViewMarinaDescriptionFragment extends Fragment {
             }
         });
 
-        editDescriptionIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewMarinaDescriptionFragment_to_marinaDescriptionEditFragment2);
-            }
+        editDescriptionIcon.setOnClickListener(v -> {
+            popupMenu.show();
+        });
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            popupMenu.dismiss();
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewMarinaDescriptionFragment_to_marinaDescriptionEditFragment2);
+            return true;
         });
 
 
