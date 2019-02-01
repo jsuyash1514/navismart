@@ -1,13 +1,11 @@
 package com.navismart.navismart.view.boater;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,9 +31,7 @@ public class PastBookingsFragment extends Fragment {
 
     private ArrayList<BookingModel> list;
     private RecyclerView pastRecyclerView;
-    private BookingListAdapter bookingListAdapter;
     private TextView noBookingTextView;
-    private ImageView reloadIcon;
 
     public PastBookingsFragment() {
         // Required empty public constructor
@@ -54,17 +49,8 @@ public class PastBookingsFragment extends Fragment {
 
         pastRecyclerView = view.findViewById(R.id.past_bookings_recyclerView);
         noBookingTextView = view.findViewById(R.id.no_booking_display);
-        reloadIcon = view.findViewById(R.id.reload_icon);
-
 
         prepareList();
-
-        reloadIcon.setOnClickListener((View v) -> prepareList());
-
-//        bookingListAdapter = new BookingListAdapter(getActivity(), list);
-//        pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        pastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        pastRecyclerView.setAdapter(bookingListAdapter);
 
         return view;
     }
@@ -87,37 +73,24 @@ public class PastBookingsFragment extends Fragment {
         Canvas canvas = new Canvas(image);
         canvas.drawColor(Color.GRAY);
 
-
-//        String t = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
-//        String d = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer consequat, mi a blandit auctor, massa dui sollicitudin lectus, id vestibulum sapien nisl at mi. Pellentesque laoreet dapibus ipsum vel fermentum. ";
-
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-//        list.add(new BookingModel("boatName", "marinaName", "boatID", "12/12/18", "14/12/18", BookingModel.PAST, "Name"));
-
         BookingListViewModel bookingListViewModel = ViewModelProviders.of(this).get(BookingListViewModel.class);
         LiveData<DataSnapshot> liveData = bookingListViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    list = new ArrayList<>();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        BookingModel booking = postSnapshot.getValue(BookingModel.class);
-                        if (isPast(booking.getToDate())) {
-                            booking.setBookingTense(BookingModel.PAST);
-                            list.add(booking);
-                        }
+        liveData.observe(this, dataSnapshot -> {
+            if (dataSnapshot != null) {
+                list = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    BookingModel booking = postSnapshot.getValue(BookingModel.class);
+                    if (isPast(booking.getToDate())) {
+                        booking.setBookingTense(BookingModel.PAST);
+                        list.add(booking);
                     }
-                    BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    pastRecyclerView.setLayoutManager(mLayoutManager);
-                    pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    pastRecyclerView.setAdapter(bookingListAdapter);
-                    checkVisibility();
                 }
+                BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                pastRecyclerView.setLayoutManager(mLayoutManager);
+                pastRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                pastRecyclerView.setAdapter(bookingListAdapter);
+                checkVisibility();
             }
         });
 
