@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -29,9 +28,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -166,9 +162,6 @@ public class BoaterSearchResultsFragment extends Fragment {
         starBool = new boolean[starRating.size()];
         facilitiesBool = new boolean[facilities.size()];
 
-//        prepareMarinaList();
-//        prepareMarinaList(locationLatLng);
-
         prepareMarinaList();
         marinaListRecyclerView = view.findViewById(R.id.marina_search_result_recycler_view);
 
@@ -193,12 +186,7 @@ public class BoaterSearchResultsFragment extends Fragment {
 
         freeCancellationSwitch = filterDialog.findViewById(R.id.free_cancellation_switch);
         freeCancellationSwitch.setChecked(freeCancellationNeeded);
-        freeCancellationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                freeCancellationNeeded = isChecked;
-            }
-        });
+        freeCancellationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> freeCancellationNeeded = isChecked);
 
         rangeDisplay = filterDialog.findViewById(R.id.range_display);
         rangeDisplay.setText("From " + minRange + " to " + maxRange);
@@ -206,13 +194,10 @@ public class BoaterSearchResultsFragment extends Fragment {
         priceRangeSeekBar.setRangeValues(getMinPrice(), getMaxPrice());
         priceRangeSeekBar.setSelectedMaxValue(maxRange);
         priceRangeSeekBar.setSelectedMinValue(minRange);
-        priceRangeSeekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Float>() {
-            @Override
-            public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
-                minRange = minValue;
-                maxRange = maxValue;
-                rangeDisplay.setText("From " + minValue + " to " + maxValue);
-            }
+        priceRangeSeekBar.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            minRange = minValue;
+            maxRange = maxValue;
+            rangeDisplay.setText("From " + minValue + " to " + maxValue);
         });
 
         showResults = filterDialog.findViewById(R.id.show_result_button);
@@ -473,15 +458,12 @@ public class BoaterSearchResultsFragment extends Fragment {
         sortByCheapest = true;
         sortByClosest = false;
 
-        Comparator<MarinaModel> marinaModelComparator = new Comparator<MarinaModel>() {
-            @Override
-            public int compare(MarinaModel o1, MarinaModel o2) {
+        Comparator<MarinaModel> marinaModelComparator = (o1, o2) -> {
 
-                float p1 = Float.parseFloat(o1.getPrice());
-                float p2 = Float.parseFloat(o2.getPrice());
+            float p1 = Float.parseFloat(o1.getPrice());
+            float p2 = Float.parseFloat(o2.getPrice());
 
-                return (int) (p1 - p2);
-            }
+            return (int) (p1 - p2);
         };
 
         Collections.sort(filteredMarinaList, marinaModelComparator);
@@ -495,19 +477,13 @@ public class BoaterSearchResultsFragment extends Fragment {
         sortByCheapest = false;
         sortByClosest = true;
 
-        Comparator<MarinaModel> marinaModelComparator = new Comparator<MarinaModel>() {
-            @Override
-            public int compare(MarinaModel o1, MarinaModel o2) {
+        Comparator<MarinaModel> marinaModelComparator = (o1, o2) -> {
 
-//                float d1 = o1.getDistFromCity();
-//                float d2 = o2.getDistFromCity();
-//
-                double d1 = SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(o1.getLat(), o1.getLng()));
-                double d2 = SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(o2.getLat(), o2.getLng()));
+            double d1 = SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(o1.getLat(), o1.getLng()));
+            double d2 = SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(o2.getLat(), o2.getLng()));
 
-                return (int) (d1 - d2);
+            return (int) (d1 - d2);
 
-            }
         };
 
         Collections.sort(filteredMarinaList, marinaModelComparator);
@@ -561,148 +537,131 @@ public class BoaterSearchResultsFragment extends Fragment {
         if (temp < 5) j = j * 10;
         else j = (j * 10) + 5;
 
-//        Log.d("Firestore: ", "i: " + i + " j: " + j);
         fetchMarinaProgress.setMessage("Fetching marina list...");
         fetchMarinaProgress.show();
         DocumentReference location = firestore.collection("Location").document(i + "," + j);
-        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.isComplete()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
-//                    Log.d("Firestore: ", "Recieved marina list at i,j with size: " + marinaUIDList.size());
+        location.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.isComplete()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                marinaUIDList.addAll((ArrayList<String>) documentSnapshot.get("Marina List"));
 
-                    if (marinaUIDList.size() == 0) {
-                        marinaListRecyclerView.setVisibility(View.GONE);
-                        noResultsDisplay.setVisibility(View.VISIBLE);
-                    } else {
-                        marinaListRecyclerView.setVisibility(View.VISIBLE);
-                        noResultsDisplay.setVisibility(View.GONE);
-                    }
-                    for (String uid : marinaUIDList) {
+                if (marinaUIDList.size() == 0) {
+                    marinaListRecyclerView.setVisibility(View.GONE);
+                    noResultsDisplay.setVisibility(View.VISIBLE);
+                } else {
+                    marinaListRecyclerView.setVisibility(View.VISIBLE);
+                    noResultsDisplay.setVisibility(View.GONE);
+                }
+                for (String uid : marinaUIDList) {
 
-                        DatabaseReference marinaDesc = databaseReference.child("users").child(uid);
-                        MarinaModel model = new MarinaModel();
-                        marinaDesc.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                name = (String) dataSnapshot.child("marina-description").child("marinaName").getValue();
-                                model.setName(name);
-                                t = (String) dataSnapshot.child("marina-description").child("terms-and-condition").getValue();
-                                model.setTnc(t);
-                                marinaAddress = (String) dataSnapshot.child("marina-description").child("locationAddress").getValue();
-                                model.setLocation(marinaAddress);
-                                d = (String) dataSnapshot.child("marina-description").child("description").getValue();
-                                model.setDescription(d);
-                                rating = Float.parseFloat(dataSnapshot.child("marina-description").child("starRating").getValue(String.class));
-                                model.setRating(rating);
-                                receptionCapacity = Long.parseLong(dataSnapshot.child("marina-description").child("capacity").getValue(String.class));
-                                model.setReceptionCapacity(receptionCapacity);
-                                ArrayList<Integer> f = new ArrayList<>();
-                                for (DataSnapshot snapshot : dataSnapshot.child("marina-description").child("facilities").getChildren()) {
-                                    f.add(((Long) snapshot.getValue()).intValue());
-                                }
-                                model.setFacilities(f);
-                                model.setMarinaUID(uid);
-//                                Log.d("LAT", dataSnapshot.child("marina-description").child("latitude").getValue() + "");
-                                model.setLat((double) dataSnapshot.child("marina-description").child("latitude").getValue());
-                                model.setLng((double) dataSnapshot.child("marina-description").child("longitude").getValue());
-                                model.setDistFromSearch((float) SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(model.getLat(), model.getLng())) / 1000.0f);
+                    DatabaseReference marinaDesc = databaseReference.child("users").child(uid);
+                    MarinaModel model = new MarinaModel();
+                    marinaDesc.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            name = (String) dataSnapshot.child("marina-description").child("marinaName").getValue();
+                            model.setName(name);
+                            t = (String) dataSnapshot.child("marina-description").child("terms-and-condition").getValue();
+                            model.setTnc(t);
+                            marinaAddress = (String) dataSnapshot.child("marina-description").child("locationAddress").getValue();
+                            model.setLocation(marinaAddress);
+                            d = (String) dataSnapshot.child("marina-description").child("description").getValue();
+                            model.setDescription(d);
+                            rating = Float.parseFloat(dataSnapshot.child("marina-description").child("starRating").getValue(String.class));
+                            model.setRating(rating);
+                            receptionCapacity = Long.parseLong(dataSnapshot.child("marina-description").child("capacity").getValue(String.class));
+                            model.setReceptionCapacity(receptionCapacity);
+                            ArrayList<Integer> f = new ArrayList<>();
+                            for (DataSnapshot snapshot : dataSnapshot.child("marina-description").child("facilities").getChildren()) {
+                                f.add(((Long) snapshot.getValue()).intValue());
+                            }
+                            model.setFacilities(f);
+                            model.setMarinaUID(uid);
+                            model.setLat((double) dataSnapshot.child("marina-description").child("latitude").getValue());
+                            model.setLng((double) dataSnapshot.child("marina-description").child("longitude").getValue());
+                            model.setDistFromSearch((float) SphericalUtil.computeDistanceBetween(locationLatLng, new LatLng(model.getLat(), model.getLng())) / 1000.0f);
 
 
-                                Calendar start = Calendar.getInstance();
-                                start.setTime(from);
-                                Calendar end = Calendar.getInstance();
-                                end.setTime(to);
-                                end.add(Calendar.DATE, 1);
+                            Calendar start = Calendar.getInstance();
+                            start.setTime(from);
+                            Calendar end = Calendar.getInstance();
+                            end.setTime(to);
+                            end.add(Calendar.DATE, 1);
 
-//                                Log.d("capacity","Checking for availability of marina: " + uid);
-                                DatabaseReference capacityRef = databaseReference.child("bookings").child(uid);
-                                capacityRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        available = true;
-                                        for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
-                                            if (dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue() != null) {
-                                                long noOfDocksAvailable = (long) dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue();
-//                                                Log.d("capacity","No. of docks available on " + date + " : " + noOfDocksAvailable);
-                                                if (noOfDocksAvailable < noOfDocks) {
-                                                    available = false;
-//                                                    Log.d("capacity","Marina "  + uid  + " not available!");
-                                                    break;
-                                                } else {
-//                                                    Log.d("capacity","Marina "  + uid  + " available! because noOfDocksAvailable: " + noOfDocksAvailable + " is greater than or equal to no of docks required: "+ noOfDocks);
-                                                }
+                            DatabaseReference capacityRef = databaseReference.child("bookings").child(uid);
+                            capacityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    available = true;
+                                    for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                                        if (dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue() != null) {
+                                            long noOfDocksAvailable = (long) dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue();
+                                            if (noOfDocksAvailable < noOfDocks) {
+                                                available = false;
+                                                break;
                                             } else {
-                                                long noOfDocksAvailable = model.getReceptionCapacity();
-//                                                Log.d("capacity","No. of docks available on " + date + " : " + noOfDocksAvailable);
-                                                if (noOfDocksAvailable < noOfDocks) {
-                                                    available = false;
-//                                                    Log.d("capacity","Marina "  + uid  + " not available!");
-                                                    break;
-                                                } else {
-//                                                    Log.d("capacity","Marina "  + uid  + " available! because noOfDocksAvailable: " + noOfDocksAvailable + " is greater than or equal to no of docks required: "+ noOfDocks);
-                                                }
+                                            }
+                                        } else {
+                                            long noOfDocksAvailable = model.getReceptionCapacity();
+                                            if (noOfDocksAvailable < noOfDocks) {
+                                                available = false;
+                                                break;
+                                            } else {
                                             }
                                         }
-                                        start.setTime(from);
-                                        Date date = start.getTime();
-                                        Long noOfDocksAvailable = (Long) dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue();
-                                        if (noOfDocksAvailable != null) {
-                                            model.setNoAvailableDisplay(noOfDocksAvailable.intValue());
-                                        } else {
-                                            model.setNoAvailableDisplay((int) model.getReceptionCapacity());
-                                        }
-//                                            Log.d("capacity","Congo!!! marina "  + uid  + " is available!");
-                                        model.setAvailable(available);
-                                        marinaList.add(model);
-                                        filteredMarinaList = marinaList;
-                                        if (sortByClosest) {
-                                            sortByDist();
-                                        }
-                                        if (sortByCheapest) {
-                                            sortByPrice();
-                                        }
-                                        if (filtered) {
-                                            filteredMarinaList = filterMarinaList();
-                                        } else {
-                                            minRange = getMinPrice();
-                                            maxRange = getMaxPrice();
-                                        }
-                                        marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
-                                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-
-                                        marinaListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                                        marinaListRecyclerView.setLayoutManager(mLayoutManager);
-                                        marinaListRecyclerView.setAdapter(marinaListAdapter);
-
                                     }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                    start.setTime(from);
+                                    Date date = start.getTime();
+                                    Long noOfDocksAvailable = (Long) dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue();
+                                    if (noOfDocksAvailable != null) {
+                                        model.setNoAvailableDisplay(noOfDocksAvailable.intValue());
+                                    } else {
+                                        model.setNoAvailableDisplay((int) model.getReceptionCapacity());
                                     }
-                                });
-                            }
+                                    model.setAvailable(available);
+                                    marinaList.add(model);
+                                    filteredMarinaList = marinaList;
+                                    if (sortByClosest) {
+                                        sortByDist();
+                                    }
+                                    if (sortByCheapest) {
+                                        sortByPrice();
+                                    }
+                                    if (filtered) {
+                                        filteredMarinaList = filterMarinaList();
+                                    } else {
+                                        minRange = getMinPrice();
+                                        maxRange = getMaxPrice();
+                                    }
+                                    marinaListAdapter = new MarinaListAdapter(getActivity(), filteredMarinaList);
+                                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    marinaListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                                    marinaListRecyclerView.setLayoutManager(mLayoutManager);
+                                    marinaListRecyclerView.setAdapter(marinaListAdapter);
 
-                            }
-                        });
-                    }
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-                fetchMarinaProgress.dismiss();
+
             }
+            fetchMarinaProgress.dismiss();
         })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Firestore", "Failed to recieve marina list.");
-                        fetchMarinaProgress.dismiss();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.d("Firestore", "Failed to recieve marina list.");
+                    fetchMarinaProgress.dismiss();
                 });
 
 
