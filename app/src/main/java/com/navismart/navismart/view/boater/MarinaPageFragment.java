@@ -70,7 +70,6 @@ public class MarinaPageFragment extends Fragment {
     private StorageReference storageReference;
     private FirebaseAuth auth;
     private View reviewTab, descriptionView, facilitiesView, termsNConditionsView;
-    //    private RecyclerView imagesRecyclerView;
     private ImageSwitcher imageSwitcher;
     private ArrayList<Bitmap> images;
     private int noImages = 0;
