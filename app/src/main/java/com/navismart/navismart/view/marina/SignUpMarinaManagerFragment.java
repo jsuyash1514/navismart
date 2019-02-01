@@ -64,6 +64,9 @@ import com.navismart.navismart.viewmodels.SignUpViewModel;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -351,6 +354,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
         registerButton.setOnClickListener((View v) -> registerUser());
 
+        locationEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         addLocationIcon.setOnClickListener((View v) -> {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             try {
@@ -423,7 +438,8 @@ public class SignUpMarinaManagerFragment extends Fragment {
         } else if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
             Place place = PlacePicker.getPlace(data, getContext());
             locationAddress = place.getAddress().toString();
-            locationEditText.setText(locationAddress);
+            String string = locationAddress + "\n" + new BigDecimal(place.getLatLng().latitude).setScale(2, RoundingMode.HALF_UP).doubleValue() + ", " + new BigDecimal(place.getLatLng().longitude).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            locationEditText.setText(string);
             locationLatLng = place.getLatLng();
 
         } else if (requestCode == 110 && resultCode == RESULT_OK) {

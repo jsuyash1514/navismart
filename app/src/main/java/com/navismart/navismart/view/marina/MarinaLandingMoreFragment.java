@@ -1,6 +1,8 @@
 package com.navismart.navismart.view.marina;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -56,13 +58,28 @@ public class MarinaLandingMoreFragment extends Fragment {
         logoutButton = view.findViewById(R.id.marina_logout_button);
         logoutButton.setOnClickListener((View v) -> {
 
-            auth.signOut();
-            Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Logout");
+            alert.setMessage("Are you sure you want to logout?");
+            alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    auth.signOut();
+                    Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
 
-            NavOptions navOptions = new NavOptions.Builder()
-                    .setPopUpTo(R.id.landingFragment, true)
-                    .build();
-            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
+                    NavOptions navOptions = new NavOptions.Builder()
+                            .setPopUpTo(R.id.landingFragment, true)
+                            .build();
+                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.log_out_action, null, navOptions);
+                }
+            });
+            alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // close dialog
+                    dialog.cancel();
+                }
+            });
+            alert.show();
+
 
         });
 

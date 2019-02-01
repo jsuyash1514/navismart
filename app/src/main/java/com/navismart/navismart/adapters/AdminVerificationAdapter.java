@@ -1,6 +1,8 @@
 package com.navismart.navismart.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,57 +70,72 @@ public class AdminVerificationAdapter extends RecyclerView.Adapter<AdminVerifica
         holder.approve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference reference = databaseReference.child("admin").child("verification");
-                reference.child(verificationModel.getMarinaUID()).setValue(null);
-                DatabaseReference ref = databaseReference.child("users").child(verificationModel.getMarinaUID()).child("profile");
-                ref.child("status").setValue("approved");
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Verify Marina");
+                alert.setMessage("Are you sure you want to approve this marina?");
+                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        DatabaseReference reference = databaseReference.child("admin").child("verification");
+                        reference.child(verificationModel.getMarinaUID()).setValue(null);
+                        DatabaseReference ref = databaseReference.child("users").child(verificationModel.getMarinaUID()).child("profile");
+                        ref.child("status").setValue("approved");
 
-                double latitude = verificationModel.getLatitude();
-                double longitude = verificationModel.getLongitude();
+                        double latitude = verificationModel.getLatitude();
+                        double longitude = verificationModel.getLongitude();
 
-                // i is the greatest multiple of 5 less than the value of latitude.
-                int i = (int) (latitude / 10);
-                int temp = ((int) latitude) % 10;
-                if (temp < 5) i = i * 10;
-                else i = (i * 10) + 5;
+                        // i is the greatest multiple of 5 less than the value of latitude.
+                        int i = (int) (latitude / 10);
+                        int temp = ((int) latitude) % 10;
+                        if (temp < 5) i = i * 10;
+                        else i = (i * 10) + 5;
 
-                int j = (int) (longitude / 10);
-                temp = ((int) longitude) % 10;
-                if (temp < 5) j = j * 10;
-                else j = (j * 10) + 5;
+                        int j = (int) (longitude / 10);
+                        temp = ((int) longitude) % 10;
+                        if (temp < 5) j = j * 10;
+                        else j = (j * 10) + 5;
 
 
-                DocumentReference location = firestore.collection("Location").document(i + "," + j);
-                location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot doc = task.getResult();
-                            marinaUIDList = (ArrayList<String>) doc.get("Marina List");
-                            marinaUIDList.add(verificationModel.getMarinaUID());
-                            Map<String, ArrayList<String>> map = new HashMap<>();
-                            map.put("Marina List", marinaUIDList);
-                            location.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                }
-                            })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context, "Can't add location in databse.", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                        }
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
+                        DocumentReference location = firestore.collection("Location").document(i + "," + j);
+                        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(context, "Can't add location in database.", Toast.LENGTH_LONG).show();
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot doc = task.getResult();
+                                    marinaUIDList = (ArrayList<String>) doc.get("Marina List");
+                                    marinaUIDList.add(verificationModel.getMarinaUID());
+                                    Map<String, ArrayList<String>> map = new HashMap<>();
+                                    map.put("Marina List", marinaUIDList);
+                                    location.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                        }
+                                    })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(context, "Can't add location in databse.", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
                             }
-                        });
+                        })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, "Can't add location in database.", Toast.LENGTH_LONG).show();
+                                    }
+                                });
 
+
+                    }
+                });
+                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // close dialog
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
 
             }
 
@@ -127,13 +144,28 @@ public class AdminVerificationAdapter extends RecyclerView.Adapter<AdminVerifica
         holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference reference = databaseReference.child("admin").child("verification");
-                reference.child(verificationModel.getMarinaUID()).setValue(null);
-                DatabaseReference ref = databaseReference.child("users").child(verificationModel.getMarinaUID()).child("profile");
-                ref.child("status").setValue("rejected");
-                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                StorageReference deleteFile = storageReference.child("users").child(verificationModel.getMarinaUID());
-                deleteFile.delete();
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Verify Marina");
+                alert.setMessage("Are you sure you want to reject this marina?");
+                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        DatabaseReference reference = databaseReference.child("admin").child("verification");
+                        reference.child(verificationModel.getMarinaUID()).setValue(null);
+                        DatabaseReference ref = databaseReference.child("users").child(verificationModel.getMarinaUID()).child("profile");
+                        ref.child("status").setValue("rejected");
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                        StorageReference deleteFile = storageReference.child("users").child(verificationModel.getMarinaUID());
+                        deleteFile.delete();
+                    }
+                });
+                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // close dialog
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
             }
         });
     }
