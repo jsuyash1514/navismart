@@ -2,10 +2,8 @@ package com.navismart.navismart.view;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -48,35 +46,31 @@ public class ViewReviewFragment extends Fragment {
 
         reviewRecyclerView = view.findViewById(R.id.review_recycler_view);
         noReview = view.findViewById(R.id.no_review_text);
-
         itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
 
         ReviewListViewModel reviewListViewModel = ViewModelProviders.of(this, new ReviewListViewModelFactory(getArguments().getString("marinaID"))).get(ReviewListViewModel.class);
         LiveData<DataSnapshot> liveData = reviewListViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+        liveData.observe(this, dataSnapshot -> {
 
-                ArrayList<ReviewModel> reviewList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    reviewList.add(snapshot.getValue(ReviewModel.class));
-                }
-                if (reviewList.size() > 0) {
-                    Collections.reverse(reviewList);
-                    ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewList);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    reviewRecyclerView.setLayoutManager(mLayoutManager);
-                    reviewRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    reviewRecyclerView.setAdapter(reviewListAdapter);
-                    reviewRecyclerView.addItemDecoration(itemDecoration);
-                    reviewRecyclerView.setVisibility(View.VISIBLE);
-                    noReview.setVisibility(View.GONE);
-                } else {
-                    reviewRecyclerView.setVisibility(View.GONE);
-                    noReview.setVisibility(View.VISIBLE);
-                }
-
+            ArrayList<ReviewModel> reviewList = new ArrayList<>();
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                reviewList.add(snapshot.getValue(ReviewModel.class));
             }
+            if (reviewList.size() > 0) {
+                Collections.reverse(reviewList);
+                ReviewListAdapter reviewListAdapter = new ReviewListAdapter(reviewList, getActivity());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                reviewRecyclerView.setLayoutManager(mLayoutManager);
+                reviewRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                reviewRecyclerView.setAdapter(reviewListAdapter);
+                reviewRecyclerView.addItemDecoration(itemDecoration);
+                reviewRecyclerView.setVisibility(View.VISIBLE);
+                noReview.setVisibility(View.GONE);
+            } else {
+                reviewRecyclerView.setVisibility(View.GONE);
+                noReview.setVisibility(View.VISIBLE);
+            }
+
         });
 
         return view;
