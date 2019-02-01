@@ -1,9 +1,7 @@
 package com.navismart.navismart.adapters;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
@@ -57,27 +53,16 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         holder.marinaDistaFromSearchTextView.setText(Integer.toString((int) Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
 
         StorageReference picReference = storageReference.child("users").child(marinaModel.getMarinaUID()).child("marina1");
-        picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(activity)
-                        .load(uri)
-                        .into(holder.marinaImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+        picReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(activity)
+                .load(uri)
+                .into(holder.marinaImageView)).addOnFailureListener(e -> {
 
-            }
         });
 
-        holder.seeMarinaDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("marina_model", marinaModel);
-                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment, bundle);
-            }
+        holder.seeMarinaDetailsButton.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("marina_model", marinaModel);
+            Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment, bundle);
         });
 
     }
