@@ -14,6 +14,7 @@ import java.util.List;
 public class SignUpViewModel extends ViewModel {
     MutableLiveData<Uri> marinaManagerProfilePic;
     MutableLiveData<Uri> boaterProfilePic;
+    MutableLiveData<Uri> boatRegistration;
     MutableLiveData<List<MarinaPicModel>> marinaPicList;
 
     public MutableLiveData<Uri> getMarinaManagerProfilePic() {
@@ -28,6 +29,13 @@ public class SignUpViewModel extends ViewModel {
             boaterProfilePic = new MutableLiveData<Uri>();
         }
         return boaterProfilePic;
+    }
+
+    public MutableLiveData<Uri> getBoatRegistration() {
+        if(boatRegistration == null){
+            boatRegistration = new MutableLiveData<Uri>();
+        }
+        return boatRegistration;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

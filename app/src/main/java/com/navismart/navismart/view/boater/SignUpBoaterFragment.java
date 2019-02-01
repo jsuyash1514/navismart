@@ -78,10 +78,6 @@ public class SignUpBoaterFragment extends Fragment {
     private boolean enabler = false;
     private PreferencesHelper preferencesHelper;
 
-    public SignUpBoaterFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +210,7 @@ public class SignUpBoaterFragment extends Fragment {
             }
         });
 
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,6 +312,7 @@ public class SignUpBoaterFragment extends Fragment {
 
                                     }
                                 });
+
                                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
                                     @Override
@@ -348,3 +346,4 @@ public class SignUpBoaterFragment extends Fragment {
     }
 
 }
+
