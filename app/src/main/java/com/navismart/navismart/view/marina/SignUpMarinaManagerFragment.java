@@ -84,7 +84,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private ImageView profilePic, addLocationIcon;
     private SignUpViewModel signUpViewModel;
     private FirebaseAuth firebaseAuth;
-    private FirebaseFirestore firestore;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private ProgressDialog progressDialog, uploadProgress;
@@ -100,7 +99,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private boolean enabler = false;
     private LatLng locationLatLng;
     private String locationAddress = "";
-    private ArrayList<String> marinaUIDList;
     private RecyclerView marinaPicRecyclerview;
     private List<MarinaPicModel> marinaPicModelList;
     private MarinaPicAdapter picAdapter;
@@ -129,12 +127,10 @@ public class SignUpMarinaManagerFragment extends Fragment {
         signUpViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
         uploadProgress = new ProgressDialog(getContext());
-        marinaUIDList = new ArrayList<>();
         navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
         passwordEditText = view.findViewById(R.id.password_edit_text);
         locationEditText = view.findViewById(R.id.location_edit_text);
@@ -509,16 +505,24 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
                         if (task.isSuccessful()) {
                             DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
+                            DatabaseReference adminPage = databaseReference.child("admin").child("verification").child(firebaseAuth.getCurrentUser().getUid());
                             currentUser.child("profile").child("name").setValue(name);
+                            adminPage.child("profile").child("name").setValue(name);
                             currentUser.child("profile").child("email").setValue(email);
+                            adminPage.child("profile").child("email").setValue(email);
                             currentUser.child("profile").child("category").setValue("marina-manager");
+                            adminPage.child("profile").child("category").setValue("marina-manager");
+                            currentUser.child("profile").child("status").setValue("pending");
+                            adminPage.child("profile").child("uid").setValue(firebaseAuth.getCurrentUser().getUid());
 
                             if(!preferencesHelper.getToken().isEmpty()){
                                 currentUser.child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
                             }
 
                             currentUser.child("marina-description").child("capacity").setValue(capacity);
+                            adminPage.child("marina-description").child("capacity").setValue(capacity);
                             currentUser.child("marina-description").child("marinaName").setValue(marinaName);
+                            adminPage.child("marina-description").child("marinaName").setValue(marinaName);
                             currentUser.child("marina-description").child("numberOfReviews").setValue("0");
                             currentUser.child("marina-description").child("starRating").setValue("0");
 
@@ -526,19 +530,26 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
                             user.updateProfile(profileUpdates);
 
-                            if (!TextUtils.isEmpty(descr))
+                            if (!TextUtils.isEmpty(descr)) {
                                 currentUser.child("marina-description").child("description").setValue(descr);
-                            if (!TextUtils.isEmpty(termsAndCond))
+                                adminPage.child("marina-description").child("description").setValue(descr);
+                            }
+                            if (!TextUtils.isEmpty(termsAndCond)) {
                                 currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                                adminPage.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                            }
                             if (!TextUtils.isEmpty(locationAddress)) {
                                 currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
+                                adminPage.child("marina-description").child("locationAddress").setValue(locationAddress);
                                 currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
+                                adminPage.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
                                 currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
+                                adminPage.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
                             }
 
                             currentUser.child("marina-description").child("facilities").setValue(f);
-                            addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
-
+                            adminPage.child("marina-description").child("facilities").setValue(f);
+//                            addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
 
                             if (marinaPicModelList.size() > 1) {
                                 currentUser.child("marina-description").child("no-images").setValue(marinaPicModelList.size());
@@ -625,19 +636,15 @@ public class SignUpMarinaManagerFragment extends Fragment {
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                         uploadProgress.dismiss();
-
-                                        NavOptions navOptions = new NavOptions.Builder()
-                                                .setPopUpTo(R.id.startFragment, true)
-                                                .build();
-                                        navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
+                                        Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                        firebaseAuth.signOut();
+                                        navController.navigateUp();
                                     }
                                 });
                             } else {
-
-                                NavOptions navOptions = new NavOptions.Builder()
-                                        .setPopUpTo(R.id.startFragment, true)
-                                        .build();
-                                navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
+                                Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+                                firebaseAuth.signOut();
+                                navController.navigateUp();
                             }
 
                         } else {
@@ -646,54 +653,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
                     }
 
                 });
-
-    }
-
-    public void addLocationInFirestore(double latitude, double longitude) {
-
-        // i is the greatest multiple of 5 less than the value of latitude.
-        int i = (int) (latitude / 10);
-        int temp = ((int) latitude) % 10;
-        if (temp < 5) i = i * 10;
-        else i = (i * 10) + 5;
-
-        int j = (int) (longitude / 10);
-        temp = ((int) longitude) % 10;
-        if (temp < 5) j = j * 10;
-        else j = (j * 10) + 5;
-
-
-        DocumentReference location = firestore.collection("Location").document(i + "," + j);
-        location.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    marinaUIDList = (ArrayList<String>) doc.get("Marina List");
-                    marinaUIDList.add(firebaseAuth.getCurrentUser().getUid());
-                    Map<String, ArrayList<String>> map = new HashMap<>();
-                    map.put("Marina List", marinaUIDList);
-                    location.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Can't add your location.", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                }
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Can't add your location.", Toast.LENGTH_LONG).show();
-                    }
-                });
-
 
     }
 

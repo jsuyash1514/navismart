@@ -261,7 +261,12 @@ public class ChatFragment extends Fragment {
     private void deleteAllChats() {
 
         DatabaseReference chatReference;
-        chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("chats");
+        String id = "";
+        if (USER_TYPE == SENDER_BOATER)
+            id = marinaID;
+        else
+            id = boaterID;
+        chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("chats").child(id).child("messages");
         chatReference.setValue(null)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

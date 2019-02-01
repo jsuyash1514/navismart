@@ -43,7 +43,7 @@ public class LoginFragment extends Fragment {
     private FirebaseFirestore firestore;
     private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
-    private String category;
+    private String category, status;
     private PreferencesHelper preferencesHelper;
 
 
@@ -132,11 +132,11 @@ public class LoginFragment extends Fragment {
         if (firebaseAuth.getCurrentUser() != null) {
             progressDialog.setMessage("Logging in Please wait...");
             progressDialog.show();
-            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
-            reference.addValueEventListener(new ValueEventListener() {
+            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    category = dataSnapshot.getValue(String.class);
+                    category = dataSnapshot.child("category").getValue(String.class);
                     NavOptions navOptions = new NavOptions.Builder()
                             .setPopUpTo(R.id.startFragment, true)
                             .build();
@@ -145,8 +145,20 @@ public class LoginFragment extends Fragment {
                             progressDialog.dismiss();
                             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
                         } else if (category.equals("marina-manager")) {
+                            status = dataSnapshot.child("status").getValue(String.class);
                             progressDialog.dismiss();
-                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                            if (status.equals("approved")) {
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                            } else if (status.equals("pending")) {
+                                Toast.makeText(getContext(), "Application pending!", Toast.LENGTH_LONG).show();
+                                firebaseAuth.signOut();
+                            } else if (status.equals("rejected")) {
+                                Toast.makeText(getContext(), "Application rejected!", Toast.LENGTH_LONG).show();
+                                firebaseAuth.signOut();
+                            }
+                        } else if (category.equals("admin")) {
+                            progressDialog.dismiss();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_sign_in_action, null, navOptions);
                         }
                     } else {
                         firebaseAuth.signOut();
@@ -193,22 +205,40 @@ public class LoginFragment extends Fragment {
                         }
 
                         if (task.isSuccessful()) {
-                            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
-                            reference.addValueEventListener(new ValueEventListener() {
+                            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    category = dataSnapshot.getValue(String.class);
-                                    Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                    category = dataSnapshot.child("category").getValue(String.class);
                                     NavOptions navOptions = new NavOptions.Builder()
                                             .setPopUpTo(R.id.startFragment, true)
                                             .build();
                                     if (category != null && !category.isEmpty()) {
                                         if (category.equals("boater")) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                                             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
                                         } else if (category.equals("marina-manager")) {
-                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
-                                        } else {
+                                            status = dataSnapshot.child("status").getValue(String.class);
+                                            progressDialog.dismiss();
+                                            if (status.equals("approved")) {
+                                                Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                                            } else if (status.equals("pending")) {
+                                                Toast.makeText(getContext(), "Application pending!", Toast.LENGTH_LONG).show();
+                                                firebaseAuth.signOut();
+                                            } else if (status.equals("rejected")) {
+                                                Toast.makeText(getContext(), "Application rejected!", Toast.LENGTH_LONG).show();
+                                                firebaseAuth.signOut();
+                                            }
+                                        } else if (category.equals("admin")) {
+                                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_sign_in_action, null, navOptions);
                                         }
+                                    } else {
+                                        Toast.makeText(getContext(), "Unable to fetch details. Check your network.", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
                                     }
                                 }
 
