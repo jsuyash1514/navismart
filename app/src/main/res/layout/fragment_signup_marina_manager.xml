@@ -488,7 +488,7 @@
                 android:layout_margin="8dp"
                 android:backgroundTint="@color/colorPrimary"
                 android:enabled="false"
-                android:text="@string/register"
+                android:text="@string/submit"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/white" />
         </LinearLayout>

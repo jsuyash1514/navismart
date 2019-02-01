@@ -135,5 +135,8 @@
     <string name="sufficient_docks_unavailable">Sufficient docks unavaialable!</string>
     <string name="enter_card_details">Enter your card details below</string>
     <string name="confirm_payment">Confirm Payment</string>
-
+    <string name="submit">Submit</string>
+    <string name="address">Address</string>
+    <string name="reject">Reject</string>
+    <string name="approve">Approve</string>
 </resources>

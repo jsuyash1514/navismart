@@ -6,6 +6,20 @@
     app:startDestination="@id/startFragment">
 
     <fragment
+        android:id="@+id/adminFragment"
+        android:name="com.navismart.navismart.view.admin.AdminFragment"
+        android:label="admin_fragment"
+        tools:layout="@layout/fragment_admin">
+        <action
+            android:id="@+id/admin_log_out_action"
+            app:destination="@+id/startFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
+
+    <fragment
         android:id="@+id/startFragment"
         android:name="com.navismart.navismart.view.LoginFragment"
         android:label="start_fragment"
@@ -27,6 +41,13 @@
         <action
             android:id="@+id/boater_sign_in_action"
             app:destination="@id/boaterLandingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/admin_sign_in_action"
+            app:destination="@+id/adminFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
