@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -98,39 +96,32 @@ public class WriteReviewFragment extends Fragment {
         reviewModel.setReviewerName(reviewerName);
         reviewModel.setBookingID(bookingID);
         reviewModel.setReviewerID(auth.getCurrentUser().getUid());
+        reviewModel.setMarinaID(reviewMarinaUID);
+        reviewModel.setReviewID(marinaReviewReference.push().getKey());
+        marinaReviewReference.child(reviewModel.getReviewID()).setValue(reviewModel)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Review Submitted Successfully!", Toast.LENGTH_SHORT).show();
+                    DatabaseReference reference = databaseReference.child("users").child(reviewMarinaUID).child("marina-description");
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            float noOfReviews = Float.parseFloat(dataSnapshot.child("numberOfReviews").getValue(String.class));
+                            float starRating = Float.parseFloat(dataSnapshot.child("starRating").getValue(String.class));
+                            float newRating = ((noOfReviews * starRating) + rating) / (noOfReviews + 1);
+                            reference.child("numberOfReviews").setValue(String.valueOf(noOfReviews + 1));
+                            reference.child("starRating").setValue(String.valueOf(newRating));
+                            databaseReference.child("users").child(reviewMarinaUID).child("bookings").child(bookingID).child("reviewed").setValue(true);
+                            databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingID).child("reviewed").setValue(true);
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+                        }
 
-        marinaReviewReference.push().setValue(reviewModel)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getContext(), "Review Submitted Successfully!", Toast.LENGTH_SHORT).show();
-                        DatabaseReference reference = databaseReference.child("users").child(reviewMarinaUID).child("marina-description");
-                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                float noOfReviews = Float.parseFloat(dataSnapshot.child("numberOfReviews").getValue(String.class));
-                                float starRating = Float.parseFloat(dataSnapshot.child("starRating").getValue(String.class));
-                                float newRating = ((noOfReviews * starRating) + rating) / (noOfReviews + 1);
-                                reference.child("numberOfReviews").setValue(String.valueOf(noOfReviews + 1));
-                                reference.child("starRating").setValue(String.valueOf(newRating));
-                                databaseReference.child("users").child(reviewMarinaUID).child("bookings").child(bookingID).child("reviewed").setValue(true);
-                                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingID).child("reviewed").setValue(true);
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Toast.makeText(getContext(), "Unable to Submit Review. Sorry for the inconvenience.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getContext(), "Unable to Submit Review. Sorry for the inconvenience.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Unable to Submit Review. Sorry for the inconvenience.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Unable to Submit Review. Sorry for the inconvenience.", Toast.LENGTH_SHORT).show());
 
     }
 

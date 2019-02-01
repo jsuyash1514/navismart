@@ -67,11 +67,6 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-    //Stripe
-    implementation 'com.stripe:stripe-android:6.1.2'
-    implementation files('libs/stripe-java-7.18.0.jar')
-    //Gson
-    implementation 'com.google.code.gson:gson:2.8.5'
 }
 
 apply plugin: 'com.google.gms.google-services'
