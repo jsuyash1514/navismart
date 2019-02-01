@@ -37,7 +37,7 @@ public class ViewBookingFragment extends Fragment {
     private TextView boatName;
     private TextView boatID;
     private TextView price;
-    private Button reviewButton;
+    private Button reviewButton, cancelBookingButton;
     private StorageReference picReference;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
@@ -67,6 +67,7 @@ public class ViewBookingFragment extends Fragment {
         boatID = view.findViewById(R.id.boatID_display);
         price = view.findViewById(R.id.price_display);
         reviewButton = view.findViewById(R.id.review_button);
+        cancelBookingButton = view.findViewById(R.id.cancel_booking_button);
         reviewButton.setEnabled(false);
 
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
@@ -111,6 +112,10 @@ public class ViewBookingFragment extends Fragment {
         } else {
             reviewButton.setVisibility(View.GONE);
         }
+        if ((bookingModel.getBookingTense() == BookingModel.PAST || bookingModel.getBookingTense() == BookingModel.CURRENT))
+            cancelBookingButton.setVisibility(View.GONE);
+        else
+            cancelBookingButton.setVisibility(View.VISIBLE);
 
         reviewButton.setOnClickListener((View v) -> {
             Bundle bundle = new Bundle();
