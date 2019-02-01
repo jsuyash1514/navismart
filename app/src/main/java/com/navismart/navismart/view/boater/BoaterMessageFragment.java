@@ -93,7 +93,12 @@ public class BoaterMessageFragment extends Fragment {
         msgRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), msgRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                Bundle bundle = new Bundle();
+                bundle.putString("boaterName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                bundle.putString("marinaID", msgNameModelArrayList.get(position).getID());
+                bundle.putString("boaterID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                bundle.putString("marinaName", msgNameModelArrayList.get(position).getMsgName());
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_chatFragment, bundle);
             }
 
             @Override

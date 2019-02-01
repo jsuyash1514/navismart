@@ -13,7 +13,7 @@ import com.navismart.navismart.livedata.FirebaseQueryLiveData;
 public class AdminMsgViewModel extends ViewModel {
 
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
-    private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("chats");
+    private static DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(auth.getCurrentUser().getUid()).child("contactAdmin");
     private FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(databaseReference);
 
 

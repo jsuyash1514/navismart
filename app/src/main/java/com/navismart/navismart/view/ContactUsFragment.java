@@ -248,9 +248,9 @@ public class ContactUsFragment extends Fragment {
         DatabaseReference chatReference;
         String id = "";
         if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA)
-            id = userID;
-        else
             id = adminID;
+        else
+            id = userID;
         chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("contactAdmin").child(id).child("messages");
         chatReference.setValue(null)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
