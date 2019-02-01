@@ -1,7 +1,6 @@
 package com.navismart.navismart.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -23,7 +21,7 @@ public class MarinaImagesAdapter extends RecyclerView.Adapter<MarinaImagesAdapte
     private Context context;
     private String marinaUID;
 
-    public MarinaImagesAdapter(int n,String marinaUID, Context context) {
+    public MarinaImagesAdapter(int n, String marinaUID, Context context) {
         this.n = n;
         auth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -43,14 +41,9 @@ public class MarinaImagesAdapter extends RecyclerView.Adapter<MarinaImagesAdapte
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         StorageReference profilePicRef = storageReference.child("users").child(marinaUID).child("marina" + (position + 1));
-        profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(context)
-                        .load(uri)
-                        .into(holder.marinaImage);
-            }
-        });
+        profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context)
+                .load(uri)
+                .into(holder.marinaImage));
 
     }
 

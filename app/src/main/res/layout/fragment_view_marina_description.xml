@@ -148,6 +148,18 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/reception_capacity_display"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@color/white"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/reception_capacity"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:id="@+id/facilities_brick"
                 android:layout_width="match_parent"

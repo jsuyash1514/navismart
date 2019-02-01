@@ -7,7 +7,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +22,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
-import com.navismart.navismart.adapters.MarinaPicAdapter;
-import com.navismart.navismart.model.MarinaPicModel;
 import com.navismart.navismart.viewmodels.MarinaDescriptionViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.navigation.Navigation;
 
@@ -48,14 +43,10 @@ public class MarinaDescriptionEditFragment extends Fragment {
     private CheckBox dryPort;
     private CheckBox maintenance;
     private NumberPicker capacityPicker;
-    private RecyclerView marinaPicsRecyclerView;
     private Button editButton;
     private ArrayList<Integer> f;
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
-    private StorageReference storageReference;
-    private List<MarinaPicModel> marinaPicModelList;
-    private MarinaPicAdapter picAdapter;
 
     public MarinaDescriptionEditFragment() {
         // Required empty public constructor
@@ -88,7 +79,6 @@ public class MarinaDescriptionEditFragment extends Fragment {
         dryPort = view.findViewById(R.id.check_box_8);
         maintenance = view.findViewById(R.id.check_box_9);
         capacityPicker = view.findViewById(R.id.reception_capacity_number_picker);
-        marinaPicsRecyclerView = view.findViewById(R.id.marina_pics_recycler_view);
         editButton = view.findViewById(R.id.edit_button);
 
         capacityPicker.setMinValue(1);

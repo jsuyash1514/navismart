@@ -4,13 +4,9 @@ package com.navismart.navismart.view.boater;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -111,21 +105,17 @@ public class BoaterProfileFragment extends Fragment {
             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
             alert.setTitle("Logout");
             alert.setMessage("Are you sure you want to logout?");
-            alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    auth.signOut();
-                    Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
-                    NavOptions navOptions = new NavOptions.Builder()
-                            .setPopUpTo(R.id.boaterLandingFragment, true)
-                            .build();
-                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
-                }
+            alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                auth.signOut();
+                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.boaterLandingFragment, true)
+                        .build();
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
             });
-            alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // close dialog
-                    dialog.cancel();
-                }
+            alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
+                // close dialog
+                dialog.cancel();
             });
             alert.show();
         });
@@ -143,55 +133,41 @@ public class BoaterProfileFragment extends Fragment {
             if (verifyEmail != null && verifyPass != null && !verifyEmail.trim().isEmpty() && !verifyPass.trim().isEmpty()) {
                 AuthCredential credential = EmailAuthProvider.getCredential(verifyEmail, verifyPass);
                 auth.getCurrentUser().reauthenticate(credential)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Dialog newCredDialog = new Dialog(getContext());
-                                newCredDialog.setContentView(R.layout.new_credentials_dialog);
-                                Button changeButton = newCredDialog.findViewById(R.id.change_button);
-                                changeButton.setOnClickListener((View v) -> {
-                                    String newEmail = ((EditText) newCredDialog.findViewById(R.id.email_edit_text)).getText().toString();
-                                    String newPass = ((EditText) newCredDialog.findViewById(R.id.password_edit_text)).getText().toString();
-                                    if (newEmail != null && newPass != null && !newEmail.trim().isEmpty() && !newPass.trim().isEmpty() && EmailAndPasswordChecker.isEmailValid(newEmail) && EmailAndPasswordChecker.isPasswordValid(newPass)) {
+                        .addOnSuccessListener(aVoid -> {
+                            Dialog newCredDialog = new Dialog(getContext());
+                            newCredDialog.setContentView(R.layout.new_credentials_dialog);
+                            Button changeButton = newCredDialog.findViewById(R.id.change_button);
+                            changeButton.setOnClickListener((View v1) -> {
+                                String newEmail = ((EditText) newCredDialog.findViewById(R.id.email_edit_text)).getText().toString();
+                                String newPass = ((EditText) newCredDialog.findViewById(R.id.password_edit_text)).getText().toString();
+                                if (newEmail != null && newPass != null && !newEmail.trim().isEmpty() && !newPass.trim().isEmpty() && EmailAndPasswordChecker.isEmailValid(newEmail) && EmailAndPasswordChecker.isPasswordValid(newPass)) {
 
-                                        auth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getContext(), "Email updated successfully", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                        auth.getCurrentUser().updatePassword(newPass).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
-                                                newCredDialog.dismiss();
-                                                credentialVerifyDialog.dismiss();
-                                            }
-                                        });
+                                    auth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener(aVoid1 -> Toast.makeText(getContext(), "Email updated successfully", Toast.LENGTH_SHORT).show());
+                                    auth.getCurrentUser().updatePassword(newPass).addOnSuccessListener(aVoid12 -> {
+                                        Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                        newCredDialog.dismiss();
+                                        credentialVerifyDialog.dismiss();
+                                    });
 
-                                    } else {
-                                        Toast.makeText(getContext(), "Unable to update. Enter valid Email and Password.", Toast.LENGTH_SHORT).show();
-                                        emailEditText.setText("");
-                                        passwordEditText.setText("");
-                                        emailEditText.requestFocus();
-                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Unable to update. Enter valid Email and Password.", Toast.LENGTH_SHORT).show();
+                                    emailEditText.setText("");
+                                    passwordEditText.setText("");
+                                    emailEditText.requestFocus();
+                                }
 
-                                });
-                                newCredDialog.show();
-                            }
+                            });
+                            newCredDialog.show();
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Wrong credentials entered! Sign in again.", Toast.LENGTH_SHORT).show();
-                                credentialVerifyDialog.dismiss();
-                                auth.signOut();
-                                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
-                                NavOptions navOptions = new NavOptions.Builder()
-                                        .setPopUpTo(R.id.boaterLandingFragment, true)
-                                        .build();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
-                            }
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), "Wrong credentials entered! Sign in again.", Toast.LENGTH_SHORT).show();
+                            credentialVerifyDialog.dismiss();
+                            auth.signOut();
+                            Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+                            NavOptions navOptions = new NavOptions.Builder()
+                                    .setPopUpTo(R.id.boaterLandingFragment, true)
+                                    .build();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boaterLogoutAction, null, navOptions);
                         });
             }
 
@@ -232,16 +208,13 @@ public class BoaterProfileFragment extends Fragment {
         });
 
         StorageReference profilePicRef = storageReference.child("users").child(auth.getCurrentUser().getUid()).child("profile");
-        profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
+        profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
 
-                Log.d("URI", uri.toString());
-                Glide.with(getContext())
-                        .load(uri)
-                        .into(profileImageView);
+            Log.d("URI", uri.toString());
+            Glide.with(getContext())
+                    .load(uri)
+                    .into(profileImageView);
 
-            }
         });
 
 
@@ -251,20 +224,17 @@ public class BoaterProfileFragment extends Fragment {
 
         BoatListViewModel boatListViewModel = ViewModelProviders.of(this).get(BoatListViewModel.class);
         LiveData<DataSnapshot> liveData = boatListViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    list = new ArrayList<>();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        BoatModel boat = postSnapshot.getValue(BoatModel.class);
-                        list.add(boat);
-                    }
-                    BoatListAdapter boatListAdapter = new BoatListAdapter(list, getContext());
-                    boatListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-                    boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    boatListRecyclerView.setAdapter(boatListAdapter);
+        liveData.observe(this, dataSnapshot -> {
+            if (dataSnapshot != null) {
+                list = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    BoatModel boat = postSnapshot.getValue(BoatModel.class);
+                    list.add(boat);
                 }
+                BoatListAdapter boatListAdapter = new BoatListAdapter(list, getContext());
+                boatListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                boatListRecyclerView.setAdapter(boatListAdapter);
             }
         });
 
