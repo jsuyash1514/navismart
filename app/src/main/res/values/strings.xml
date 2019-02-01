@@ -143,4 +143,7 @@
     <string name="reply">Reply</string>
     <string name="write_reply">Write Reply</string>
     <string name="edit_details">Edit Details</string>
+    <string name="cancel_booking">Cancel Booking</string>
+    <string name="booking_cancelled">This booking has been cancelled</string>
+    <string name="cancelled">Cancelled</string>
 </resources>

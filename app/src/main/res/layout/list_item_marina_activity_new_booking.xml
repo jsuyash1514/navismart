@@ -38,6 +38,19 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/cancelled_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@+id/newBokingsTextView"
+            android:background="@drawable/cancelled_bg"
+            android:padding="3dp"
+            android:text="@string/cancelled"
+            android:textColor="@color/red"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/marina_activity_new_booking_card_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
