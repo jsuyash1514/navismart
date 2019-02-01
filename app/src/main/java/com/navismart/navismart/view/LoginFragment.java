@@ -199,12 +199,13 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
 
-                        if (!preferencesHelper.getToken().isEmpty()) {
-                            Log.d("TAGTAGTAG", preferencesHelper.getToken());
-                            databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
-                        }
-
                         if (task.isSuccessful()) {
+
+                            if (!preferencesHelper.getToken().isEmpty()) {
+                                Log.d("TAGTAGTAG", preferencesHelper.getToken());
+                                databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
+                            }
+
                             DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
                             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
