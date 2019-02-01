@@ -45,7 +45,7 @@ import androidx.navigation.Navigation;
 
 public class ViewMarinaDescriptionFragment extends Fragment {
 
-    private TextView nameView, locationView, descriptionView, facilitiesView, tNcView;
+    private TextView nameView, locationView, descriptionView, facilitiesView, tNcView, receptionCapacityView;
     private ImageView marinaImageView, editDescriptionIcon, nextImage, prevImage;
     private View descriptionBrick, facilitiesBrick, termsNConditionsBrick;
     private ImageSwitcher imageSwitcher;
@@ -83,6 +83,7 @@ public class ViewMarinaDescriptionFragment extends Fragment {
         descriptionView = view.findViewById(R.id.description_display_textView);
         facilitiesView = view.findViewById(R.id.facilities_display_textView);
         tNcView = view.findViewById(R.id.tnc_display_textView);
+        receptionCapacityView = view.findViewById(R.id.reception_capacity_display);
         editDescriptionIcon = view.findViewById(R.id.editDescriptionIcon);
         marinaImageView = view.findViewById(R.id.marina_imageView);
         imageSwitcher = view.findViewById(R.id.imageSwitcher);
@@ -117,6 +118,8 @@ public class ViewMarinaDescriptionFragment extends Fragment {
                     termsNConditionsBrick.setVisibility(View.VISIBLE);
                     tNcView.setText((String) dataSnapshot.child("terms-and-condition").getValue());
                 }
+
+                receptionCapacityView.setText("Reception Capacity : " + dataSnapshot.child("capacity").getValue(String.class));
 
                 databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("marina-description").child("no-images").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
