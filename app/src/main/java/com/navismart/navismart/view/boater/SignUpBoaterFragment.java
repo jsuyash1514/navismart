@@ -5,17 +5,24 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +62,7 @@ import static com.navismart.navismart.utils.EmailAndPasswordChecker.isPasswordVa
 
 public class SignUpBoaterFragment extends Fragment {
 
+    private int READ_REQUEST_CODE = 300;
     private ImageView profilePic;
     private SignUpViewModel signUpViewModel;
     private FirebaseAuth firebaseAuth;
@@ -62,8 +70,8 @@ public class SignUpBoaterFragment extends Fragment {
     private StorageReference storageReference;
     private ProgressDialog progressDialog, uploadProgress;
     private NavController navController;
-    private Button registerButton, uploadProfilePic;
-    private Uri profilePicUri = null;
+    private Button registerButton, uploadProfilePic, uploadRegistration;
+    private Uri profilePicUri = null, boatRegistrationUri = null;
     private EditText nameEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -72,14 +80,71 @@ public class SignUpBoaterFragment extends Fragment {
     private EditText boatIDEditText;
     private EditText boatBeamEditText;
     private EditText boatTypeEditText;
+    private EditText boatRegistrationEditText;
     private boolean nameFilled = false;
     private boolean emailValid = false;
     private boolean passwordValid = false;
+    private boolean registrationFilled = false;
     private boolean enabler = false;
     private PreferencesHelper preferencesHelper;
 
     public SignUpBoaterFragment() {
         // Required empty public constructor
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
     @Override
@@ -114,6 +179,8 @@ public class SignUpBoaterFragment extends Fragment {
         boatTypeEditText = view.findViewById(R.id.boat_type_edit_text);
         uploadProfilePic = view.findViewById(R.id.upload_button);
         profilePic = view.findViewById(R.id.upload_boater_picture);
+        uploadRegistration = view.findViewById(R.id.upload_registration_button);
+        boatRegistrationEditText = view.findViewById(R.id.boat_registration_edit_text);
 
         registerButton.setEnabled(enabler);
         if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
@@ -134,6 +201,32 @@ public class SignUpBoaterFragment extends Fragment {
         };
         signUpViewModel.getBoaterProfilePic().observe(this, profilePicObserver);
 
+        uploadRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/pdf");
+                startActivityForResult(intent, READ_REQUEST_CODE);
+
+            }
+        });
+
+        final Observer<Uri> boatRegistrationObserver = new Observer<Uri>() {
+            @Override
+            public void onChanged(@Nullable Uri uri) {
+                boatRegistrationUri = uri;
+                String result = getPath(getContext(), uri);
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) {
+                    result = result.substring(cut + 1);
+                }
+                boatRegistrationEditText.setText(result);
+                Log.d("registration", uri.getPath());
+            }
+        };
+        signUpViewModel.getBoatRegistration().observe(this, boatRegistrationObserver);
+
         emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -143,7 +236,7 @@ public class SignUpBoaterFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isEmailValid(s.toString())) {
                     emailValid = true;
-                    if (passwordValid && nameFilled) enabler = true;
+                    if (passwordValid && nameFilled && registrationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     emailValid = false;
@@ -170,7 +263,7 @@ public class SignUpBoaterFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isPasswordValid(s.toString())) {
                     passwordValid = true;
-                    if (emailValid && nameFilled) enabler = true;
+                    if (emailValid && nameFilled && registrationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     passwordValid = false;
@@ -197,7 +290,7 @@ public class SignUpBoaterFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().trim().isEmpty()) {
                     nameFilled = true;
-                    if (emailValid && passwordValid) enabler = true;
+                    if (emailValid && passwordValid && registrationFilled) enabler = true;
                     else enabler = false;
                 } else {
                     nameFilled = false;
@@ -213,6 +306,34 @@ public class SignUpBoaterFragment extends Fragment {
 
             }
         });
+
+        boatRegistrationEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().trim().isEmpty()) {
+                    registrationFilled = true;
+                    if (emailValid && passwordValid && nameFilled) enabler = true;
+                    else enabler = false;
+                } else {
+                    registrationFilled = false;
+                    enabler = false;
+                }
+                registerButton.setEnabled(enabler);
+                if (enabler) registerButton.setTextColor(getResources().getColor(R.color.white));
+                else registerButton.setTextColor(getResources().getColor(R.color.colorAccent));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,6 +362,9 @@ public class SignUpBoaterFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri selectedFile = data.getData();
+            signUpViewModel.getBoatRegistration().setValue(selectedFile);
         }
     }
 
@@ -346,5 +470,70 @@ public class SignUpBoaterFragment extends Fragment {
                 });
 
     }
+
+    public String getPath(final Context context, final Uri uri) {
+
+        // DocumentProvider
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
 
 }
