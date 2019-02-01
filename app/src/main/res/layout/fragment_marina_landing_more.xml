@@ -94,6 +94,35 @@
         android:layout_height="2dp"
         android:background="#ededed" />
 
+    <RelativeLayout
+        android:id="@+id/marina_more_contact_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/marinaContactIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_contact_us" />
+
+        <TextView
+            android:id="@+id/marinaContactTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/marinaContactIcon"
+            android:text="@string/contact_us"
+            android:textColor="#363636"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#ededed" />
+
     <Button
         android:id="@+id/marina_logout_button"
         android:layout_width="match_parent"
