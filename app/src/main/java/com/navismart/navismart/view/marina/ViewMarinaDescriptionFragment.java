@@ -46,7 +46,7 @@ public class ViewMarinaDescriptionFragment extends Fragment {
 
     private TextView nameView, locationView, descriptionView, facilitiesView, tNcView;
     private ImageView marinaImageView, editDescriptionIcon, nextImage, prevImage;
-    //    private RecyclerView imagesRecyclerView;
+    private View descriptionBrick, facilitiesBrick, termsNConditionsBrick;
     private ImageSwitcher imageSwitcher;
     private ArrayList<Bitmap> images;
     private int noImages = 0;
@@ -86,6 +86,9 @@ public class ViewMarinaDescriptionFragment extends Fragment {
         imageSwitcher = view.findViewById(R.id.imageSwitcher);
         nextImage = view.findViewById(R.id.nextImage);
         prevImage = view.findViewById(R.id.prevImage);
+        descriptionBrick = view.findViewById(R.id.description_brick);
+        facilitiesBrick = view.findViewById(R.id.facilities_brick);
+        termsNConditionsBrick = view.findViewById(R.id.terms_n_conditions_brick);
 
         MarinaDescriptionViewModel marinaDescriptionViewModel = ViewModelProviders.of(this).get(MarinaDescriptionViewModel.class);
         LiveData<DataSnapshot> liveData = marinaDescriptionViewModel.getDataSnapshotLiveData();
@@ -94,9 +97,21 @@ public class ViewMarinaDescriptionFragment extends Fragment {
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 String facilitiestext = "";
                 locationView.setText((String) dataSnapshot.child("locationAddress").getValue());
-                descriptionView.setText((String) dataSnapshot.child("description").getValue());
-                tNcView.setText((String) dataSnapshot.child("terms-and-condition").getValue());
                 nameView.setText((String) dataSnapshot.child("marinaName").getValue());
+
+                if (dataSnapshot.child("description").getValue() == null) {
+                    descriptionBrick.setVisibility(View.GONE);
+                } else {
+                    descriptionBrick.setVisibility(View.VISIBLE);
+                    descriptionView.setText((String) dataSnapshot.child("description").getValue());
+                }
+
+                if (dataSnapshot.child("terms-and-condition").getValue() == null) {
+                    termsNConditionsBrick.setVisibility(View.GONE);
+                } else {
+                    termsNConditionsBrick.setVisibility(View.VISIBLE);
+                    tNcView.setText((String) dataSnapshot.child("terms-and-condition").getValue());
+                }
 
                 databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("marina-description").child("no-images").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -155,7 +170,12 @@ public class ViewMarinaDescriptionFragment extends Fragment {
                             break;
                     }
                 }
-                facilitiesView.setText(facilitiestext);
+                if (facilitiestext.trim().isEmpty()) {
+                    facilitiesBrick.setVisibility(View.GONE);
+                } else {
+                    facilitiesBrick.setVisibility(View.VISIBLE);
+                    facilitiesView.setText(facilitiestext);
+                }
             }
         });
 

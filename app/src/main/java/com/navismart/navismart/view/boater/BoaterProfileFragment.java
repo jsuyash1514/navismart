@@ -197,6 +197,7 @@ public class BoaterProfileFragment extends Fragment {
 
         });
 
+
         loadDataToViews();
 
         return view;
@@ -260,8 +261,7 @@ public class BoaterProfileFragment extends Fragment {
                         list.add(boat);
                     }
                     BoatListAdapter boatListAdapter = new BoatListAdapter(list, getContext());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    boatListRecyclerView.setLayoutManager(mLayoutManager);
+                    boatListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
                     boatListRecyclerView.setItemAnimator(new DefaultItemAnimator());
                     boatListRecyclerView.setAdapter(boatListAdapter);
                 }

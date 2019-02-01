@@ -114,6 +114,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/description_brick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -148,6 +149,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/facilities_brick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -182,6 +184,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/terms_n_conditions_brick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"

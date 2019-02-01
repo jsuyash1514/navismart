@@ -25,6 +25,8 @@ import com.navismart.navismart.viewmodels.MarinaMsgViewModel;
 
 import java.util.ArrayList;
 
+import androidx.navigation.Navigation;
+
 public class MarinaLandingMessagesFragment extends Fragment {
 
     private RecyclerView msgRecyclerView;
@@ -82,7 +84,12 @@ public class MarinaLandingMessagesFragment extends Fragment {
         msgRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), msgRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                Bundle bundle = new Bundle();
+                bundle.putString("boaterName", msgNameModelArrayList.get(position).getMsgName());
+                bundle.putString("marinaID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                bundle.putString("boaterID", msgNameModelArrayList.get(position).getID());
+                bundle.putString("marinaName", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_chatFragment, bundle);
             }
 
             @Override
