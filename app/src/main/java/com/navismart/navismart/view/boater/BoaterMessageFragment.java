@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +14,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.navismart.navismart.R;
 import com.navismart.navismart.RecyclerItemClickListener;
 import com.navismart.navismart.adapters.MsgNameAdapter;
@@ -27,11 +31,14 @@ import com.navismart.navismart.viewmodels.BoaterMsgViewModel;
 
 import java.util.ArrayList;
 
+import androidx.navigation.Navigation;
+
 public class BoaterMessageFragment extends Fragment {
 
     private RecyclerView msgRecyclerView;
     private ArrayList<MsgNameModel> msgNameModelArrayList;
     private TextView noMsgTextView;
+    private Button contactUsButton;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
 
@@ -54,6 +61,7 @@ public class BoaterMessageFragment extends Fragment {
 
         msgRecyclerView = view.findViewById(R.id.marinaMessageRecyclerView);
         noMsgTextView = view.findViewById(R.id.no_msg_text);
+        contactUsButton = view.findViewById(R.id.contact_us_button);
 
         BoaterMsgViewModel marinaMsgViewModel = ViewModelProviders.of(this).get(BoaterMsgViewModel.class);
         LiveData<DataSnapshot> liveData = marinaMsgViewModel.getDataSnapshotLiveData();
@@ -104,6 +112,24 @@ public class BoaterMessageFragment extends Fragment {
                     dialog.cancel();
                 });
                 alert.show();
+            }
+        }));
+
+        contactUsButton.setOnClickListener(v -> databaseReference.child("admin").child("uid").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("userName", auth.getCurrentUser().getDisplayName());
+                    bundle.putString("userID", auth.getCurrentUser().getUid());
+                    bundle.putString("adminID", dataSnapshot.getValue().toString());
+                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_boaterLandingFragment_to_contactUsFragment, bundle);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         }));
 

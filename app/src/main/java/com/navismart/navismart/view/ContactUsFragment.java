@@ -1,14 +1,11 @@
 package com.navismart.navismart.view;
 
-
 import android.app.Dialog;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,8 +35,8 @@ import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.ChatAdapter;
 import com.navismart.navismart.model.ChatModel;
 import com.navismart.navismart.utils.PreferencesHelper;
-import com.navismart.navismart.viewmodelfactory.ChatViewModelFactory;
-import com.navismart.navismart.viewmodels.ChatViewModel;
+import com.navismart.navismart.viewmodelfactory.ContactAdminViewModelFactory;
+import com.navismart.navismart.viewmodels.ContactAdminViewModel;
 
 import org.json.JSONObject;
 
@@ -58,7 +54,7 @@ import static com.navismart.navismart.MainActivity.getCurrentStringTime;
 import static com.navismart.navismart.adapters.ChatAdapter.SENDER_BOATER;
 import static com.navismart.navismart.adapters.ChatAdapter.SENDER_MARINA;
 
-public class ChatFragment extends Fragment {
+public class ContactUsFragment extends Fragment {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private RecyclerView chatRecyclerView;
@@ -69,11 +65,11 @@ public class ChatFragment extends Fragment {
     private Button deleteButton, cancelButton;
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
-    private String marinaID, boaterID, marinaName, boaterName;
-    private String receiverToken, marinaToken, boaterToken;
+    private String userID, userName, adminID;
+    private String receiverToken, senderToken, userToken, adminToken;
     private PreferencesHelper preferencesHelper;
 
-    public ChatFragment() {
+    public ContactUsFragment() {
         // Required empty public constructor
     }
 
@@ -98,36 +94,38 @@ public class ChatFragment extends Fragment {
         msgEditText.setEnabled(false);
         sendButton.setEnabled(false);
 
-        marinaName = getArguments().getString("marinaName");
-        boaterName = getArguments().getString("boaterName");
-        marinaID = getArguments().getString("marinaID");
-        boaterID = getArguments().getString("boaterID");
+        userName = getArguments().getString("userName");
+        userID = getArguments().getString("userID");
+        adminID = getArguments().getString("adminID");
 
-        if (USER_TYPE == SENDER_BOATER) {
-            marinaChatName.setText(marinaName);
-        } else if (USER_TYPE == SENDER_MARINA) {
-            marinaChatName.setText(boaterName);
+        if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA) {
+            marinaChatName.setText(userName);
+        } else {
+            marinaChatName.setText("Navismart");
         }
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        databaseReference.child("users").child(marinaID).child("profile").child("fcm_token").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users").child(userID).child("profile").child("fcm_token").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                marinaToken = dataSnapshot.getValue().toString();
-                databaseReference.child("users").child(boaterID).child("profile").child("fcm_token").addListenerForSingleValueEvent(new ValueEventListener() {
+                userToken = dataSnapshot.getValue().toString();
+                databaseReference.child("users").child(adminID).child("profile").child("fcm_token").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        boaterToken = dataSnapshot.getValue().toString();
-                        if (USER_TYPE == SENDER_BOATER)
-                            receiverToken = marinaToken;
-                        else
-                            receiverToken = boaterToken;
+                        adminToken = dataSnapshot.getValue().toString();
+                        if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA) {
+                            receiverToken = adminToken;
+                            senderToken = userToken;
+                        } else {
+                            receiverToken = userToken;
+                            senderToken = adminToken;
+                        }
                         msgEditText.setEnabled(true);
                         sendButton.setEnabled(true);
-                        Log.d("MARINA_TOKEN", marinaToken);
-                        Log.d("BOATER_TOKEN", boaterToken);
+                        Log.d("ADMIN_TOKEN", adminToken);
+                        Log.d("USER_TOKEN", userToken);
                     }
 
                     @Override
@@ -155,24 +153,17 @@ public class ChatFragment extends Fragment {
             deleteDialog.dismiss();
         });
 
-        Log.d("marinaID", "" + marinaID);
-        Log.d("boaterID", "" + boaterID);
-        Log.d("USER_TYPE", USER_TYPE + "");
-
         moreIcon.setOnClickListener((View v) -> {
 
             PopupMenu popupMenu = new PopupMenu(getContext(), moreIcon);
             popupMenu.getMenuInflater().inflate(R.menu.chat_options, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
+            popupMenu.setOnMenuItemClickListener(item -> {
 
-                    if (item.getItemId() == R.id.delete_chats) {
-                        deleteDialog.show();
-                    }
-
-                    return true;
+                if (item.getItemId() == R.id.delete_chats) {
+                    deleteDialog.show();
                 }
+
+                return true;
             });
             popupMenu.show();
 
@@ -192,65 +183,59 @@ public class ChatFragment extends Fragment {
 
         });
 
-        if (USER_TYPE == SENDER_BOATER) {
-            ChatViewModel chatViewModel = ViewModelProviders.of(this, new ChatViewModelFactory(marinaID, boaterID)).get(ChatViewModel.class);
-            LiveData<DataSnapshot> liveData = chatViewModel.getDataSnapshotLiveData();
-            liveData.observe(this, new Observer<DataSnapshot>() {
-                @Override
-                public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+        if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA) {
+            ContactAdminViewModel contactAdminViewModel = ViewModelProviders.of(this, new ContactAdminViewModelFactory(adminID, userID)).get(ContactAdminViewModel.class);
+            LiveData<DataSnapshot> liveData = contactAdminViewModel.getDataSnapshotLiveData();
+            liveData.observe(this, dataSnapshot -> {
 
-                    ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
+                ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
 
-                    for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
 
-                        ChatModel chatModel = snapshot.getValue(ChatModel.class);
-                        if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
-                            chatModel.setMsgName(boaterName);
-                        } else {
-                            chatModel.setMsgName(marinaName);
-                        }
-                        chatModelArrayList.add(chatModel);
-
+                    ChatModel chatModel = snapshot.getValue(ChatModel.class);
+                    if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
+                        chatModel.setMsgName(userName);
+                    } else {
+                        chatModel.setMsgName("Navismart");
                     }
-
-                    ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
-                    chatRecyclerView.setLayoutManager(mLayoutManager);
-                    chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    chatRecyclerView.setAdapter(reviewListAdapter);
+                    chatModelArrayList.add(chatModel);
 
                 }
+
+                ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+                chatRecyclerView.setLayoutManager(mLayoutManager);
+                chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                chatRecyclerView.setAdapter(reviewListAdapter);
+
             });
         } else {
-            ChatViewModel chatViewModel = ViewModelProviders.of(this, new ChatViewModelFactory(boaterID, marinaID)).get(ChatViewModel.class);
-            LiveData<DataSnapshot> liveData = chatViewModel.getDataSnapshotLiveData();
-            liveData.observe(this, new Observer<DataSnapshot>() {
-                @Override
-                public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+            ContactAdminViewModel contactAdminViewModel = ViewModelProviders.of(this, new ContactAdminViewModelFactory(userID, adminID)).get(ContactAdminViewModel.class);
+            LiveData<DataSnapshot> liveData = contactAdminViewModel.getDataSnapshotLiveData();
+            liveData.observe(this, dataSnapshot -> {
 
-                    ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
+                ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
 
-                    for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
 
-                        ChatModel chatModel = snapshot.getValue(ChatModel.class);
-                        if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
-                            chatModel.setMsgName(boaterName);
-                        } else {
-                            chatModel.setMsgName(marinaName);
-                        }
-                        chatModelArrayList.add(chatModel);
-
+                    ChatModel chatModel = snapshot.getValue(ChatModel.class);
+                    if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
+                        chatModel.setMsgName("Navismart");
+                    } else {
+                        chatModel.setMsgName(userName);
                     }
-
-                    ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
-                    chatRecyclerView.setLayoutManager(mLayoutManager);
-                    chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    chatRecyclerView.setAdapter(reviewListAdapter);
+                    chatModelArrayList.add(chatModel);
 
                 }
+
+                ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+                chatRecyclerView.setLayoutManager(mLayoutManager);
+                chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                chatRecyclerView.setAdapter(reviewListAdapter);
+
             });
         }
 
@@ -262,11 +247,11 @@ public class ChatFragment extends Fragment {
 
         DatabaseReference chatReference;
         String id = "";
-        if (USER_TYPE == SENDER_BOATER)
-            id = marinaID;
+        if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA)
+            id = userID;
         else
-            id = boaterID;
-        chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("chats").child(id).child("messages");
+            id = adminID;
+        chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("contactAdmin").child(id).child("messages");
         chatReference.setValue(null)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -286,7 +271,7 @@ public class ChatFragment extends Fragment {
 
         DatabaseReference chatReference;
 
-        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("messages");
+        chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("messages");
         chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -294,12 +279,12 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("marinaName");
-        chatReference.setValue(marinaName);
-        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("boaterName");
-        chatReference.setValue(boaterName);
+        chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("userName");
+        chatReference.setValue(userName);
+        chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("adminName");
+        chatReference.setValue("Navismart");
 
-        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("messages");
+        chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("messages");
         chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -307,26 +292,26 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("marinaName");
-        chatReference.setValue(marinaName);
-        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("boaterName");
-        chatReference.setValue(boaterName);
-        String marinaToken = "", boaterToken = "";
-        if (USER_TYPE == SENDER_BOATER) {
-            marinaToken = receiverToken;
-            boaterToken = preferencesHelper.getToken();
+        chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("userName");
+        chatReference.setValue(userName);
+        chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("adminName");
+        chatReference.setValue("Navismart");
+        String userToken = "", adminToken = "";
+        if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA) {
+            adminToken = receiverToken;
+            userToken = preferencesHelper.getToken();
         } else {
-            marinaToken = preferencesHelper.getToken();
-            boaterToken = receiverToken;
+            adminToken = preferencesHelper.getToken();
+            userToken = receiverToken;
         }
-        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("marinaToken");
-        chatReference.setValue(marinaToken);
-        chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("boaterToken");
-        chatReference.setValue(boaterToken);
-        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("marinaToken");
-        chatReference.setValue(marinaToken);
-        chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("boaterToken");
-        chatReference.setValue(boaterToken);
+        chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("userToken");
+        chatReference.setValue(userToken);
+        chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("adminToken");
+        chatReference.setValue(adminToken);
+        chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("userToken");
+        chatReference.setValue(userToken);
+        chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("adminToken");
+        chatReference.setValue(adminToken);
 
         sendNotification(receiverToken, chatModel.getMsg());
     }
@@ -358,5 +343,6 @@ public class ChatFragment extends Fragment {
             }
         }.execute();
     }
+
 
 }
