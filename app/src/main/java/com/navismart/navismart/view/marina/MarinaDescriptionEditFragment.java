@@ -17,8 +17,9 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -181,16 +182,17 @@ public class MarinaDescriptionEditFragment extends Fragment {
         if (dryPort.isChecked()) f.add(8);
         if (maintenance.isChecked()) f.add(9);
 
+        FirebaseUser user = auth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaNameEditText.getText().toString()).build();
+        user.updateProfile(profileUpdates);
+
         descriptionReference.child("facilities").setValue(f);
         descriptionReference.child("marinaName").setValue(marinaNameEditText.getText().toString().trim());
         descriptionReference.child("description").setValue(descriptionEditText.getText().toString().trim());
         descriptionReference.child("terms-and-condition").setValue(tNcEditText.getText().toString().trim())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
-                        Toast.makeText(getContext(), "Description edited successfully!", Toast.LENGTH_SHORT);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
+                    Toast.makeText(getContext(), "Description edited successfully!", Toast.LENGTH_SHORT);
                 });
 
 

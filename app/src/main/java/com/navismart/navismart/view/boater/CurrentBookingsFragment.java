@@ -2,10 +2,8 @@ package com.navismart.navismart.view.boater;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -33,9 +30,7 @@ public class CurrentBookingsFragment extends Fragment {
 
     private ArrayList<BookingModel> list;
     private RecyclerView currentRecyclerView;
-    private BookingListAdapter bookingListAdapter;
     private TextView noBookingTextView;
-    private ImageView reloadIcon;
 
     public CurrentBookingsFragment() {
         // Required empty public constructor
@@ -53,11 +48,8 @@ public class CurrentBookingsFragment extends Fragment {
 
         currentRecyclerView = view.findViewById(R.id.current_bookings_recyclerView);
         noBookingTextView = view.findViewById(R.id.no_booking_display);
-        reloadIcon = view.findViewById(R.id.reload_icon);
 
         prepareList();
-
-        reloadIcon.setOnClickListener((View v) -> prepareList());
 
         return view;
     }
@@ -80,25 +72,22 @@ public class CurrentBookingsFragment extends Fragment {
 
         BookingListViewModel bookingListViewModel = ViewModelProviders.of(this).get(BookingListViewModel.class);
         LiveData<DataSnapshot> liveData = bookingListViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    list = new ArrayList<>();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        BookingModel booking = postSnapshot.getValue(BookingModel.class);
-                        if (isCurrent(booking.getFromDate(), booking.getToDate())) {
-                            booking.setBookingTense(BookingModel.CURRENT);
-                            list.add(booking);
-                        }
+        liveData.observe(this, dataSnapshot -> {
+            if (dataSnapshot != null) {
+                list = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    BookingModel booking = postSnapshot.getValue(BookingModel.class);
+                    if (isCurrent(booking.getFromDate(), booking.getToDate())) {
+                        booking.setBookingTense(BookingModel.CURRENT);
+                        list.add(booking);
                     }
-                    BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    currentRecyclerView.setLayoutManager(mLayoutManager);
-                    currentRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    currentRecyclerView.setAdapter(bookingListAdapter);
-                    checkVisibility();
                 }
+                BookingListAdapter bookingListAdapter = new BookingListAdapter(getActivity(), list);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                currentRecyclerView.setLayoutManager(mLayoutManager);
+                currentRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                currentRecyclerView.setAdapter(bookingListAdapter);
+                checkVisibility();
             }
         });
 

@@ -32,8 +32,7 @@ android {
 
 dependencies {
     def nav_version = "1.0.0-alpha09"
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
@@ -47,35 +46,32 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.4+'
     implementation 'com.android.support:multidex:1.0.3'
-
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
-
     //Firestore
     implementation 'com.google.firebase:firebase-firestore:17.1.5'
-
     //Firebase cloud messaging
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
-
     //OkHttp
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-
     //Navigation architecture component
     implementation "android.arch.navigation:navigation-fragment:$nav_version"
     implementation "android.arch.navigation:navigation-ui:$nav_version"
-
     //Circular ImageView
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-
     //Range SeekBar
     implementation 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    //Stripe
+    implementation 'com.stripe:stripe-android:6.1.2'
+    implementation files('libs/stripe-java-7.18.0.jar')
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

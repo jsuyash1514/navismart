@@ -22,14 +22,6 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/white" />
 
-        <ImageView
-            android:id="@+id/reload_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_autorenew_white_24dp" />
-
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
