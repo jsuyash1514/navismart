@@ -118,6 +118,7 @@ public class CheckoutFragment extends Fragment {
             bookingModel.setMarinaUID(marinaModel.getMarinaUID());
             bookingModel.setNoOfDocks(noOfDocks);
             bookingModel.setBoaterUID(auth.getCurrentUser().getUid());
+            bookingModel.setStatus("booked");
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             long time = cal.getTimeInMillis();
             bookingModel.setBookingDate(time);

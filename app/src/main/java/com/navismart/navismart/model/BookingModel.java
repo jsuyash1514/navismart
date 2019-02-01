@@ -32,6 +32,7 @@ public class BookingModel implements Parcelable {
     private int bookingTense = 0;
     private long noOfDocks = 0;
     private float finalPrice = 0;
+    private String status;
 
     public BookingModel(String boatName, String marinaName, String boatID, String fromDate, String toDate, int bookingTense, String boaterName) {
         this.boatName = boatName;
@@ -202,5 +203,13 @@ public class BookingModel implements Parcelable {
 
     public void setToDate(String toDate) {
         this.toDate = toDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
