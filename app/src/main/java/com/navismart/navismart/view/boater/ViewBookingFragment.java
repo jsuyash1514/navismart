@@ -1,8 +1,11 @@
 package com.navismart.navismart.view.boater;
 
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +26,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.BookingModel;
+import com.navismart.navismart.viewmodelfactory.BookingViewModelFactory;
+import com.navismart.navismart.viewmodels.ReviewedViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -89,37 +94,27 @@ public class ViewBookingFragment extends Fragment {
 
         });
 
-        databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingModel.getBookingID()).child("reviewed").addListenerForSingleValueEvent(new ValueEventListener() {
+        ReviewedViewModel reviewedViewModel = ViewModelProviders.of(this, new BookingViewModelFactory(bookingModel.getBookingID())).get(ReviewedViewModel.class);
+        reviewedViewModel.getDataSnapshotLiveData().observe(this, new Observer<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.getValue(Boolean.class)) {
+            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.child("reviewed").getValue(Boolean.class)) {
                     reviewButton.setVisibility(View.VISIBLE);
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingModel.getBookingID()).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue(String.class).equals("cancelled")) {
+                if (dataSnapshot.child("status").getValue(String.class).equals("cancelled")) {
                     cancelBookingButton.setVisibility(View.GONE);
                     cancelledBookingLayout.setVisibility(View.VISIBLE);
                 } else {
                     cancelBookingButton.setVisibility(View.VISIBLE);
                     cancelledBookingLayout.setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                if (bookingModel.getBookingTense() == BookingModel.PAST || bookingModel.getBookingTense() == BookingModel.CURRENT) {
+                    cancelBookingButton.setVisibility(View.GONE);
+                }
             }
         });
+
 
         marinaName.setText(bookingModel.getMarinaName());
         dateRange.setText(bookingModel.getFromDate() + " to " + bookingModel.getToDate());
