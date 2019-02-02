@@ -100,6 +100,12 @@ public class ViewBookingFragment extends Fragment {
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.child("reviewed").getValue(Boolean.class)) {
                     reviewButton.setVisibility(View.VISIBLE);
+                } else {
+                    reviewButton.setVisibility(View.GONE);
+                }
+
+                if (bookingModel.getBookingTense() == BookingModel.UPCOMING) {
+                    reviewButton.setVisibility(View.GONE);
                 }
 
                 if (dataSnapshot.child("status").getValue(String.class).equals("cancelled")) {
@@ -122,16 +128,6 @@ public class ViewBookingFragment extends Fragment {
         boaterName.setText(bookingModel.getBoaterName());
         boatName.setText(bookingModel.getBoatName());
         boatID.setText(bookingModel.getBoatID());
-
-        if ((bookingModel.getBookingTense() == BookingModel.PAST || bookingModel.getBookingTense() == BookingModel.CURRENT) && !bookingModel.isReviewed()) {
-            reviewButton.setVisibility(View.VISIBLE);
-        } else {
-            reviewButton.setVisibility(View.GONE);
-        }
-        if ((bookingModel.getBookingTense() == BookingModel.PAST || bookingModel.getBookingTense() == BookingModel.CURRENT))
-            cancelBookingButton.setVisibility(View.GONE);
-        else
-            cancelBookingButton.setVisibility(View.VISIBLE);
 
         reviewButton.setOnClickListener((View v) -> {
             Bundle bundle = new Bundle();
