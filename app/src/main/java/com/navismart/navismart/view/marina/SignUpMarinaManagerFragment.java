@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,8 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,21 +34,12 @@ import android.widget.Toast;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.navismart.navismart.R;
@@ -66,11 +54,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -191,25 +176,18 @@ public class SignUpMarinaManagerFragment extends Fragment {
                 startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), 100)
         );
 
-        final Observer<Uri> profilePicObserver = new Observer<Uri>() {
-            @Override
-            public void onChanged(@Nullable Uri uri) {
-                profilePic.setImageURI(uri);
-                profilePicUri = uri;
-            }
-
+        final Observer<Uri> profilePicObserver = uri -> {
+            profilePic.setImageURI(uri);
+            profilePicUri = uri;
         };
         signUpViewModel.getMarinaManagerProfilePic().observe(this, profilePicObserver);
 
-        final Observer<List<MarinaPicModel>> marinaPicListObserver = new Observer<List<MarinaPicModel>>() {
-            @Override
-            public void onChanged(@Nullable List<MarinaPicModel> marinaPicModels) {
-                picAdapter = new MarinaPicAdapter(getContext(), marinaPicModels);
+        final Observer<List<MarinaPicModel>> marinaPicListObserver = marinaPicModels -> {
+            picAdapter = new MarinaPicAdapter(getContext(), marinaPicModels);
 
-                RecyclerView.LayoutManager recycler = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                marinaPicRecyclerview.setLayoutManager(recycler);
-                marinaPicRecyclerview.setAdapter(picAdapter);
-            }
+            RecyclerView.LayoutManager recycler1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            marinaPicRecyclerview.setLayoutManager(recycler1);
+            marinaPicRecyclerview.setAdapter(picAdapter);
         };
         signUpViewModel.getMarinaPicList().observe(this, marinaPicListObserver);
 
@@ -395,18 +373,14 @@ public class SignUpMarinaManagerFragment extends Fragment {
                             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                             alert.setTitle("Delete entry");
                             alert.setMessage("Are you sure you want to delete?");
-                            alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // continue with delete
-                                    marinaPicModelList.remove(position);
-                                    signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
-                                }
+                            alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                                // continue with delete
+                                marinaPicModelList.remove(position);
+                                signUpViewModel.getMarinaPicList().setValue(marinaPicModelList);
                             });
-                            alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // close dialog
-                                    dialog.cancel();
-                                }
+                            alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
+                                // close dialog
+                                dialog.cancel();
                             });
                             alert.show();
                         }
@@ -477,15 +451,12 @@ public class SignUpMarinaManagerFragment extends Fragment {
 
 
     public void checkUserLoggedIn() {
-        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null) {
-                    NavOptions navOptions = new NavOptions.Builder()
-                            .setPopUpTo(R.id.startFragment, true)
-                            .build();
-                    navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
-                }
+        firebaseAuth.addAuthStateListener(firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() != null) {
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.startFragment, true)
+                        .build();
+                navController.navigate(R.id.marina_manager_register_successful_action, null, navOptions);
             }
         });
     }
@@ -514,160 +485,130 @@ public class SignUpMarinaManagerFragment extends Fragment {
         progressDialog.setMessage("Registering Please wait...");
         progressDialog.show();
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
+                .addOnCompleteListener(getActivity(), task -> {
+                    progressDialog.dismiss();
 
-                        if (task.isSuccessful()) {
-                            DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
-                            DatabaseReference adminPage = databaseReference.child("admin").child("verification").child(firebaseAuth.getCurrentUser().getUid());
-                            currentUser.child("profile").child("name").setValue(name);
-                            adminPage.child("profile").child("name").setValue(name);
-                            currentUser.child("profile").child("email").setValue(email);
-                            adminPage.child("profile").child("email").setValue(email);
-                            currentUser.child("profile").child("category").setValue("marina-manager");
-                            adminPage.child("profile").child("category").setValue("marina-manager");
-                            currentUser.child("profile").child("status").setValue("pending");
-                            adminPage.child("profile").child("uid").setValue(firebaseAuth.getCurrentUser().getUid());
+                    if (task.isSuccessful()) {
+                        DatabaseReference currentUser = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid());
+                        DatabaseReference adminPage = databaseReference.child("admin").child("verification").child(firebaseAuth.getCurrentUser().getUid());
+                        currentUser.child("profile").child("name").setValue(name);
+                        adminPage.child("profile").child("name").setValue(name);
+                        currentUser.child("profile").child("email").setValue(email);
+                        adminPage.child("profile").child("email").setValue(email);
+                        currentUser.child("profile").child("category").setValue("marina-manager");
+                        adminPage.child("profile").child("category").setValue("marina-manager");
+                        currentUser.child("profile").child("status").setValue("pending");
+                        adminPage.child("profile").child("uid").setValue(firebaseAuth.getCurrentUser().getUid());
 
-                            if(!preferencesHelper.getToken().isEmpty()){
-                                currentUser.child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
-                            }
+                        if (!preferencesHelper.getToken().isEmpty()) {
+                            currentUser.child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
+                        }
 
-                            currentUser.child("marina-description").child("capacity").setValue(capacity);
-                            adminPage.child("marina-description").child("capacity").setValue(capacity);
-                            currentUser.child("marina-description").child("marinaName").setValue(marinaName);
-                            adminPage.child("marina-description").child("marinaName").setValue(marinaName);
-                            currentUser.child("marina-description").child("numberOfReviews").setValue("0");
-                            currentUser.child("marina-description").child("starRating").setValue("0");
+                        currentUser.child("marina-description").child("capacity").setValue(capacity);
+                        adminPage.child("marina-description").child("capacity").setValue(capacity);
+                        currentUser.child("marina-description").child("marinaName").setValue(marinaName);
+                        adminPage.child("marina-description").child("marinaName").setValue(marinaName);
+                        currentUser.child("marina-description").child("numberOfReviews").setValue("0");
+                        currentUser.child("marina-description").child("starRating").setValue("0");
 
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
-                            user.updateProfile(profileUpdates);
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(marinaName).build();
+                        user.updateProfile(profileUpdates);
 
-                            if (!TextUtils.isEmpty(descr)) {
-                                currentUser.child("marina-description").child("description").setValue(descr);
-                                adminPage.child("marina-description").child("description").setValue(descr);
-                            }
-                            if (!TextUtils.isEmpty(termsAndCond)) {
-                                currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
-                                adminPage.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
-                            }
-                            if (!TextUtils.isEmpty(locationAddress)) {
-                                currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
-                                adminPage.child("marina-description").child("locationAddress").setValue(locationAddress);
-                                currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
-                                adminPage.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
-                                currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
-                                adminPage.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
-                            }
+                        if (!TextUtils.isEmpty(descr)) {
+                            currentUser.child("marina-description").child("description").setValue(descr);
+                            adminPage.child("marina-description").child("description").setValue(descr);
+                        }
+                        if (!TextUtils.isEmpty(termsAndCond)) {
+                            currentUser.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                            adminPage.child("marina-description").child("terms-and-condition").setValue(termsAndCond);
+                        }
+                        if (!TextUtils.isEmpty(locationAddress)) {
+                            currentUser.child("marina-description").child("locationAddress").setValue(locationAddress);
+                            adminPage.child("marina-description").child("locationAddress").setValue(locationAddress);
+                            currentUser.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
+                            adminPage.child("marina-description").child("latitude").setValue(locationLatLng.latitude);
+                            currentUser.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
+                            adminPage.child("marina-description").child("longitude").setValue(locationLatLng.longitude);
+                        }
 
-                            currentUser.child("marina-description").child("facilities").setValue(f);
-                            adminPage.child("marina-description").child("facilities").setValue(f);
-//                            addLocationInFirestore(locationLatLng.latitude, locationLatLng.longitude);
+                        currentUser.child("marina-description").child("facilities").setValue(f);
+                        adminPage.child("marina-description").child("facilities").setValue(f);
 
-                            if (marinaPicModelList.size() > 1) {
-                                currentUser.child("marina-description").child("no-images").setValue(marinaPicModelList.size());
-                                for (int i = 1; i < marinaPicModelList.size(); i++) {
-                                    MarinaPicModel model = marinaPicModelList.get(i);
-                                    Bitmap bitmap = model.getPic();
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                    byte[] data = baos.toByteArray();
+                        if (marinaPicModelList.size() > 1) {
+                            currentUser.child("marina-description").child("no-images").setValue(marinaPicModelList.size());
+                            for (int i = 1; i < marinaPicModelList.size(); i++) {
+                                MarinaPicModel model = marinaPicModelList.get(i);
+                                Bitmap bitmap = model.getPic();
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] data = baos.toByteArray();
 
-                                    StorageReference marinaPicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("marina" + i);
-
-                                    uploadProgress.setMax(100);
-                                    uploadProgress.setMessage("Uploading image " + i + "/" + (marinaPicModelList.size() - 1) + "...");
-                                    uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                    uploadProgress.show();
-                                    uploadProgress.setCancelable(false);
-
-                                    UploadTask uploadTask = marinaPicRef.putBytes(data);
-                                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-
-                                        @Override
-                                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                                            uploadProgress.incrementProgressBy((int) progress);
-
-                                        }
-                                    });
-                                    uploadTask.addOnFailureListener(new OnFailureListener() {
-
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-
-                                            Toast.makeText(getContext(), "Error in uploading marina pic!", Toast.LENGTH_SHORT).show();
-                                            uploadProgress.dismiss();
-
-                                        }
-                                    });
-                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            uploadProgress.dismiss();
-                                        }
-                                    });
-                                }
-                            }
-
-                            if (profilePicUri != null) {
-                                StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+                                StorageReference marinaPicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("marina" + i);
 
                                 uploadProgress.setMax(100);
-                                uploadProgress.setMessage("Uploading images...");
+                                uploadProgress.setMessage("Uploading image " + i + "/" + (marinaPicModelList.size() - 1) + "...");
                                 uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                                 uploadProgress.show();
                                 uploadProgress.setCancelable(false);
 
-                                UploadTask uploadTask = profilePicRef.putFile(profilePicUri);
-                                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                UploadTask uploadTask = marinaPicRef.putBytes(data);
+                                uploadTask.addOnProgressListener(taskSnapshot -> {
 
-                                    @Override
-                                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    uploadProgress.incrementProgressBy((int) progress);
 
-                                        uploadProgress.incrementProgressBy((int) progress);
-
-                                    }
                                 });
-                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                uploadTask.addOnFailureListener(exception -> {
 
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
+                                    Toast.makeText(getContext(), "Error in uploading marina pic!", Toast.LENGTH_SHORT).show();
+                                    uploadProgress.dismiss();
 
-                                        Toast.makeText(getContext(), "Error in uploading profile pic!", Toast.LENGTH_SHORT).show();
-                                        uploadProgress.dismiss();
-
-                                    }
                                 });
-                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                uploadTask.addOnSuccessListener(taskSnapshot -> uploadProgress.dismiss());
+                            }
+                        }
 
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        if (profilePicUri != null) {
+                            StorageReference profilePicRef = storageReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
 
-                                        uploadProgress.dismiss();
-                                        Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
-                                        firebaseAuth.signOut();
-                                        navController.navigateUp();
-                                    }
-                                });
-                            } else {
+                            uploadProgress.setMax(100);
+                            uploadProgress.setMessage("Uploading images...");
+                            uploadProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            uploadProgress.show();
+                            uploadProgress.setCancelable(false);
+
+                            UploadTask uploadTask = profilePicRef.putFile(profilePicUri);
+                            uploadTask.addOnProgressListener(taskSnapshot -> {
+
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                                uploadProgress.incrementProgressBy((int) progress);
+
+                            });
+                            uploadTask.addOnFailureListener(exception -> {
+
+                                Toast.makeText(getContext(), "Error in uploading profile pic!", Toast.LENGTH_SHORT).show();
+                                uploadProgress.dismiss();
+
+                            });
+                            uploadTask.addOnSuccessListener(taskSnapshot -> {
+
+                                uploadProgress.dismiss();
                                 Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
                                 firebaseAuth.signOut();
                                 navController.navigateUp();
-                            }
-
+                            });
                         } else {
-                            Toast.makeText(getContext(), "Could not register, Please try again...", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+                            firebaseAuth.signOut();
+                            navController.navigateUp();
                         }
-                    }
 
+                    } else {
+                        Toast.makeText(getContext(), "Could not register, Please try again...", Toast.LENGTH_SHORT).show();
+                    }
                 });
 
     }

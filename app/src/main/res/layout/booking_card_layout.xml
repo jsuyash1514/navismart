@@ -52,4 +52,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/cancelled_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/cancelled_bg"
+        android:padding="3dp"
+        android:text="@string/cancelled"
+        android:textColor="@color/red"
+        android:textStyle="bold" />
+
 </LinearLayout>

@@ -33,7 +33,7 @@ public class WriteReviewReplyFragment extends Fragment {
     private ReviewModel reviewModel;
     private Button replyButton, cancelButton;
     private EditText replyEditText;
-    private TextView nameView, dateView, reviewTextView;
+    private TextView nameView, dateView, reviewTextView, initialTextView;
     private RatingBar ratingBar;
 
     public WriteReviewReplyFragment() {
@@ -60,10 +60,12 @@ public class WriteReviewReplyFragment extends Fragment {
         dateView = view.findViewById(R.id.review_date);
         ratingBar = view.findViewById(R.id.rating_display_box);
         reviewTextView = view.findViewById(R.id.reviewTextView);
+        initialTextView = view.findViewById(R.id.initial_text_view);
 
         reviewModel = getArguments().getParcelable("reviewModel");
 
         nameView.setText(reviewModel.getReviewerName());
+        initialTextView.setText(reviewModel.getReviewerName().toUpperCase().charAt(0)+"");
         String dateStr = reviewModel.getReviewDate();
         SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.ENGLISH);
         df.setTimeZone(TimeZone.getTimeZone("UTC"));

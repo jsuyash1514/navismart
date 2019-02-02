@@ -118,6 +118,7 @@ public class CheckoutFragment extends Fragment {
             bookingModel.setMarinaUID(marinaModel.getMarinaUID());
             bookingModel.setNoOfDocks(noOfDocks);
             bookingModel.setBoaterUID(auth.getCurrentUser().getUid());
+            bookingModel.setStatus("booked");
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             long time = cal.getTimeInMillis();
             bookingModel.setBookingDate(time);
@@ -227,17 +228,7 @@ public class CheckoutFragment extends Fragment {
                     }
 
                     if (dataSnapshot.child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").getValue() == null) {
-                        databaseReference.child("bookings").child(marinaUID).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity - noOfDocks)
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getContext(), "Unable to complete booking! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_checkoutFragment_to_boaterLandingFragment, null, navOptions);
-                                    }
-                                });
-                    } else {
-                        long temp = (long) dataSnapshot.child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").getValue();
-                        databaseReference.child("bookings").child(marinaUID).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(temp - noOfDocks)
+                        databaseReference.child("bookings").child(marinaUID).child(String.valueOf(start.getTime().getYear() + 1900)).child(String.valueOf(start.getTime().getMonth() + 1)).child(String.valueOf(start.getTime().getDate())).child("noOfDocksAvailable").setValue(receptionCapacity)
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {

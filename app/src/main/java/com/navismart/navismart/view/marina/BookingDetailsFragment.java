@@ -27,7 +27,7 @@ import androidx.navigation.Navigation;
 
 public class BookingDetailsFragment extends Fragment {
     private String bookingID, marinaName, marinaID, boaterName, boaterID;
-    private TextView boaterNameView, boatName, boatID, marinaNameView, docksCount, arrival, departure, price, bookingDate, bookingid;
+    private TextView boaterNameView, boatName, boatID, marinaNameView, docksCount, arrival, departure, price, bookingDate, bookingid, cancelledMsg;
     private Button sendMsgButton;
     private FirebaseAuth auth;
     private DatabaseReference databaseReference;
@@ -51,6 +51,7 @@ public class BookingDetailsFragment extends Fragment {
         bookingDate = view.findViewById(R.id.booking_details_booking_date);
         bookingid = view.findViewById(R.id.booking_details_booking_id);
         sendMsgButton = view.findViewById(R.id.send_msg_button);
+        cancelledMsg = view.findViewById(R.id.cancelled_msg);
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -93,6 +94,11 @@ public class BookingDetailsFragment extends Fragment {
                 String formattedDate = df.format(date);
                 bookingDate.setText(formattedDate);
                 bookingid.setText(bookingID);
+                if (dataSnapshot.child("status").getValue(String.class).equals("cancelled")) {
+                    cancelledMsg.setVisibility(View.VISIBLE);
+                } else {
+                    cancelledMsg.setVisibility(View.GONE);
+                }
             }
 
             @Override

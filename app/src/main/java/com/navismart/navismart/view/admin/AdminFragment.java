@@ -1,7 +1,6 @@
 package com.navismart.navismart.view.admin;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -52,29 +51,20 @@ public class AdminFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Logout");
-                alert.setMessage("Are you sure you want to logout?");
-                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        auth.signOut();
-                        Toast.makeText(getContext(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
-                        NavOptions navOptions = new NavOptions.Builder()
-                                .setPopUpTo(R.id.landingFragment, true)
-                                .build();
-                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_log_out_action, null, navOptions);
-                    }
-                });
-                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                alert.show();
-            }
+        logout.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Logout");
+            alert.setMessage("Are you sure you want to logout?");
+            alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                auth.signOut();
+                Toast.makeText(getContext(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(R.id.landingFragment, true)
+                        .build();
+                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_log_out_action, null, navOptions);
+            });
+            alert.setNegativeButton(android.R.string.no, (dialog, which) -> dialog.cancel());
+            alert.show();
         });
 
         return view;

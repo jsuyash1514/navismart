@@ -48,7 +48,7 @@ public class MarinaLandingViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         String title = null;
         if (position == 0) {
-            title = "Notifications";
+            title = "Notification";
         } else if (position == 1) {
             title = "Bookings";
         } else if (position == 2) {

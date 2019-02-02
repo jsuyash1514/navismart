@@ -34,21 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="@string/upload_marina_images_long_press_on_image_to_delete"
-                android:textColor="#232323"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/marina_pics_recycler_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:text="@string/facilities"
                 android:textColor="#232323"
                 android:textSize="18sp"
