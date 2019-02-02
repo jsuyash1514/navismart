@@ -2,7 +2,6 @@ package com.navismart.navismart.view.marina;
 
 
 import android.app.Dialog;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -30,8 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.navismart.navismart.utils.EmailAndPasswordChecker;
 import com.navismart.navismart.R;
+import com.navismart.navismart.utils.EmailAndPasswordChecker;
 
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -99,57 +97,48 @@ public class MarinaProfileFragment extends Fragment {
             if (verifyEmail != null && verifyPass != null && !verifyEmail.trim().isEmpty() && !verifyPass.trim().isEmpty()) {
                 AuthCredential credential = EmailAuthProvider.getCredential(verifyEmail, verifyPass);
                 auth.getCurrentUser().reauthenticate(credential)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Dialog newCredDialog = new Dialog(getContext());
-                                newCredDialog.setContentView(R.layout.new_credentials_dialog);
-                                Button changeButton = newCredDialog.findViewById(R.id.change_button);
-                                changeButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String newEmail = ((EditText) newCredDialog.findViewById(R.id.email_edit_text)).getText().toString();
-                                        String newPass = ((EditText) newCredDialog.findViewById(R.id.password_edit_text)).getText().toString();
-                                        if (newEmail != null && newPass != null && !newEmail.trim().isEmpty() && !newPass.trim().isEmpty() && EmailAndPasswordChecker.isEmailValid(newEmail) && EmailAndPasswordChecker.isPasswordValid(newPass)) {
+                        .addOnSuccessListener(aVoid -> {
+                            Dialog newCredDialog = new Dialog(getContext());
+                            newCredDialog.setContentView(R.layout.new_credentials_dialog);
+                            Button changeButton = newCredDialog.findViewById(R.id.change_button);
+                            changeButton.setOnClickListener(v1 -> {
+                                String newEmail = ((EditText) newCredDialog.findViewById(R.id.email_edit_text)).getText().toString();
+                                String newPass = ((EditText) newCredDialog.findViewById(R.id.password_edit_text)).getText().toString();
+                                if (newEmail != null && newPass != null && !newEmail.trim().isEmpty() && !newPass.trim().isEmpty() && EmailAndPasswordChecker.isEmailValid(newEmail) && EmailAndPasswordChecker.isPasswordValid(newPass)) {
 
-                                            auth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(getContext(), "Email updated successfully", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                            auth.getCurrentUser().updatePassword(newPass).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
-                                                    newCredDialog.dismiss();
-                                                    credentialVerifyDialog.dismiss();
-                                                }
-                                            });
-
-                                        } else {
-                                            Toast.makeText(getContext(), "Unable to update. Enter valid Email and Password.", Toast.LENGTH_SHORT).show();
-                                            emailEditText.setText("");
-                                            passwordEditText.setText("");
-                                            emailEditText.requestFocus();
+                                    auth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid1) {
+                                            Toast.makeText(getContext(), "Email updated successfully", Toast.LENGTH_SHORT).show();
                                         }
-                                    }
-                                });
-                                newCredDialog.show();
-                            }
+                                    });
+                                    auth.getCurrentUser().updatePassword(newPass).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid1) {
+                                            Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                            newCredDialog.dismiss();
+                                            credentialVerifyDialog.dismiss();
+                                        }
+                                    });
+
+                                } else {
+                                    Toast.makeText(getContext(), "Unable to update. Enter valid Email and Password.", Toast.LENGTH_SHORT).show();
+                                    emailEditText.setText("");
+                                    passwordEditText.setText("");
+                                    emailEditText.requestFocus();
+                                }
+                            });
+                            newCredDialog.show();
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Wrong credentials entered! Sign in again.", Toast.LENGTH_SHORT).show();
-                                credentialVerifyDialog.dismiss();
-                                auth.signOut();
-                                Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
-                                NavOptions navOptions = new NavOptions.Builder()
-                                        .setPopUpTo(R.id.boaterLandingFragment, true)
-                                        .build();
-                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaProfileFragment_to_startFragment, null, navOptions);
-                            }
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), "Wrong credentials entered! Sign in again.", Toast.LENGTH_SHORT).show();
+                            credentialVerifyDialog.dismiss();
+                            auth.signOut();
+                            Toast.makeText(getContext(), "Logged out Successful", Toast.LENGTH_SHORT).show();
+                            NavOptions navOptions = new NavOptions.Builder()
+                                    .setPopUpTo(R.id.boaterLandingFragment, true)
+                                    .build();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_marinaProfileFragment_to_startFragment, null, navOptions);
                         });
 
 
@@ -184,16 +173,13 @@ public class MarinaProfileFragment extends Fragment {
         });
 
         StorageReference profilePicRef = storageReference.child("users").child(auth.getCurrentUser().getUid()).child("profile");
-        profilePicRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
+        profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
 
-                Log.d("URI", uri.toString());
-                Glide.with(getContext())
-                        .load(uri)
-                        .into(profileImageView);
+            Log.d("URI", uri.toString());
+            Glide.with(getContext())
+                    .load(uri)
+                    .into(profileImageView);
 
-            }
         });
 
 

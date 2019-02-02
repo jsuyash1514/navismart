@@ -1,9 +1,9 @@
 package com.navismart.navismart.model;
 
 public class MarinaActivityNewBookingsCardModel {
-    String guestName, timeStamp,boatName,boatID,arrivalTime,dapartureTime,bookingNumber, noOfDocksBooked;
+    String guestName, timeStamp, boatName, boatID, arrivalTime, dapartureTime, bookingNumber, noOfDocksBooked, status = "";
 
-    public MarinaActivityNewBookingsCardModel(String guestName, String timeStamp, String boatName, String boatID, String arrivalTime, String dapartureTime, String bookingNumber, String noOfDocksBooked) {
+    public MarinaActivityNewBookingsCardModel(String guestName, String timeStamp, String boatName, String boatID, String arrivalTime, String dapartureTime, String bookingNumber, String noOfDocksBooked, String status) {
         this.guestName = guestName;
         this.timeStamp = timeStamp;
         this.boatName = boatName;
@@ -12,6 +12,11 @@ public class MarinaActivityNewBookingsCardModel {
         this.dapartureTime = dapartureTime;
         this.bookingNumber = bookingNumber;
         this.noOfDocksBooked = noOfDocksBooked;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public String getGuestName() {
