@@ -2,10 +2,8 @@ package com.navismart.navismart.view.marina;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,58 +84,55 @@ public class MarinaDescriptionEditFragment extends Fragment {
 
         MarinaDescriptionViewModel marinaDescriptionViewModel = ViewModelProviders.of(this).get(MarinaDescriptionViewModel.class);
         LiveData<DataSnapshot> liveData = marinaDescriptionViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                capacityPicker.setValue(Integer.parseInt((String) dataSnapshot.child("capacity").getValue()));
-                marinaNameEditText.setText((String) dataSnapshot.child("marinaName").getValue());
-                descriptionEditText.setText((String) dataSnapshot.child("description").getValue());
-                tNcEditText.setText((String) dataSnapshot.child("terms-and-condition").getValue());
+        liveData.observe(this, dataSnapshot -> {
+            capacityPicker.setValue(Integer.parseInt((String) dataSnapshot.child("capacity").getValue()));
+            marinaNameEditText.setText((String) dataSnapshot.child("marinaName").getValue());
+            descriptionEditText.setText((String) dataSnapshot.child("description").getValue());
+            tNcEditText.setText((String) dataSnapshot.child("terms-and-condition").getValue());
 
-                drinkingWater.setChecked(false);
-                electricity.setChecked(false);
-                fuelStation.setChecked(false);
-                access.setChecked(false);
-                travelLift.setChecked(false);
-                security.setChecked(false);
-                residualWaterCollection.setChecked(false);
-                restaurant.setChecked(false);
-                dryPort.setChecked(false);
-                maintenance.setChecked(false);
+            drinkingWater.setChecked(false);
+            electricity.setChecked(false);
+            fuelStation.setChecked(false);
+            access.setChecked(false);
+            travelLift.setChecked(false);
+            security.setChecked(false);
+            residualWaterCollection.setChecked(false);
+            restaurant.setChecked(false);
+            dryPort.setChecked(false);
+            maintenance.setChecked(false);
 
-                for (DataSnapshot snapshot : dataSnapshot.child("facilities").getChildren()) {
-                    switch (((Long) snapshot.getValue()).intValue()) {
-                        case 0:
-                            drinkingWater.setChecked(true);
-                            break;
-                        case 1:
-                            electricity.setChecked(true);
-                            break;
-                        case 2:
-                            fuelStation.setChecked(true);
-                            break;
-                        case 3:
-                            access.setChecked(true);
-                            break;
-                        case 4:
-                            travelLift.setChecked(true);
-                            break;
-                        case 5:
-                            security.setChecked(true);
-                            break;
-                        case 6:
-                            residualWaterCollection.setChecked(true);
-                            break;
-                        case 7:
-                            restaurant.setChecked(true);
-                            break;
-                        case 8:
-                            dryPort.setChecked(true);
-                            break;
-                        case 9:
-                            maintenance.setChecked(true);
-                            break;
-                    }
+            for (DataSnapshot snapshot : dataSnapshot.child("facilities").getChildren()) {
+                switch (((Long) snapshot.getValue()).intValue()) {
+                    case 0:
+                        drinkingWater.setChecked(true);
+                        break;
+                    case 1:
+                        electricity.setChecked(true);
+                        break;
+                    case 2:
+                        fuelStation.setChecked(true);
+                        break;
+                    case 3:
+                        access.setChecked(true);
+                        break;
+                    case 4:
+                        travelLift.setChecked(true);
+                        break;
+                    case 5:
+                        security.setChecked(true);
+                        break;
+                    case 6:
+                        residualWaterCollection.setChecked(true);
+                        break;
+                    case 7:
+                        restaurant.setChecked(true);
+                        break;
+                    case 8:
+                        dryPort.setChecked(true);
+                        break;
+                    case 9:
+                        maintenance.setChecked(true);
+                        break;
                 }
             }
         });

@@ -17,9 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -194,64 +191,60 @@ public class LoginFragment extends Fragment {
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(e_mail, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
+                .addOnCompleteListener(getActivity(), task -> {
+                    progressDialog.dismiss();
 
-                        if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                            if (!preferencesHelper.getToken().isEmpty()) {
-                                Log.d("TAGTAGTAG", preferencesHelper.getToken());
-                                databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
-                            }
-
-                            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
-                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    category = dataSnapshot.child("category").getValue(String.class);
-                                    NavOptions navOptions = new NavOptions.Builder()
-                                            .setPopUpTo(R.id.startFragment, true)
-                                            .build();
-                                    if (category != null && !category.isEmpty()) {
-                                        if (category.equals("boater")) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
-                                        } else if (category.equals("marina-manager")) {
-                                            status = dataSnapshot.child("status").getValue(String.class);
-                                            progressDialog.dismiss();
-                                            if (status.equals("approved")) {
-                                                Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
-                                            } else if (status.equals("pending")) {
-                                                Toast.makeText(getContext(), "Application pending!", Toast.LENGTH_LONG).show();
-                                                firebaseAuth.signOut();
-                                            } else if (status.equals("rejected")) {
-                                                Toast.makeText(getContext(), "Application rejected!", Toast.LENGTH_LONG).show();
-                                                firebaseAuth.signOut();
-                                            }
-                                        } else if (category.equals("admin")) {
-                                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                                            progressDialog.dismiss();
-                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_sign_in_action, null, navOptions);
-                                        }
-                                    } else {
-                                        Toast.makeText(getContext(), "Unable to fetch details. Check your network.", Toast.LENGTH_SHORT).show();
-                                        progressDialog.dismiss();
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        } else {
-                            Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
+                        if (!preferencesHelper.getToken().isEmpty()) {
+                            Log.d("TAGTAGTAG", preferencesHelper.getToken());
+                            databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
                         }
 
+                        DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                category = dataSnapshot.child("category").getValue(String.class);
+                                NavOptions navOptions = new NavOptions.Builder()
+                                        .setPopUpTo(R.id.startFragment, true)
+                                        .build();
+                                if (category != null && !category.isEmpty()) {
+                                    if (category.equals("boater")) {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
+                                    } else if (category.equals("marina-manager")) {
+                                        status = dataSnapshot.child("status").getValue(String.class);
+                                        progressDialog.dismiss();
+                                        if (status.equals("approved")) {
+                                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                                        } else if (status.equals("pending")) {
+                                            Toast.makeText(getContext(), "Application pending!", Toast.LENGTH_LONG).show();
+                                            firebaseAuth.signOut();
+                                        } else if (status.equals("rejected")) {
+                                            Toast.makeText(getContext(), "Application rejected!", Toast.LENGTH_LONG).show();
+                                            firebaseAuth.signOut();
+                                        }
+                                    } else if (category.equals("admin")) {
+                                        Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_sign_in_action, null, navOptions);
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Unable to fetch details. Check your network.", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
                     }
 
                 });

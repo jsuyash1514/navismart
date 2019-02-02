@@ -3,12 +3,10 @@ package com.navismart.navismart.view;
 
 import android.app.Dialog;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -163,16 +159,13 @@ public class ChatFragment extends Fragment {
 
             PopupMenu popupMenu = new PopupMenu(getContext(), moreIcon);
             popupMenu.getMenuInflater().inflate(R.menu.chat_options, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
+            popupMenu.setOnMenuItemClickListener(item -> {
 
-                    if (item.getItemId() == R.id.delete_chats) {
-                        deleteDialog.show();
-                    }
-
-                    return true;
+                if (item.getItemId() == R.id.delete_chats) {
+                    deleteDialog.show();
                 }
+
+                return true;
             });
             popupMenu.show();
 
@@ -195,62 +188,56 @@ public class ChatFragment extends Fragment {
         if (USER_TYPE == SENDER_BOATER) {
             ChatViewModel chatViewModel = ViewModelProviders.of(this, new ChatViewModelFactory(marinaID, boaterID)).get(ChatViewModel.class);
             LiveData<DataSnapshot> liveData = chatViewModel.getDataSnapshotLiveData();
-            liveData.observe(this, new Observer<DataSnapshot>() {
-                @Override
-                public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+            liveData.observe(this, dataSnapshot -> {
 
-                    ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
+                ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
 
-                    for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
 
-                        ChatModel chatModel = snapshot.getValue(ChatModel.class);
-                        if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
-                            chatModel.setMsgName(boaterName);
-                        } else {
-                            chatModel.setMsgName(marinaName);
-                        }
-                        chatModelArrayList.add(chatModel);
-
+                    ChatModel chatModel = snapshot.getValue(ChatModel.class);
+                    if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
+                        chatModel.setMsgName(boaterName);
+                    } else {
+                        chatModel.setMsgName(marinaName);
                     }
-
-                    ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
-                    chatRecyclerView.setLayoutManager(mLayoutManager);
-                    chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    chatRecyclerView.setAdapter(reviewListAdapter);
+                    chatModelArrayList.add(chatModel);
 
                 }
+
+                ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+                chatRecyclerView.setLayoutManager(mLayoutManager);
+                chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                chatRecyclerView.setAdapter(reviewListAdapter);
+
             });
         } else {
             ChatViewModel chatViewModel = ViewModelProviders.of(this, new ChatViewModelFactory(boaterID, marinaID)).get(ChatViewModel.class);
             LiveData<DataSnapshot> liveData = chatViewModel.getDataSnapshotLiveData();
-            liveData.observe(this, new Observer<DataSnapshot>() {
-                @Override
-                public void onChanged(@Nullable DataSnapshot dataSnapshot) {
+            liveData.observe(this, dataSnapshot -> {
 
-                    ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
+                ArrayList<ChatModel> chatModelArrayList = new ArrayList<>();
 
-                    for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.child("messages").getChildren()) {
 
-                        ChatModel chatModel = snapshot.getValue(ChatModel.class);
-                        if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
-                            chatModel.setMsgName(boaterName);
-                        } else {
-                            chatModel.setMsgName(marinaName);
-                        }
-                        chatModelArrayList.add(chatModel);
-
+                    ChatModel chatModel = snapshot.getValue(ChatModel.class);
+                    if (chatModel.getSENDER_TYPE() == SENDER_BOATER) {
+                        chatModel.setMsgName(boaterName);
+                    } else {
+                        chatModel.setMsgName(marinaName);
                     }
-
-                    ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                    ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
-                    chatRecyclerView.setLayoutManager(mLayoutManager);
-                    chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    chatRecyclerView.setAdapter(reviewListAdapter);
+                    chatModelArrayList.add(chatModel);
 
                 }
+
+                ChatAdapter reviewListAdapter = new ChatAdapter(chatModelArrayList, getContext());
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+                chatRecyclerView.setLayoutManager(mLayoutManager);
+                chatRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                chatRecyclerView.setAdapter(reviewListAdapter);
+
             });
         }
 
@@ -268,12 +255,7 @@ public class ChatFragment extends Fragment {
             id = boaterID;
         chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("chats").child(id).child("messages");
         chatReference.setValue(null)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getContext(), "Chats deleted successfully", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Chats deleted successfully", Toast.LENGTH_SHORT).show()).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getContext(), "Unable to delete chats", Toast.LENGTH_SHORT).show();
@@ -287,12 +269,7 @@ public class ChatFragment extends Fragment {
         DatabaseReference chatReference;
 
         chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("messages");
-        chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                msgEditText.setText(null);
-            }
-        });
+        chatReference.push().setValue(chatModel).addOnSuccessListener(aVoid -> msgEditText.setText(null));
 
         chatReference = databaseReference.child("users").child(marinaID).child("chats").child(boaterID).child("marinaName");
         chatReference.setValue(marinaName);
@@ -300,12 +277,7 @@ public class ChatFragment extends Fragment {
         chatReference.setValue(boaterName);
 
         chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("messages");
-        chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                msgEditText.setText(null);
-            }
-        });
+        chatReference.push().setValue(chatModel).addOnSuccessListener(aVoid -> msgEditText.setText(null));
 
         chatReference = databaseReference.child("users").child(boaterID).child("chats").child(marinaID).child("marinaName");
         chatReference.setValue(marinaName);

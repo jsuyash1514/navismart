@@ -2,12 +2,10 @@ package com.navismart.navismart.view.marina;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,12 +20,10 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -98,92 +94,89 @@ public class ViewMarinaDescriptionFragment extends Fragment {
 
         MarinaDescriptionViewModel marinaDescriptionViewModel = ViewModelProviders.of(this).get(MarinaDescriptionViewModel.class);
         LiveData<DataSnapshot> liveData = marinaDescriptionViewModel.getDataSnapshotLiveData();
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                String facilitiestext = "";
-                locationView.setText((String) dataSnapshot.child("locationAddress").getValue());
-                nameView.setText((String) dataSnapshot.child("marinaName").getValue());
+        liveData.observe(this, dataSnapshot -> {
+            String facilitiestext = "";
+            locationView.setText((String) dataSnapshot.child("locationAddress").getValue());
+            nameView.setText((String) dataSnapshot.child("marinaName").getValue());
 
-                if (dataSnapshot.child("description").getValue() == null) {
-                    descriptionBrick.setVisibility(View.GONE);
-                } else {
-                    descriptionBrick.setVisibility(View.VISIBLE);
-                    descriptionView.setText((String) dataSnapshot.child("description").getValue());
-                }
+            if (dataSnapshot.child("description").getValue() == null) {
+                descriptionBrick.setVisibility(View.GONE);
+            } else {
+                descriptionBrick.setVisibility(View.VISIBLE);
+                descriptionView.setText((String) dataSnapshot.child("description").getValue());
+            }
 
-                if (dataSnapshot.child("terms-and-condition").getValue() == null) {
-                    termsNConditionsBrick.setVisibility(View.GONE);
-                } else {
-                    termsNConditionsBrick.setVisibility(View.VISIBLE);
-                    tNcView.setText((String) dataSnapshot.child("terms-and-condition").getValue());
-                }
+            if (dataSnapshot.child("terms-and-condition").getValue() == null) {
+                termsNConditionsBrick.setVisibility(View.GONE);
+            } else {
+                termsNConditionsBrick.setVisibility(View.VISIBLE);
+                tNcView.setText((String) dataSnapshot.child("terms-and-condition").getValue());
+            }
 
-                receptionCapacityView.setText("Reception Capacity : " + dataSnapshot.child("capacity").getValue(String.class));
+            receptionCapacityView.setText("Reception Capacity : " + dataSnapshot.child("capacity").getValue(String.class));
 
-                databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("marina-description").child("no-images").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d("DATASNAPSHOT", dataSnapshot.toString());
-                        try {
-                            noImages = dataSnapshot.getValue(Integer.class) - 1;
-                        } catch (Exception e) {
-                            noImages = 0;
-                        }
-                        if (noImages > 0) {
-                            loadImages(noImages, auth.getCurrentUser().getUid());
-                        } else {
-                            marinaImageView.setVisibility(View.VISIBLE);
-                            imageSwitcher.setVisibility(View.GONE);
-                        }
+            databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("marina-description").child("no-images").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d("DATASNAPSHOT", dataSnapshot.toString());
+                    try {
+                        noImages = dataSnapshot.getValue(Integer.class) - 1;
+                    } catch (Exception e) {
+                        noImages = 0;
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                for (DataSnapshot snapshot : dataSnapshot.child("facilities").getChildren()) {
-                    switch (((Long) snapshot.getValue()).intValue()) {
-                        case 0:
-                            facilitiestext = facilitiestext + "\n" + "Drinking Water";
-                            break;
-                        case 1:
-                            facilitiestext = facilitiestext + "\n" + "Electricity";
-                            break;
-                        case 2:
-                            facilitiestext = facilitiestext + "\n" + "Fuel Station";
-                            break;
-                        case 3:
-                            facilitiestext = facilitiestext + "\n" + "24/7 Access";
-                            break;
-                        case 4:
-                            facilitiestext = facilitiestext + "\n" + "Travel Lift";
-                            break;
-                        case 5:
-                            facilitiestext = facilitiestext + "\n" + "Security";
-                            break;
-                        case 6:
-                            facilitiestext = facilitiestext + "\n" + "Residual Water Collection";
-                            break;
-                        case 7:
-                            facilitiestext = facilitiestext + "\n" + "Restaurant";
-                            break;
-                        case 8:
-                            facilitiestext = facilitiestext + "\n" + "Dry Port";
-                            break;
-                        case 9:
-                            facilitiestext = facilitiestext + "\n" + "Maintenance";
-                            break;
+                    if (noImages > 0) {
+                        loadImages(noImages, auth.getCurrentUser().getUid());
+                    } else {
+                        marinaImageView.setVisibility(View.VISIBLE);
+                        imageSwitcher.setVisibility(View.GONE);
                     }
                 }
-                if (facilitiestext.trim().isEmpty()) {
-                    facilitiesBrick.setVisibility(View.GONE);
-                } else {
-                    facilitiesBrick.setVisibility(View.VISIBLE);
-                    facilitiesView.setText(facilitiestext);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
+            });
+
+            for (DataSnapshot snapshot : dataSnapshot.child("facilities").getChildren()) {
+                switch (((Long) snapshot.getValue()).intValue()) {
+                    case 0:
+                        facilitiestext = facilitiestext + "\n" + "Drinking Water";
+                        break;
+                    case 1:
+                        facilitiestext = facilitiestext + "\n" + "Electricity";
+                        break;
+                    case 2:
+                        facilitiestext = facilitiestext + "\n" + "Fuel Station";
+                        break;
+                    case 3:
+                        facilitiestext = facilitiestext + "\n" + "24/7 Access";
+                        break;
+                    case 4:
+                        facilitiestext = facilitiestext + "\n" + "Travel Lift";
+                        break;
+                    case 5:
+                        facilitiestext = facilitiestext + "\n" + "Security";
+                        break;
+                    case 6:
+                        facilitiestext = facilitiestext + "\n" + "Residual Water Collection";
+                        break;
+                    case 7:
+                        facilitiestext = facilitiestext + "\n" + "Restaurant";
+                        break;
+                    case 8:
+                        facilitiestext = facilitiestext + "\n" + "Dry Port";
+                        break;
+                    case 9:
+                        facilitiestext = facilitiestext + "\n" + "Maintenance";
+                        break;
+                }
+            }
+            if (facilitiestext.trim().isEmpty()) {
+                facilitiesBrick.setVisibility(View.GONE);
+            } else {
+                facilitiesBrick.setVisibility(View.VISIBLE);
+                facilitiesView.setText(facilitiestext);
             }
         });
 
@@ -219,17 +212,14 @@ public class ViewMarinaDescriptionFragment extends Fragment {
 
     private void setFirstImageIntoImageSwitcher() {
 
-        imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                ImageView switcherImageView = new ImageView(getActivity());
-                switcherImageView.setLayoutParams(new ImageSwitcher.LayoutParams(
-                        ImageSwitcher.LayoutParams.MATCH_PARENT, ImageSwitcher.LayoutParams.MATCH_PARENT
-                ));
-                switcherImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                switcherImageView.setImageBitmap(images.get(0));
-                return switcherImageView;
-            }
+        imageSwitcher.setFactory(() -> {
+            ImageView switcherImageView = new ImageView(getActivity());
+            switcherImageView.setLayoutParams(new ImageSwitcher.LayoutParams(
+                    ImageSwitcher.LayoutParams.MATCH_PARENT, ImageSwitcher.LayoutParams.MATCH_PARENT
+            ));
+            switcherImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            switcherImageView.setImageBitmap(images.get(0));
+            return switcherImageView;
         });
 
         aniOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
@@ -254,33 +244,21 @@ public class ViewMarinaDescriptionFragment extends Fragment {
 
         for (iLoop = 0; iLoop < n; iLoop++) {
             StorageReference picReference = storageReference.child("users").child(marinaUID).child("marina" + (iLoop + 1));
-            picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(getContext())
-                            .asBitmap()
-                            .load(uri)
-                            .into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                    images.add(resource);
-                                    noImageLoaded++;
-                                    if (noImageLoaded == 1) {
-                                        setFirstImageIntoImageSwitcher();
-                                    }
-                                }
-                            });
-                }
-            });
+            picReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(getContext())
+                    .asBitmap()
+                    .load(uri)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            images.add(resource);
+                            noImageLoaded++;
+                            if (noImageLoaded == 1) {
+                                setFirstImageIntoImageSwitcher();
+                            }
+                        }
+                    }));
 
         }
-
-//        MarinaImagesAdapter marinaImagesAdapter = new MarinaImagesAdapter(n, marinaUID, getContext());
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-//        imagesRecyclerView.setLayoutManager(mLayoutManager);
-//        imagesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        imagesRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-//        imagesRecyclerView.setAdapter(marinaImagesAdapter);
 
     }
 

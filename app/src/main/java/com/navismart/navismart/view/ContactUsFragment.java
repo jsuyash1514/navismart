@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -253,12 +252,7 @@ public class ContactUsFragment extends Fragment {
             id = userID;
         chatReference = databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("contactAdmin").child(id).child("messages");
         chatReference.setValue(null)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getContext(), "Chats deleted successfully", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Chats deleted successfully", Toast.LENGTH_SHORT).show()).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getContext(), "Unable to delete chats", Toast.LENGTH_SHORT).show();
@@ -272,12 +266,7 @@ public class ContactUsFragment extends Fragment {
         DatabaseReference chatReference;
 
         chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("messages");
-        chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                msgEditText.setText(null);
-            }
-        });
+        chatReference.push().setValue(chatModel).addOnSuccessListener(aVoid -> msgEditText.setText(null));
 
         chatReference = databaseReference.child("users").child(userID).child("contactAdmin").child(adminID).child("userName");
         chatReference.setValue(userName);
@@ -285,12 +274,7 @@ public class ContactUsFragment extends Fragment {
         chatReference.setValue("Navismart");
 
         chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("messages");
-        chatReference.push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                msgEditText.setText(null);
-            }
-        });
+        chatReference.push().setValue(chatModel).addOnSuccessListener(aVoid -> msgEditText.setText(null));
 
         chatReference = databaseReference.child("users").child(adminID).child("contactAdmin").child(userID).child("userName");
         chatReference.setValue(userName);

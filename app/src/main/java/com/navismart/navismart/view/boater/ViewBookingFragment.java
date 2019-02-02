@@ -1,7 +1,6 @@
 package com.navismart.navismart.view.boater;
 
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,16 +71,13 @@ public class ViewBookingFragment extends Fragment {
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
 
         picReference = FirebaseStorage.getInstance().getReference().child("users").child(bookingModel.getMarinaUID()).child("marina1");
-        picReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
+        picReference.getDownloadUrl().addOnSuccessListener(uri -> {
 
-                Log.d("URI", uri.toString());
-                Glide.with(getContext())
-                        .load(uri)
-                        .into(marinaImage);
+            Log.d("URI", uri.toString());
+            Glide.with(getContext())
+                    .load(uri)
+                    .into(marinaImage);
 
-            }
         });
 
         databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingModel.getBookingID()).child("reviewed").addListenerForSingleValueEvent(new ValueEventListener() {
