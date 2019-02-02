@@ -170,11 +170,13 @@ public class ViewBookingFragment extends Fragment {
 
                 reference.child(String.valueOf(end.getTime().getYear() + 1900)).child(String.valueOf(end.getTime().getMonth() + 1)).child(String.valueOf(end.getTime().getDate())).child(bookingID).setValue(null);
 
-                DatabaseReference dref = databaseReference.child("users").child(marinaUID).child("bookings").child(bookingID).child("status");
-                dref.setValue("cancelled");
+                DatabaseReference dref = databaseReference.child("users").child(marinaUID).child("bookings").child(bookingID);
+                dref.child("status").setValue("cancelled");
+                dref.child("reviewed").setValue(true);
 
-                DatabaseReference dataRef = databaseReference.child("users").child(boaterUID).child("bookings").child(bookingID).child("status");
-                dataRef.setValue("cancelled");
+                DatabaseReference dataRef = databaseReference.child("users").child(boaterUID).child("bookings").child(bookingID);
+                dataRef.child("status").setValue("cancelled");
+                dataRef.child("reviewed").setValue(true);
             }
 
         });
