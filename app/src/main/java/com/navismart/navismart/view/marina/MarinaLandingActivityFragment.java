@@ -104,7 +104,8 @@ public class MarinaLandingActivityFragment extends Fragment {
                                             dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("fromDate").getValue(String.class),
                                             dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("toDate").getValue(String.class),
                                             dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("bookingID").getValue(String.class),
-                                            String.valueOf(dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("noOfDocks").getValue())
+                                            String.valueOf(dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("noOfDocks").getValue()),
+                                            dataSnapshot.child("bookings").child(tripletList.get(i).getThird()).child("status").getValue(String.class)
                                     ));
                             list.add(dateModel);
                             list.add(modelBooking);

@@ -85,6 +85,11 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     bundle.putString("Booking_id", mylist.getBookingsCardModel().getBookingNumber());
                     Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment, bundle);
                 });
+                if (mylist.getBookingsCardModel().getStatus().equals("cancelled")) {
+                    ((MarinaActivityBookingsViewHolder) holder).cancelledMsg.setVisibility(View.GONE);
+                } else {
+                    ((MarinaActivityBookingsViewHolder) holder).cancelledMsg.setVisibility(View.VISIBLE);
+                }
             } else if (mylist.getType() == MarinaActivityModel.TYPE_REVIEW) {
                 ((MarinaActivityReviewsViewHolder) holder).timeStamp.setText(mylist.getReviewsCardModel().getTimeStamp());
                 ((MarinaActivityReviewsViewHolder) holder).guestName.setText(mylist.getReviewsCardModel().getGuestName());
@@ -120,7 +125,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class MarinaActivityBookingsViewHolder extends RecyclerView.ViewHolder {
-        TextView timeStamp, guestName, boatName, boatID, arrivalTime, departureTime, bookingNumber, noOfDocks;
+        TextView timeStamp, guestName, boatName, boatID, arrivalTime, departureTime, bookingNumber, noOfDocks, cancelledMsg;
         CardView newBookingCardView;
 
         public MarinaActivityBookingsViewHolder(@NonNull View itemView) {
@@ -134,6 +139,7 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             bookingNumber = (itemView).findViewById(R.id.marina_activity_guest_detail_booking);
             noOfDocks = (itemView).findViewById(R.id.marina_activity_guest_detail_number_of_docks);
             newBookingCardView = (itemView).findViewById(R.id.marina_activity_new_booking_card_view);
+            cancelledMsg = itemView.findViewById(R.id.cancelled_msg);
         }
     }
 

@@ -73,7 +73,7 @@ public class ViewBookingFragment extends Fragment {
         price = view.findViewById(R.id.price_display);
         reviewButton = view.findViewById(R.id.review_button);
         cancelBookingButton = view.findViewById(R.id.cancel_booking_button);
-        reviewButton.setEnabled(false);
+        reviewButton.setVisibility(View.GONE);
 
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
 
@@ -91,7 +91,7 @@ public class ViewBookingFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.getValue(Boolean.class)) {
-                    reviewButton.setEnabled(true);
+                    reviewButton.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -101,6 +101,21 @@ public class ViewBookingFragment extends Fragment {
             }
         });
 
+        databaseReference.child("users").child(auth.getCurrentUser().getUid()).child("bookings").child(bookingModel.getBookingID()).child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue(String.class).equals("cancelled")) {
+                    cancelBookingButton.setVisibility(View.GONE);
+                } else {
+                    cancelBookingButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         marinaName.setText(bookingModel.getMarinaName());
         dateRange.setText(bookingModel.getFromDate() + " to " + bookingModel.getToDate());
@@ -128,52 +143,49 @@ public class ViewBookingFragment extends Fragment {
 
         });
 
-        cancelBookingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String marinaUID = bookingModel.getMarinaUID();
-                String boaterUID = bookingModel.getBoaterUID();
-                Long noOfDocks = bookingModel.getNoOfDocks();
-                String fromDate = bookingModel.getFromDate();
-                String toDate = bookingModel.getToDate();
-                String bookingID = bookingModel.getBookingID();
+        cancelBookingButton.setOnClickListener(v -> {
+            String marinaUID = bookingModel.getMarinaUID();
+            String boaterUID = bookingModel.getBoaterUID();
+            Long noOfDocks = bookingModel.getNoOfDocks();
+            String fromDate = bookingModel.getFromDate();
+            String toDate = bookingModel.getToDate();
+            String bookingID = bookingModel.getBookingID();
 
-                Date startDate = getDateFromString(fromDate);
-                Date endDate = getDateFromString(toDate);
+            Date startDate = getDateFromString(fromDate);
+            Date endDate = getDateFromString(toDate);
 
-                Calendar start = Calendar.getInstance();
-                start.setTime(startDate);
-                Calendar end = Calendar.getInstance();
-                end.setTime(endDate);
+            Calendar start = Calendar.getInstance();
+            start.setTime(startDate);
+            Calendar end = Calendar.getInstance();
+            end.setTime(endDate);
 
-                DatabaseReference reference = databaseReference.child("bookings").child(marinaUID);
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
-                            noOfDocksAvailable = dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue(Long.class);
-                            reference.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").setValue(noOfDocks + noOfDocksAvailable);
-                            reference.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingID).setValue(null);
-                        }
+            DatabaseReference reference = databaseReference.child("bookings").child(marinaUID);
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                        noOfDocksAvailable = dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue(Long.class);
+                        reference.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").setValue(noOfDocks + noOfDocksAvailable);
+                        reference.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingID).setValue(null);
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                }
+            });
 
-                reference.child(String.valueOf(end.getTime().getYear() + 1900)).child(String.valueOf(end.getTime().getMonth() + 1)).child(String.valueOf(end.getTime().getDate())).child(bookingID).setValue(null);
+            reference.child(String.valueOf(end.getTime().getYear() + 1900)).child(String.valueOf(end.getTime().getMonth() + 1)).child(String.valueOf(end.getTime().getDate())).child(bookingID).setValue(null);
 
-                DatabaseReference dref = databaseReference.child("users").child(marinaUID).child("bookings").child(bookingID);
-                dref.child("status").setValue("cancelled");
-                dref.child("reviewed").setValue(true);
+            DatabaseReference dref = databaseReference.child("users").child(marinaUID).child("bookings").child(bookingID);
+            dref.child("status").setValue("cancelled");
+            dref.child("reviewed").setValue(true);
 
-                DatabaseReference dataRef = databaseReference.child("users").child(boaterUID).child("bookings").child(bookingID);
-                dataRef.child("status").setValue("cancelled");
-                dataRef.child("reviewed").setValue(true);
-            }
-
+            DatabaseReference dataRef = databaseReference.child("users").child(boaterUID).child("bookings").child(bookingID);
+            dataRef.child("status").setValue("cancelled");
+            dataRef.child("reviewed").setValue(true);
+            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigateUp();
         });
 
         return view;
