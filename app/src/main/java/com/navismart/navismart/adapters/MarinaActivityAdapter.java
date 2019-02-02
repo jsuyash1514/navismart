@@ -86,9 +86,9 @@ public class MarinaActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_landingFragment_to_bookingDetailsFragment, bundle);
                 });
                 if (mylist.getBookingsCardModel().getStatus().equals("cancelled")) {
-                    ((MarinaActivityBookingsViewHolder) holder).cancelledMsg.setVisibility(View.GONE);
-                } else {
                     ((MarinaActivityBookingsViewHolder) holder).cancelledMsg.setVisibility(View.VISIBLE);
+                } else {
+                    ((MarinaActivityBookingsViewHolder) holder).cancelledMsg.setVisibility(View.GONE);
                 }
             } else if (mylist.getType() == MarinaActivityModel.TYPE_REVIEW) {
                 ((MarinaActivityReviewsViewHolder) holder).timeStamp.setText(mylist.getReviewsCardModel().getTimeStamp());

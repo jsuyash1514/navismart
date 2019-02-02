@@ -46,6 +46,7 @@ public class ViewBookingFragment extends Fragment {
     private FirebaseAuth auth;
     private Date date;
     private Long noOfDocksAvailable;
+    private View cancelledBookingLayout;
 
     public ViewBookingFragment() {
         // Required empty public constructor
@@ -73,6 +74,7 @@ public class ViewBookingFragment extends Fragment {
         price = view.findViewById(R.id.price_display);
         reviewButton = view.findViewById(R.id.review_button);
         cancelBookingButton = view.findViewById(R.id.cancel_booking_button);
+        cancelledBookingLayout = view.findViewById(R.id.cancelled_booking_layout);
         reviewButton.setVisibility(View.GONE);
 
         BookingModel bookingModel = getArguments().getParcelable("booking_model");
@@ -106,8 +108,10 @@ public class ViewBookingFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue(String.class).equals("cancelled")) {
                     cancelBookingButton.setVisibility(View.GONE);
+                    cancelledBookingLayout.setVisibility(View.VISIBLE);
                 } else {
                     cancelBookingButton.setVisibility(View.VISIBLE);
+                    cancelledBookingLayout.setVisibility(View.GONE);
                 }
             }
 
