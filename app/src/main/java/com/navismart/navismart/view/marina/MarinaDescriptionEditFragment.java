@@ -40,7 +40,6 @@ public class MarinaDescriptionEditFragment extends Fragment {
     private CheckBox restaurant;
     private CheckBox dryPort;
     private CheckBox maintenance;
-    private NumberPicker capacityPicker;
     private Button editButton;
     private ArrayList<Integer> f;
     private FirebaseAuth auth;
@@ -76,16 +75,12 @@ public class MarinaDescriptionEditFragment extends Fragment {
         restaurant = view.findViewById(R.id.check_box_7);
         dryPort = view.findViewById(R.id.check_box_8);
         maintenance = view.findViewById(R.id.check_box_9);
-        capacityPicker = view.findViewById(R.id.reception_capacity_number_picker);
         editButton = view.findViewById(R.id.edit_button);
 
-        capacityPicker.setMinValue(1);
-        capacityPicker.setMaxValue(10);
 
         MarinaDescriptionViewModel marinaDescriptionViewModel = ViewModelProviders.of(this).get(MarinaDescriptionViewModel.class);
         LiveData<DataSnapshot> liveData = marinaDescriptionViewModel.getDataSnapshotLiveData();
         liveData.observe(this, dataSnapshot -> {
-            capacityPicker.setValue(Integer.parseInt((String) dataSnapshot.child("capacity").getValue()));
             marinaNameEditText.setText((String) dataSnapshot.child("marinaName").getValue());
             descriptionEditText.setText((String) dataSnapshot.child("description").getValue());
             tNcEditText.setText((String) dataSnapshot.child("terms-and-condition").getValue());
