@@ -140,7 +140,7 @@ public class ChatFragment extends Fragment {
         });
 
         Dialog deleteDialog = new Dialog(getContext());
-        deleteDialog.setContentView(R.layout.delete_dialog);
+        deleteDialog.setContentView(R.layout.delete_chat_dialog);
         deleteButton = deleteDialog.findViewById(R.id.delete_button);
         cancelButton = deleteDialog.findViewById(R.id.cancel_delete);
 

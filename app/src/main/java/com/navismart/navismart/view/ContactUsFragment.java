@@ -98,9 +98,9 @@ public class ContactUsFragment extends Fragment {
         adminID = getArguments().getString("adminID");
 
         if (USER_TYPE == SENDER_BOATER || USER_TYPE == SENDER_MARINA) {
-            marinaChatName.setText(userName);
-        } else {
             marinaChatName.setText("Navismart");
+        } else {
+            marinaChatName.setText(userName);
         }
 
         auth = FirebaseAuth.getInstance();
@@ -141,7 +141,7 @@ public class ContactUsFragment extends Fragment {
         });
 
         Dialog deleteDialog = new Dialog(getContext());
-        deleteDialog.setContentView(R.layout.delete_dialog);
+        deleteDialog.setContentView(R.layout.delete_chat_dialog);
         deleteButton = deleteDialog.findViewById(R.id.delete_button);
         cancelButton = deleteDialog.findViewById(R.id.cancel_delete);
 
