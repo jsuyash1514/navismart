@@ -26,7 +26,12 @@ import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.BookingModel;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import androidx.navigation.Navigation;
+
+import static com.navismart.navismart.MainActivity.getDateFromString;
 
 public class ViewBookingFragment extends Fragment {
 
@@ -41,6 +46,8 @@ public class ViewBookingFragment extends Fragment {
     private StorageReference picReference;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
+    private Date date;
+    private Long noOfDocksAvailable;
 
     public ViewBookingFragment() {
         // Required empty public constructor
@@ -123,6 +130,52 @@ public class ViewBookingFragment extends Fragment {
             bundle.putString("marina_id", bookingModel.getMarinaUID());
             bundle.putString("bookingID", bookingModel.getBookingID());
             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.action_viewBookingFragment_to_writeReviewFragment, bundle);
+
+        });
+
+        cancelBookingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String marinaUID = bookingModel.getMarinaUID();
+                String boaterUID = bookingModel.getBoaterUID();
+                Long noOfDocks = bookingModel.getNoOfDocks();
+                String fromDate = bookingModel.getFromDate();
+                String toDate = bookingModel.getToDate();
+                String bookingID = bookingModel.getBookingID();
+
+                Date startDate = getDateFromString(fromDate);
+                Date endDate = getDateFromString(toDate);
+
+                Calendar start = Calendar.getInstance();
+                start.setTime(startDate);
+                Calendar end = Calendar.getInstance();
+                end.setTime(endDate);
+
+                DatabaseReference reference = databaseReference.child("bookings").child(marinaUID);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                            noOfDocksAvailable = dataSnapshot.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").getValue(Long.class);
+                            reference.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child("noOfDocksAvailable").setValue(noOfDocks + noOfDocksAvailable);
+                            reference.child(String.valueOf(date.getYear() + 1900)).child(String.valueOf(date.getMonth() + 1)).child(String.valueOf(date.getDate())).child(bookingID).setValue(null);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                reference.child(String.valueOf(end.getTime().getYear() + 1900)).child(String.valueOf(end.getTime().getMonth() + 1)).child(String.valueOf(end.getTime().getDate())).child(bookingID).setValue(null);
+
+                DatabaseReference dref = databaseReference.child("users").child(marinaUID).child("bookings").child(bookingID).child("status");
+                dref.setValue("cancelled");
+
+                DatabaseReference dataRef = databaseReference.child("users").child(boaterUID).child("bookings").child(bookingID).child("status");
+                dataRef.setValue("cancelled");
+            }
 
         });
 
