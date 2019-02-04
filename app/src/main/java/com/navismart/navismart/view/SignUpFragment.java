@@ -12,9 +12,6 @@ import android.view.ViewGroup;
 import com.navismart.navismart.R;
 import com.navismart.navismart.adapters.SignUpViewPagerAdapter;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 public class SignUpFragment extends Fragment {
 
     private SignUpViewPagerAdapter signUpViewPagerAdapter;
@@ -42,8 +39,6 @@ public class SignUpFragment extends Fragment {
         profileViewPager.setAdapter(signUpViewPagerAdapter);
         profileTabLayout = view.findViewById(R.id.profile_tabs);
         profileTabLayout.setupWithViewPager(profileViewPager);
-
-
 
         return view;
     }

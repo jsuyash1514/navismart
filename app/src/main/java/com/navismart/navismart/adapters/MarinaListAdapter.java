@@ -11,22 +11,26 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.navismart.navismart.R;
 import com.navismart.navismart.model.MarinaModel;
 
 import java.util.List;
 
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.MyViewHolder> {
 
     private List<MarinaModel> marinaList;
     private Activity activity;
+    private StorageReference storageReference;
 
     public MarinaListAdapter(Activity activity, List<MarinaModel> marinaList) {
         this.marinaList = marinaList;
         this.activity = activity;
+        storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     @Override
@@ -46,15 +50,19 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         holder.marinaLocationTextView.setText(marinaModel.getLocation());
         holder.marinaNameTextView.setText(marinaModel.getName());
         holder.marinaImageView.setImageBitmap(marinaModel.getImage());
-        holder.marinaDistaFromCityTextView.setText(Float.toString(marinaModel.getDistFromCity()) + " km from city center");
+        holder.marinaDistaFromSearchTextView.setText(Integer.toString((int) Math.round(marinaModel.getDistFromSearch())) + " km from searched location");
 
-        holder.seeMarinaDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("marina_model", marinaModel);
-                Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment, bundle);
-            }
+        StorageReference picReference = storageReference.child("users").child(marinaModel.getMarinaUID()).child("marina1");
+        picReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(activity)
+                .load(uri)
+                .into(holder.marinaImageView)).addOnFailureListener(e -> {
+
+        });
+
+        holder.seeMarinaDetailsButton.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("marina_model", marinaModel);
+            Navigation.findNavController(activity, R.id.my_nav_host_fragment).navigate(R.id.action_boaterSearchResultsFragment_to_marinaPageFragment, bundle);
         });
 
     }
@@ -66,7 +74,7 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView marinaImageView;
-        public TextView marinaNameTextView, marinaLocationTextView, marinaDistaFromCityTextView, marinaPriceTextView;
+        public TextView marinaNameTextView, marinaLocationTextView, marinaDistaFromSearchTextView, marinaPriceTextView;
         public RatingBar ratingBar;
         public Button seeMarinaDetailsButton;
 
@@ -74,7 +82,7 @@ public class MarinaListAdapter extends RecyclerView.Adapter<MarinaListAdapter.My
         public MyViewHolder(View view) {
             super(view);
             marinaImageView = view.findViewById(R.id.marina_imageView);
-            marinaDistaFromCityTextView = view.findViewById(R.id.dist_from_city_display);
+            marinaDistaFromSearchTextView = view.findViewById(R.id.dist_from_search_display);
             marinaLocationTextView = view.findViewById(R.id.location_display_card_textView);
             marinaNameTextView = view.findViewById(R.id.marina_name_textView);
             marinaPriceTextView = view.findViewById(R.id.price_textView);

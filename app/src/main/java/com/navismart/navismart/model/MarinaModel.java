@@ -23,14 +23,21 @@ public class MarinaModel implements Parcelable {
     private Bitmap image;
     private String price = "0.0";
     private String location = "default";
-    private float distFromCity = 0;
-    private int rating = 0;
+    private float distFromSearch = 0;
+    private float rating = 0;
     private boolean freeCancellation = false;
     private String description = "default";
     private String tnc = "default";
     private ArrayList<String> facilities;
-    private int f[];
-
+    private ArrayList<Integer> f;
+    private String fromDate = "default";
+    private String toDate = "default";
+    private String marinaUID = "default";
+    private double lat = 0;
+    private double lng = 0;
+    private long receptionCapacity;
+    private boolean available = false;
+    private int noAvailableDisplay = 0;
 
     public MarinaModel() {
 
@@ -38,16 +45,16 @@ public class MarinaModel implements Parcelable {
         Canvas canvas = new Canvas(image);
         canvas.drawColor(Color.GRAY);
         initializeFacilities();
-        f = new int[10];
+        f = new ArrayList<>();
 
     }
 
-    public MarinaModel(String name, Bitmap image, String price, String location, float distFromCity, int rating, boolean freeCancellation, String description, String tnc, int f[]) {
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromSearch, float rating, boolean freeCancellation, String description, String tnc, ArrayList<Integer> f) {
         this.name = name;
         this.image = image;
         this.price = price;
         this.location = location;
-        this.distFromCity = distFromCity;
+        this.distFromSearch = distFromSearch;
         this.rating = rating;
         this.freeCancellation = freeCancellation;
         this.description = description;
@@ -56,8 +63,85 @@ public class MarinaModel implements Parcelable {
         initializeFacilities();
     }
 
+    public MarinaModel(String name, Bitmap image, String price, String location, float distFromSearch, float rating, boolean freeCancellation, String description, String tnc, ArrayList<Integer> f, String fromDate, String toDate) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+        this.location = location;
+        this.distFromSearch = distFromSearch;
+        this.rating = rating;
+        this.freeCancellation = freeCancellation;
+        this.description = description;
+        this.tnc = tnc;
+        this.f = f;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        initializeFacilities();
+    }
+
     public MarinaModel(Parcel in) {
 
+    }
+
+    public int getNoAvailableDisplay() {
+
+        return noAvailableDisplay;
+    }
+
+    public void setNoAvailableDisplay(int noAvailableDisplay) {
+        this.noAvailableDisplay = noAvailableDisplay;
+    }
+
+    public boolean isAvailable() {
+
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public double getLat() {
+
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public String getMarinaUID() {
+
+        return marinaUID;
+    }
+
+    public void setMarinaUID(String marinaUID) {
+        this.marinaUID = marinaUID;
+    }
+
+    public String getFromDate() {
+
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
     }
 
     @Override
@@ -86,7 +170,7 @@ public class MarinaModel implements Parcelable {
         return facilities;
     }
 
-    public void setFacilities(int[] f) {
+    public void setFacilities(ArrayList<Integer> f) {
         this.f = f;
     }
 
@@ -138,19 +222,19 @@ public class MarinaModel implements Parcelable {
         this.location = location;
     }
 
-    public float getDistFromCity() {
-        return distFromCity;
+    public float getDistFromSearch() {
+        return distFromSearch;
     }
 
-    public void setDistFromCity(float distFromCity) {
-        this.distFromCity = distFromCity;
+    public void setDistFromSearch(float distFromSearch) {
+        this.distFromSearch = distFromSearch;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -171,15 +255,25 @@ public class MarinaModel implements Parcelable {
 
     }
 
-    public int[] getFacilitiesAvlbl() {
+    public ArrayList<Integer> getFacilitiesAvlbl() {
         return f;
     }
 
     public String getFacilityString() {
         String s = "";
-        for (int a : f) {
-            s = s.concat(facilities.get(a) + ", ");
+        if (!f.isEmpty()) {
+            for (Integer a : f) {
+                s = s.concat(facilities.get(a) + "\n");
+            }
         }
-        return s.substring(0, s.length() - 2);
+        return s;
+    }
+
+    public long getReceptionCapacity() {
+        return receptionCapacity;
+    }
+
+    public void setReceptionCapacity(long receptionCapacity) {
+        this.receptionCapacity = receptionCapacity;
     }
 }

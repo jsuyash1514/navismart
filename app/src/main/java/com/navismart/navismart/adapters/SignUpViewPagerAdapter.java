@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.navismart.navismart.view.SignUpBoaterFragment;
-import com.navismart.navismart.view.SignUpMarinaManagerFragment;
+import com.navismart.navismart.view.boater.SignUpBoaterFragment;
+import com.navismart.navismart.view.marina.SignUpMarinaManagerFragment;
 import com.navismart.navismart.view.SignupThirdPartyFragment;
 
 public class SignUpViewPagerAdapter extends FragmentPagerAdapter {

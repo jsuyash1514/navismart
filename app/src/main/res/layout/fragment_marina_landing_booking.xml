@@ -5,20 +5,18 @@
     android:id="@+id/marina_booking_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MarinaLandingBookingFragment">
+    tools:context=".view.marina.MarinaLandingBookingFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <CalendarView
+        <DatePicker
             android:id="@+id/marina_booking_calender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/BaseLineTheme">
-
-        </CalendarView>
+            android:theme="@style/BaseLineTheme" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/marina_booking_stats_card"
@@ -58,7 +56,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="3"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -81,7 +79,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="2"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -91,8 +89,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="#ededed"
-                    />
+                    android:background="#ededed" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -117,7 +114,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="2"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -140,7 +137,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="2"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -163,7 +160,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="1"
+                            android:text="0"
                             android:textAlignment="center"
                             android:textStyle="bold" />
                     </LinearLayout>

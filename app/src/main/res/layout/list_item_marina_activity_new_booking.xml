@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/marina_activity_new_booking_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="12dp"
@@ -19,7 +20,7 @@
         <View
             android:id="@+id/outlineView"
             android:layout_width="4dp"
-            android:layout_height="205dp"
+            android:layout_height="220dp"
             android:background="@color/colorPrimaryDark" />
 
 
@@ -34,6 +35,19 @@
             android:text="@string/new_booking"
             android:textColor="#262626"
             android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/cancelled_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@+id/newBokingsTextView"
+            android:background="@drawable/cancelled_bg"
+            android:padding="3dp"
+            android:text="@string/cancelled"
+            android:textColor="@color/red"
             android:textStyle="bold" />
 
         <TextView
@@ -102,6 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingEnd="24dp"
                 android:textColor="#444444"
                 android:textSize="12sp" />
 
@@ -110,6 +125,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingEnd="24dp"
                 android:textColor="#444444"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -157,6 +173,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingEnd="24dp"
                 android:textColor="#444444"
                 android:textSize="12sp" />
 
@@ -194,7 +211,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/price"
+                android:text="@string/no_of_docks_booked"
                 android:textColor="#737373"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -215,11 +232,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingEnd="24dp"
                 android:textColor="#444444"
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/marina_activity_guest_detail_price"
+                android:id="@+id/marina_activity_guest_detail_number_of_docks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

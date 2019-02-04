@@ -1,67 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.WriteReviewFragment">
+    android:layout_height="wrap_content"
+    tools:context=".view.boater.WriteReviewFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@color/colorPrimary">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@color/colorPrimary">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:text="@string/review_marina"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:text="@string/review_marina"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/white" />
+            android:layout_margin="8dp"
+            android:text="@string/rating"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    </LinearLayout>
+        <RatingBar
+            android:id="@+id/reviewRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:numStars="5"
+            android:progressTint="@color/goldenYellow"
+            android:stepSize="1" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/rating"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-    <RatingBar
-        android:id="@+id/reviewRatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:numStars="5"
-        android:progressTint="@color/goldenYellow"
-        android:stepSize="1" />
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-
-        <EditText
-            android:id="@+id/review_editText"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:hint="@string/review"
-            android:inputType="textMultiLine"
-            android:theme="@style/BaseLineTheme" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_margin="8dp">
 
-    <Button
-        android:id="@+id/submit_review_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/submit_review"
-        android:backgroundTint="@color/colorPrimary"
-        android:textColor="@color/white"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textStyle="bold"
-        android:layout_margin="8dp"/>
+            <EditText
+                android:id="@+id/review_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:hint="@string/review"
+                android:inputType="textMultiLine"
+                android:theme="@style/BaseLineTheme" />
+        </android.support.design.widget.TextInputLayout>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/submit_review_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/submit_review"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

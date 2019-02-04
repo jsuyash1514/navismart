@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.CheckoutFragment">
+    tools:context=".view.boater.CheckoutFragment">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -119,6 +119,7 @@
         android:layout_alignParentBottom="true"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/checkout"
+        android:enabled="false"
         android:textColor="@color/white" />
 
 </RelativeLayout>

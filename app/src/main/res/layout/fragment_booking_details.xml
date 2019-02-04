@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.marina.BookingDetailsFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/booking_details_profile_pic"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_margin="20dp"
+            android:src="@drawable/ic_account_circle_white_24dp"/>
+
+        <TextView
+            android:id="@+id/bookings_details_boater_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_toEndOf="@id/booking_details_profile_pic"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/boatName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/boat_name_details"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_toEndOf="@id/booking_details_profile_pic"
+            android:layout_below="@id/bookings_details_boater_name"
+            />
+
+        <TextView
+            android:id="@+id/bookings_details_boat_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_toEndOf="@id/boatName"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/bookings_details_boater_name"
+            />
+
+        <TextView
+            android:id="@+id/boatid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/boat_id_details"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_toEndOf="@id/booking_details_profile_pic"
+            android:layout_below="@id/boatName"
+            />
+
+        <TextView
+            android:id="@+id/bookings_details_boat_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_toEndOf="@id/boatid"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/bookings_details_boat_name"
+            />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/cancelled_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/booking_cancelled"
+        android:textColor="@color/red"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/marina_name_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_marina_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_of_docks_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_number_of_docks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/arrival_date_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_arrival_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/departure_date_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_departure_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/price_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/booking_id_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_booking_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/booking_date_details"
+            android:textColor="#444444"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/booking_details_booking_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_string"
+            android:textColor="#737373"
+            android:textSize="18sp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/send_msg_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/button_bg_r4"
+        android:text="@string/send_a_message"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/colorPrimary" />
+
+</LinearLayout>

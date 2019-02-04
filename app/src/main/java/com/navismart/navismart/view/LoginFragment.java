@@ -17,30 +17,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.navismart.navismart.R;
+import com.navismart.navismart.utils.PreferencesHelper;
 
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-import static com.navismart.navismart.EmailAndPasswordChecker.isEmailValid;
-import static com.navismart.navismart.EmailAndPasswordChecker.isPasswordValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isEmailValid;
+import static com.navismart.navismart.utils.EmailAndPasswordChecker.isPasswordValid;
 
 
 public class LoginFragment extends Fragment {
     boolean emailValid = false, pwValid = false, enabler = false;
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firestore;
     private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
-    private String category;
+    private String category, status;
+    private PreferencesHelper preferencesHelper;
 
 
     @Override
@@ -48,7 +49,9 @@ public class LoginFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
+        preferencesHelper = new PreferencesHelper(getActivity());
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         progressDialog = new ProgressDialog(getContext());
 
@@ -126,13 +129,11 @@ public class LoginFragment extends Fragment {
         if (firebaseAuth.getCurrentUser() != null) {
             progressDialog.setMessage("Logging in Please wait...");
             progressDialog.show();
-            Log.d("Category", "Already logged in");
-            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
-            reference.addValueEventListener(new ValueEventListener() {
+            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    category = dataSnapshot.getValue(String.class);
-                    Log.d("Category: ", category);
+                    category = dataSnapshot.child("category").getValue(String.class);
                     NavOptions navOptions = new NavOptions.Builder()
                             .setPopUpTo(R.id.startFragment, true)
                             .build();
@@ -141,17 +142,31 @@ public class LoginFragment extends Fragment {
                             progressDialog.dismiss();
                             Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
                         } else if (category.equals("marina-manager")) {
+                            status = dataSnapshot.child("status").getValue(String.class);
                             progressDialog.dismiss();
-                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
-                        } else {
-                            Log.d("category", "No match found. ");
+                            if (status.equals("approved")) {
+                                Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                            } else if (status.equals("pending")) {
+                                Toast.makeText(getContext(), "Application pending!", Toast.LENGTH_LONG).show();
+                                firebaseAuth.signOut();
+                            } else if (status.equals("rejected")) {
+                                Toast.makeText(getContext(), "Application rejected!", Toast.LENGTH_LONG).show();
+                                firebaseAuth.signOut();
+                            }
+                        } else if (category.equals("admin")) {
+                            progressDialog.dismiss();
+                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_sign_in_action, null, navOptions);
                         }
+                    } else {
+                        firebaseAuth.signOut();
                     }
+                    progressDialog.dismiss();
                 }
+
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    progressDialog.dismiss();
                 }
             });
         }
@@ -176,42 +191,60 @@ public class LoginFragment extends Fragment {
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(e_mail, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
+                .addOnCompleteListener(getActivity(), task -> {
+                    progressDialog.dismiss();
 
-                        if (task.isSuccessful()) {
-                            DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("category");
-                            reference.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    category = dataSnapshot.getValue(String.class);
-                                    Log.d("Category new login: ", category);
-                                    Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                                    NavOptions navOptions = new NavOptions.Builder()
-                                            .setPopUpTo(R.id.startFragment, true)
-                                            .build();
-                                    if (category != null && !category.isEmpty()) {
-                                        if (category.equals("boater")) {
-                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
-                                        } else if (category.equals("marina-manager")) {
-                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
-                                        } else {
-                                            Log.d("category", "No match found. ");
-                                        }
-                                    }
-                                }
+                    if (task.isSuccessful()) {
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        } else {
-                            Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
+                        if (!preferencesHelper.getToken().isEmpty()) {
+                            Log.d("TAGTAGTAG", preferencesHelper.getToken());
+                            databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile").child("fcm_token").setValue(preferencesHelper.getToken());
                         }
 
+                        DatabaseReference reference = databaseReference.child("users").child(firebaseAuth.getCurrentUser().getUid()).child("profile");
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                category = dataSnapshot.child("category").getValue(String.class);
+                                NavOptions navOptions = new NavOptions.Builder()
+                                        .setPopUpTo(R.id.startFragment, true)
+                                        .build();
+                                if (category != null && !category.isEmpty()) {
+                                    if (category.equals("boater")) {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.boater_sign_in_action, null, navOptions);
+                                    } else if (category.equals("marina-manager")) {
+                                        status = dataSnapshot.child("status").getValue(String.class);
+                                        progressDialog.dismiss();
+                                        if (status.equals("approved")) {
+                                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                            Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.marina_manager_sign_in_action, null, navOptions);
+                                        } else if (status.equals("pending")) {
+                                            Toast.makeText(getContext(), "Application pending!", Toast.LENGTH_LONG).show();
+                                            firebaseAuth.signOut();
+                                        } else if (status.equals("rejected")) {
+                                            Toast.makeText(getContext(), "Application rejected!", Toast.LENGTH_LONG).show();
+                                            firebaseAuth.signOut();
+                                        }
+                                    } else if (category.equals("admin")) {
+                                        Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                        Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment).navigate(R.id.admin_sign_in_action, null, navOptions);
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Unable to fetch details. Check your network.", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
                     }
 
                 });
@@ -223,4 +256,15 @@ public class LoginFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
     }
+
+//    public void dummyFunction(){
+//        // This function is used to create the location fields in firestore.
+//        Map<String, ArrayList<String>> map = new HashMap<>();
+//        map.put("Marina List",new ArrayList<>());
+//        for (int i=0;i<360;i+=5){
+//            for(int j=0;j<360;j+=5){
+//                firestore.collection("Location").document(i+","+j).set(map);
+//            }
+//        }
+//    }
 }

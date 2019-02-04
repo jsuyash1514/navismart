@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.BoaterLandingFragment">
+    tools:context=".view.boater.BoaterLandingFragment">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

@@ -4,120 +4,146 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.BoaterSearchFragment">
+    tools:context=".view.boater.BoaterSearchFragment">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/search_button"
+        android:layout_alignParentTop="true">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/search"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/location_search_editText"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:baselineAligned="false"
-                android:hint="@string/location"
-                android:theme="@style/BaseLineTheme" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="20dp"
+                android:text="@string/search"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/location_search_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:baselineAligned="false"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:hint="@string/location"
+                    android:maxLines="2"
+                    android:theme="@style/BaseLineTheme" />
+            </android.support.design.widget.TextInputLayout>
 
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TableRow>
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/from"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                    <ImageView
+                        android:id="@+id/date_pick_from_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/ic_date_range_black_24dp" />
+
+                    <EditText
+                        android:id="@+id/date_display_from_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:enabled="true"
+                        android:focusable="false"
+                        android:hint="@string/until_tomorrow"
+                        android:inputType="date"
+                        android:theme="@style/BaseLineTheme" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/To"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                    <ImageView
+                        android:id="@+id/date_pick_to_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/ic_date_range_black_24dp" />
+
+                    <EditText
+                        android:id="@+id/date_display_to_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:enabled="true"
+                        android:focusable="false"
+                        android:hint="@string/until_tomorrow"
+                        android:inputType="date"
+                        android:theme="@style/BaseLineTheme" />
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <NumberPicker
+                    android:id="@+id/no_of_dock_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="@string/from"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                <ImageView
-                    android:id="@+id/date_pick_from_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="8dp"
-                    android:src="@drawable/ic_date_range_black_24dp" />
-
-                <EditText
-                    android:id="@+id/date_display_from_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
-                    android:baselineAligned="false"
-                    android:hint="@string/until_tomorrow"
-                    android:inputType="date"
-                    android:theme="@style/BaseLineTheme" />
-            </TableRow>
+                    android:text="@string/no_of_docks"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/common_google_signin_btn_text_light_default" />
 
-            <TableRow>
+            </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="@string/To"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/date_pick_to_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="8dp"
-                    android:src="@drawable/ic_date_range_black_24dp" />
-
-                <EditText
-                    android:id="@+id/date_display_to_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:baselineAligned="false"
-                    android:hint="@string/until_tomorrow"
-                    android:inputType="date"
-                    android:theme="@style/BaseLineTheme" />
-            </TableRow>
-        </TableLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/special_needs_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:baselineAligned="false"
-                android:hint="@string/special_needs"
-                android:theme="@style/BaseLineTheme" />
-        </android.support.design.widget.TextInputLayout>
-
-    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <Button
         android:id="@+id/search_button"

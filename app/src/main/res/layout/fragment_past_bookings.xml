@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.PastBookingsFragment">
+    tools:context=".view.boater.PastBookingsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,14 +21,6 @@
             android:text="@string/past_bookings"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/white" />
-
-        <ImageView
-            android:id="@+id/reload_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_autorenew_white_24dp" />
 
     </LinearLayout>
 
