@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
@@ -77,7 +76,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
     private ProgressDialog progressDialog, uploadProgress;
     private NavController navController;
     private EditText passwordEditText, nameEditText, emailEditText, descriptionEditText, t_cEditText, locationEditText, marinaNameEditText;
-    private NumberPicker capacityPicker;
+    private EditText capacityPicker;
     private Button registerButton, uploadProfilePic;
     private Uri profilePicUri = null;
     private boolean nameFilled = false, marinaNameFilled = false;
@@ -130,8 +129,6 @@ public class SignUpMarinaManagerFragment extends Fragment {
         emailEditText = view.findViewById(R.id.email_edit_text);
         addLocationIcon = view.findViewById(R.id.add_location);
         capacityPicker = view.findViewById(R.id.reception_capacity_number_picker);
-        capacityPicker.setMaxValue(10);
-        capacityPicker.setMinValue(1);
         descriptionEditText = view.findViewById(R.id.description_edit_text);
         t_cEditText = view.findViewById(R.id.tnc_edit_text);
         marinaPicRecyclerview = view.findViewById(R.id.marina_pics_recycler_view);
@@ -466,7 +463,7 @@ public class SignUpMarinaManagerFragment extends Fragment {
         final String email = emailEditText.getText().toString().trim();
         final String password = passwordEditText.getText().toString().trim();
         final String descr = descriptionEditText.getText().toString().trim();
-        final String capacity = String.valueOf(capacityPicker.getValue());
+        final String capacity = capacityPicker.getText().toString();
         final String termsAndCond = t_cEditText.getText().toString().trim();
         final String marinaName = marinaNameEditText.getText().toString().trim();
 
