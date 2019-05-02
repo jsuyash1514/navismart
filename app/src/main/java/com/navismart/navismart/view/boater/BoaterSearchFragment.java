@@ -43,7 +43,7 @@ public class BoaterSearchFragment extends Fragment {
     private EditText locationEditText;
     private Button searchButton;
     private String fromDate, toDate;
-    private NumberPicker noOfDockPicker;
+    private EditText noOfDockPicker;
 
     public BoaterSearchFragment() {
         // Required empty public constructor
@@ -64,8 +64,6 @@ public class BoaterSearchFragment extends Fragment {
         dateToEditText = view.findViewById(R.id.date_display_to_editText);
         locationEditText = view.findViewById(R.id.location_search_editText);
         noOfDockPicker = view.findViewById(R.id.no_of_dock_picker);
-        noOfDockPicker.setMaxValue(10);
-        noOfDockPicker.setMinValue(1);
 
         final Calendar c = Calendar.getInstance();
         mYearFrom = c.get(Calendar.YEAR);
@@ -143,7 +141,7 @@ public class BoaterSearchFragment extends Fragment {
                 bundle.putString("fromDate", dateFromEditText.getText().toString());
                 bundle.putString("toDate", dateToEditText.getText().toString());
                 bundle.putString("location_address", locationAddress);
-                bundle.putLong("noOfDocks", noOfDockPicker.getValue());
+                bundle.putLong("noOfDocks", Long.parseLong(noOfDockPicker.getText().toString()));
                 bundle.putParcelable("locationLatLng", locationLatLng);
                 NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
                 navController.navigate(R.id.action_boaterLandingFragment_to_boaterSearchResultsFragment, bundle);
